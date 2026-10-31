@@ -5,7 +5,7 @@ description: Use when a software engineering task needs coordinated specificatio
 
 # NEXUS
 
-Conduza a tarefa até um resultado verificável, com a menor complexidade suficiente. Este pacote fornece instruções; capacidades de execução dependem do host.
+Conduza a tarefa até um resultado verificável, com a menor complexidade suficiente. Este pacote fornece instruções e um executor local de estado de tarefas; implementação, testes e dispatch usam as capacidades verificadas do host.
 
 ## Entrada
 
@@ -19,6 +19,7 @@ Conduza a tarefa até um resultado verificável, com a menor complexidade sufici
 | Situação | Ler |
 | --- | --- |
 | Planejamento ou execução em etapas | [Workflow](references/workflow.md) |
+| Persistência de tarefas, DAG, retomada ou CLI/Markdown do Todo | [Contrato executável](references/workflow-state.md) |
 | Escolha de testes, modelo ou contexto | [Políticas](references/policies.md) |
 | Delegação ou review independente | [Agentes](references/agents.md) |
 | Integração com eventos do host | [Hooks](references/hooks.md) |

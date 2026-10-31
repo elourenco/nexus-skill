@@ -2,7 +2,7 @@
 
 Fundação de uma skill portátil de engenharia: especificação, decisões arquiteturais, execução incremental e validação com evidências.
 
-**Status: fase 1, base inicial para refinamento.** O pacote contém instruções e templates. Não contém scheduler, adapters de providers, execução automática de hooks, banco de memória ou dashboard.
+**Status: base documental com executor local de workflows.** O pacote contém instruções, templates e uma CLI Python para estado de tarefas, DAG, gates e recuperação. Não contém scheduler, adapters de providers, execução automática de hooks, banco de memória ou dashboard. Use o [contrato do Todo](skills/nexus/references/workflow-state.md) para operar a CLI; dispatch e implementação continuam nas ferramentas reais do host.
 
 ## Começar
 
@@ -15,7 +15,8 @@ Exemplo de solicitação: “Use NEXUS para planejar a sincronização offline d
 | Caminho | Responsabilidade |
 | --- | --- |
 | [Skill](skills/nexus/SKILL.md) | Entrada curta e seleção de referências |
-| [Workflow](skills/nexus/references/workflow.md) | Explore, Plan, Build, Review e Autonomous |
+| [Workflow](skills/nexus/references/workflow.md) | FAST/BALANCED/DEEP, Explore/Plan/Build/Review e Autonomous |
+| [Todo executável](skills/nexus/references/workflow-state.md) | Store local, orquestração, CLI/Markdown e limites do runtime |
 | [Políticas](skills/nexus/references/policies.md) | Testes adaptativos, contexto e modelos |
 | [Agentes](skills/nexus/references/agents.md) | Ownership e revisão por pilar |
 | [Hooks](skills/nexus/references/hooks.md) | Contratos lógicos e limites de execução |
@@ -30,11 +31,14 @@ Requer Python 3.10 ou superior, sem dependências externas:
 
 ```sh
 python3 scripts/validate.py
+python3 -m unittest discover -s tests -v
 ```
 
-A verificação cobre metadados essenciais e destinos de links Markdown locais. Não demonstra aderência comportamental dos agentes nem compatibilidade de instalação entre hosts.
+A validação estrutural cobre metadados essenciais e destinos de links Markdown locais. A suíte de testes exercita o executor e a CLI; não demonstra aderência geral dos agentes nem compatibilidade de instalação entre hosts.
 
 Veja as [evidências da base](docs/validation.md).
+
+Para a ampliação autorizada de workflows, consulte a [auditoria e decisões](docs/workflow-implementation.md) e as [evidências de validação](docs/workflow-validation.md). Os documentos da fase 1 registram a base anterior; o escopo executável novo é delimitado nessas referências.
 
 ## Origem e limites
 
