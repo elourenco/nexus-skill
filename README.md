@@ -2,7 +2,7 @@
 
 Fundação de uma skill portátil de engenharia: especificação, decisões arquiteturais, execução incremental e validação com evidências.
 
-**Status: fase 1, base inicial para refinamento.** O pacote contém instruções e templates. Não contém scheduler, adapters de providers, execução automática de hooks, banco de memória ou dashboard.
+**Status: base documental com executor local de hooks opcional.** O pacote contém instruções, templates e um CLI Python com journal SQLite e memória local autorizada. As chamadas são explícitas; não há scheduler, adapters nativos instalados, execução automática no host ou dashboard.
 
 ## Começar
 
@@ -18,7 +18,7 @@ Exemplo de solicitação: “Use NEXUS para planejar a sincronização offline d
 | [Workflow](skills/nexus/references/workflow.md) | Explore, Plan, Build, Review e Autonomous |
 | [Políticas](skills/nexus/references/policies.md) | Testes adaptativos, contexto e modelos |
 | [Agentes](skills/nexus/references/agents.md) | Ownership e revisão por pilar |
-| [Hooks](skills/nexus/references/hooks.md) | Contratos lógicos e limites de execução |
+| [Hooks](skills/nexus/references/hooks.md) | Executor local, registro, compatibilidade e recuperação |
 | [Memória](skills/nexus/references/memory.md) | Proveniência, validade e isolamento |
 | [Princípios cognitivos](skills/nexus/references/cognitive.md) | Premissas, alternativas e evidências |
 | [Templates](skills/nexus/assets/templates/spec.md) | Spec, plano, tarefa, ADR e memória |
@@ -35,6 +35,15 @@ python3 scripts/validate.py
 A verificação cobre metadados essenciais e destinos de links Markdown locais. Não demonstra aderência comportamental dos agentes nem compatibilidade de instalação entre hosts.
 
 Veja as [evidências da base](docs/validation.md).
+
+O executor opcional requer POSIX e usa apenas a biblioteca padrão. Valide seu registro e seus testes com:
+
+```sh
+python3 skills/nexus/scripts/hook_engine.py validate
+python3 -m unittest discover -s tests -v
+```
+
+Consulte [Hooks](skills/nexus/references/hooks.md) antes de conceder permissões. O registro padrão valida este repositório; consumidores configuram suas ferramentas e o escopo das evidências. Recomendações cognitivas não equivalem a reviews executados por modelo. Veja as [evidências do executor](docs/hooks-validation.md).
 
 ## Origem e limites
 
