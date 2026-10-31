@@ -2,7 +2,7 @@
 
 Fundação de uma skill portátil de engenharia: especificação, decisões arquiteturais, execução incremental e validação com evidências.
 
-**Status: fase 1, base inicial para refinamento.** O pacote contém instruções e templates. Não contém scheduler, adapters de providers, execução automática de hooks, banco de memória ou dashboard.
+**Status: skill portátil com runtime textual opcional.** `skills/nexus/` contém instruções e templates independentes de provider. A [CLI de agentes e review](runtime/README.md) acrescenta roteamento, adapters textuais e Council; edição de código, execução de testes e persistência de memória permanecem no host. Não há scheduler, execução automática de hooks, banco de memória ou dashboard.
 
 ## Começar
 
@@ -35,6 +35,8 @@ python3 scripts/validate.py
 A verificação cobre metadados essenciais e destinos de links Markdown locais. Não demonstra aderência comportamental dos agentes nem compatibilidade de instalação entre hosts.
 
 Veja as [evidências da base](docs/validation.md).
+
+Para validar o runtime opcional, execute `python3 -m unittest discover -s runtime/tests -v`. Os testes usam dados sintéticos e HTTP em loopback; não exigem credenciais nem comprovam acesso autenticado a providers. Veja [escopo, uso e limitações](runtime/README.md) e o [desenho do incremento](docs/agents-review-runtime-design.md).
 
 ## Origem e limites
 
