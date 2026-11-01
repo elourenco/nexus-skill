@@ -1,16 +1,37 @@
 # Tarefa: ID — título
 
-- Spec/plano e revisão:
+Use [contratos e transições](contracts.md). Preserve o ID do título entre
+atualizações. O núcleo abaixo também atende FAST; SPEC/PLAN ausentes usam
+`não se aplica — FAST` nos dois IDs e a fonte do pedido em `Spec/plano`.
+
+- Perfil: FAST / BALANCED / DEEP
+- Revisão do registro: 1
+- spec_id:
+- plan_id:
+- Spec/plano e revisão (links ou fonte do pedido):
 - Estado: pending
-- Dependências (IDs):
-- Objetivo:
+- Prioridade: normal
+- Risco: baixo / médio / alto (motivo):
+- Dependências (IDs; nenhuma quando vazio):
+- Objetivo (descrição curta):
 - Responsável/papel:
+- Capabilities requeridas e disponibilidade:
 - Arquivos permitidos e recursos exclusivos:
-- Contratos preservados:
-- Critérios de aceite:
+- Critérios de aceite (IDs/referências e resultado verificável):
 - Testes e verificações:
-- Budget autorizado e origem (ou não informado):
-- Provider/modelo/esforço efetivos (ou indisponível):
-- Tentativas e hipóteses descartadas:
-- Evidências (comando, resultado, data, commit quando disponível):
+- Evidências (ID, procedimento, resultado real, data, limitações ou link):
 - Impedimento ou próxima ação:
+
+## Execução persistente — adicionar quando houver execução ou retomada
+
+- Contratos preservados (referências):
+- Provider/modelo/esforço efetivos (ou indisponível):
+- Budget autorizado e origem (opcional; ausente significa não informado):
+- Consumo medido (por tentativa: valor, unidade/moeda, fonte, intervalo; ou indisponível):
+- Tentativas e hipóteses descartadas (IDs locais, resultado, evidências):
+- Checkpoint (workspace/revisão de código, operações externas e resultado conhecido/incerto):
+- Review/decisões associados (IDs/links, quando exigidos):
+- Histórico de transições (data, de → para, responsável, motivo/evidência, revisão):
+
+Adicione entradas; não substitua consumo, evidência ou tentativa anterior ao
+retomar. Se não houver execução ainda, não crie um histórico fictício.
