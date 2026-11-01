@@ -22,6 +22,8 @@ atualizações. O núcleo abaixo também atende FAST; SPEC/PLAN ausentes usam
 - Evidências (ID, procedimento, resultado real, data, limitações ou link):
 - Impedimento ou próxima ação:
 
+Com executor opt-in, esta TASK é documentação; estado, reservas e transições pertencem ao store JSON e à CLI. Consulte [contrato executável](../../references/workflow-state.md); não use a revisão Markdown como `expected_revision` do store.
+
 ## Execução persistente — adicionar quando houver execução ou retomada
 
 - Contratos preservados (referências):

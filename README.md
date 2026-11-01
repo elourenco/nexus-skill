@@ -2,7 +2,7 @@
 
 Fundação de uma skill portátil de engenharia: especificação, decisões arquiteturais, execução incremental e validação com evidências.
 
-**Status: skill portátil com memória local e runtime textual opcionais.** `skills/nexus/` contém instruções, templates e um [helper opt-in de memória local em JSON](skills/nexus/references/memory.md), independentes de provider. A [CLI de agentes e review](runtime/README.md) acrescenta roteamento, adapters textuais e Council. A CLI não edita projetos, executa seus testes nem aciona o helper de memória automaticamente; essas ações permanecem sob controle do host. Não há scheduler, execução automática de hooks, banco de dados ou dashboard.
+**Status: skill portátil com componentes locais opcionais.** `skills/nexus/` contém instruções, templates, um [helper de memória JSON](skills/nexus/references/memory.md) e a [CLI de workflows](skills/nexus/references/workflow-state.md) para tarefas, DAG, gates e recuperação. A [CLI de agentes e review](runtime/README.md) fornece roteamento, adapters textuais e Council. Esses componentes são acionados explicitamente; não há scheduler, dashboard ou ligação automática entre eles. Implementação, testes do projeto e dispatch do workflow continuam nas ferramentas reais do host.
 
 ## Começar
 
@@ -15,7 +15,8 @@ Exemplo de solicitação: “Use NEXUS para planejar a sincronização offline d
 | Caminho | Responsabilidade |
 | --- | --- |
 | [Skill](skills/nexus/SKILL.md) | Entrada curta e seleção de referências |
-| [Workflow](skills/nexus/references/workflow.md) | Explore, Plan, Build, Review e Autonomous |
+| [Workflow](skills/nexus/references/workflow.md) | FAST/BALANCED/DEEP, Explore/Plan/Build/Review e Autonomous |
+| [Todo executável](skills/nexus/references/workflow-state.md) | Store local, orquestração, CLI/Markdown e limites do runtime |
 | [Políticas](skills/nexus/references/policies.md) | Testes adaptativos, contexto e modelos |
 | [Agentes](skills/nexus/references/agents.md) | Ownership e revisão por pilar |
 | [Hooks](skills/nexus/references/hooks.md) | Contratos lógicos e limites de execução |
@@ -34,11 +35,11 @@ python3 scripts/validate.py
 python3 -m unittest discover -s tests -v
 ```
 
-O validador cobre metadados essenciais e destinos de links Markdown locais. Os testes exercitam persistência e recuperação do helper em arquivos temporários. Não demonstram compatibilidade de instalação entre hosts nem execução automática de hooks. Veja as [evidências de memória](docs/memory-validation.md).
+O validador cobre metadados e links Markdown locais. A suíte em `tests/` exercita memória e workflows, incluindo persistência, concorrência e recuperação. Veja as [evidências de memória](docs/memory-validation.md), a [auditoria de workflows](docs/workflow-implementation.md) e suas [evidências](docs/workflow-validation.md). Não demonstra aderência geral de agentes ou instalação entre hosts.
 
-Veja as [evidências da base](docs/validation.md).
+Para o runtime textual opcional, execute `python3 -m unittest discover -s runtime/tests -v`. Os testes usam dados sintéticos e HTTP em loopback; não exigem credenciais nem comprovam acesso autenticado a providers. Veja [escopo e limites](runtime/README.md) e o [desenho do incremento](docs/agents-review-runtime-design.md).
 
-Para validar o runtime opcional, execute `python3 -m unittest discover -s runtime/tests -v`. Os testes usam dados sintéticos e HTTP em loopback; não exigem credenciais nem comprovam acesso autenticado a providers. Veja [escopo, uso e limitações](runtime/README.md) e o [desenho do incremento](docs/agents-review-runtime-design.md).
+As [evidências da base](docs/validation.md) e os documentos da fase 1 registram o estágio documental anterior; os incrementos executáveis têm escopo nas referências acima.
 
 ## Origem e limites
 

@@ -21,11 +21,13 @@ referencie requisitos/aceites por ID em vez de reproduzi-los.
 
 ## Todo
 
-Visão derivada das TASKS conforme o [Interactive Todo Contract](contracts.md#interactive-todo-contract).
+No modo documental, visão derivada das TASKS conforme o [Interactive Todo Contract](contracts.md#interactive-todo-contract).
 Cada linha contém ID/link, estado, responsável/papel, modelo efetivo ou
 indisponível, dependências, bloqueios e próxima ação. Declare data da leitura
 quando salvar a visão; reabra a TASK antes de executar. Não mantenha outro estado
 independente em checkboxes.
+
+Com a CLI de workflow opt-in, o Todo é derivado exclusivamente do store JSON por `show`; consulte a revisão global antes de `apply`. Este PLAN continua documento, sem sincronização bidirecional. Não edite TASKS Markdown para alterar o estado do executor.
 
 ## Validação final
 
