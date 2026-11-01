@@ -19,8 +19,7 @@ existentes continuam sendo pontos de entrada; carregue este contrato sob demanda
 Na base `5684e44` havia SPEC, PLAN, TASK, ADR e MEMORY, sem duplicatas ou templates
 órfãos: README/workflow referenciavam os quatro primeiros; a referência de memória
 usava MEMORY. REVIEW e EVIDENCE eram texto livre. O validador existente verifica
-metadados da skill e links, não esquema dos artefatos. Os consumidores são
-instruções/agentes, não integrações de máquina. Não presumir execução automática.
+metadados da skill e links, não esquema dos artefatos. Os contratos Markdown são consumidos por instruções/agentes. O template MEMORY também preserva uma entrada JSON para o helper opt-in já existente; isso não converte os demais artefatos em schemas de máquina. Não presumir execução automática.
 
 ## Identidade e referências
 
@@ -164,7 +163,7 @@ módulos para adotar estes templates sem coordenar o ownership.
 
 Migração incremental de artefatos antigos: preserve arquivo, ID, status, links,
 texto e evidências; não regenere documentos. Acrescente ID/revisão ausentes ao PLAN
-e MEMORY; mantenha um ID que já exista no título. Separe a relação combinada
+e MEMORY documental (no helper JSON a revisão é gerada pelo store); mantenha um ID que já exista no título. Separe a relação combinada
 `Spec/plano e revisão` em `spec_id` e `plan_id`, conservando o campo original com
 links/revisões. Em SPEC, `Fonte do requisito` cabe em `Contexto e fonte do requisito`;
 `Evidências disponíveis e hipóteses` cabe em `Riscos, incertezas e evidências disponíveis`;
