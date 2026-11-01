@@ -17,5 +17,7 @@ jobs:
           persist-credentials: false
       - name: Validate skill and local references
         run: python3 scripts/validate.py
+      - name: Test optional text runtime with local HTTP fixtures
+        run: python3 -m unittest discover -s runtime/tests -v
       - name: Test local memory persistence and recovery
         run: python3 -m unittest discover -s tests -v
