@@ -69,7 +69,7 @@ Não repita contexto por artefato; o consumidor resolve os links relevantes.
 
 ## Estados e transições
 
-O enum persistente mantém o [workflow vigente](../../references/workflow.md):
+**Modo documental, sem executor:** o enum dos registros Markdown é:
 `pending`, `ready`, `running`, `blocked`, `done`, `cancelled`.
 Os nomes de UI BACKLOG, READY, IN_PROGRESS, BLOCKED, DONE e CANCELLED mapeiam,
 respectivamente, para esses valores. REVIEW é etapa de `running` com link para
@@ -78,7 +78,7 @@ houver correção autorizada em curso ou `blocked` enquanto aguarda dependência
 Cancelamento autorizado usa `cancelled` e preserva o resultado observado; não
 transforma a tentativa em sucesso. Consulte [Policies](../../references/policies.md)
 para os resultados agregados e gates. Não grave REVIEW ou FAILED em `Estado`: isso
-exigiria migração coordenada do consumidor workflow.
+exigiria migração coordenada do consumidor documental.
 
 | Origem | Destinos permitidos | Condição |
 | --- | --- | --- |
@@ -101,9 +101,15 @@ Fatie tarefas por resultado verificável e ownership: se há entregas independen
 recursos concorrentes ou um próximo passo que não pode ser explicado brevemente,
 divida em TASKS ligadas. Não imponha um limite arbitrário de linhas ou horas.
 
+### Uso do executor opt-in
+
+Quando o projeto adotar a [CLI de workflow](../../references/workflow-state.md), o store JSON é a autoridade e seu contrato de operações prevalece sobre a tabela documental acima. Há sete estados, incluindo `validating`: `result(success)` leva `running → validating`, e somente `complete` leva `validating → done` após gates. `cancelled` é terminal; novo escopo autorizado exige outro workflow. `resume`/`recover` levam `blocked → pending`, preservando tentativas; `ready` reavalia os gates. Não há importação automática, migração ou sincronização de TASKS Markdown.
+
+Interrupção ou cancelamento de run ativo mantém a reserva até `reconcile_run` com evidência do host. Nunca use edição Markdown ou a tabela documental para liberar recursos do executor. Se exportar estes templates, eles continuam artefatos documentais; não são requests JSON de `apply`. A revisão de uma TASK Markdown é distinta da revisão global do store e da geração de evidências. Escolha e registre a fonte de estado antes de executar; não mantenha duas autoridades.
+
 ## Interactive Todo Contract
 
-A fonte persistente é o conjunto de TASKS Markdown e seus artefatos ligados. A UI
+**Sem executor**, a fonte persistente é o conjunto de TASKS Markdown e seus artefatos ligados. **Com executor opt-in**, consulte o store por `show` e faça alterações por `apply`, conforme o contrato acima; Markdown é apenas projeção. A UI
 ou tabela do PLAN é uma projeção. O contrato mínimo de cada linha é:
 
 | ID/link | Estado | Responsável/papel | Modelo efetivo | Dependências | Bloqueio/próxima ação | Artefatos |
@@ -112,7 +118,9 @@ ou tabela do PLAN é uma projeção. O contrato mínimo de cada linha é:
 
 Progresso = tarefas `done` / tarefas não canceladas, mais contagem separada de
 canceladas e bloqueadas. Sem tarefas ativas, mostre “não aplicável”; não transforme
-cancelamento em conclusão. Não use esse quociente como percentual de esforço.
+cancelamento em conclusão. Não use esse quociente como percentual de esforço. A métrica `completion_rate` da CLI usa todas as tarefas, incluindo canceladas, e exibe cancelamento separadamente; não confunda esse indicador com a fração de escopo ativo acima. O executor não entrega workflow com escopo cancelado.
+
+No modo documental, siga os passos abaixo. Com executor, use a revisão global e `operation_id` da CLI; não edite uma projeção para transicionar tarefas.
 
 1. Leia a TASK e sua revisão atual antes de editar, inclusive via UI nativa.
 2. Um único responsável escreve cada TASK/recurso. Registre transferência e as
@@ -127,8 +135,7 @@ cancelamento em conclusão. Não use esse quociente como percentual de esforço.
    reconciliação antes de retry. `running` abandonado vai a `blocked` com checkpoint;
    após resolver, siga `blocked → ready → running`.
 
-Sem UI real, a tabela Markdown acima é o fallback disponível. CLI é opcional se o
-host a fornecer; não invente comandos. O contrato não depende de estado do chat.
+Sem UI real, a tabela Markdown acima é o fallback disponível. A CLI local é opcional e requer Python/POSIX; use apenas os comandos documentados. O contrato não depende de estado do chat.
 Leia apenas a TASK e referências pertinentes na retomada; um índice derivado evita
 recarregar toda a documentação. Escritas seriais podem limitar throughput, mas
 são proporcionais à fase documental; não há benchmark de latência ou concorrência.
