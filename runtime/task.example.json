@@ -1,0 +1,7 @@
+{
+  "task_id": "plan-parser",
+  "agent": "planner",
+  "prompt": "SPEC: A parser must reject an empty string and accept a nonempty string. Produce implementation tasks and acceptance criteria. No repository tools are available.",
+  "complexity": 1,
+  "data_class": "public"
+}

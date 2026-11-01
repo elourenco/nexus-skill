@@ -77,3 +77,7 @@ interpretação documental e fixtures; não é teste end-to-end de um runtime.
 As referências atuais de workflow/agents/hooks/policies/memory foram lidas, sem
 alterá-las. O enum de estados e os caminhos antigos foram preservados. As outras
 frentes devem coordenar qualquer futura mudança desse enum ou adoção por adapter.
+
+## Integração com memória local — 2026-10-31
+
+O conflito com o PR de memória foi resolvido preservando o exemplo JSON completo de `put` e adicionando o formulário Markdown como alternativa documental. Cenários de mesa: JSON mantém campos aceitos pelo helper; revisão do registro JSON continua gerada pelo store; revisão Markdown permanece manual; prazo `expires_at` só é aplicado pelo helper; migração não descarta proveniência. `python3 scripts/validate.py` e 29 testes de memória passaram no checkout integrado. Isso não demonstra aderência de agentes em projetos consumidores.
