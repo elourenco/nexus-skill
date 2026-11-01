@@ -1,0 +1,11 @@
+{
+  "task_id": "review-parser",
+  "mode": "balanced",
+  "requirements": "parse must reject an empty string with ValueError and return a nonempty string unchanged.",
+  "diff": "--- a/src/parser.py\n+++ b/src/parser.py\n@@ -1,2 +1,2 @@\n def parse(value):\n-    raise NotImplementedError\n+    return value\n",
+  "changed_files": ["src/parser.py"],
+  "sources": {"src/parser.py": "def parse(value):\n    return value\n"},
+  "risks": [],
+  "complexity": 1,
+  "data_class": "public"
+}
