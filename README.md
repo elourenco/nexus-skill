@@ -2,7 +2,7 @@
 
 Fundação de uma skill portátil de engenharia: especificação, decisões arquiteturais, execução incremental e validação com evidências.
 
-**Status: base documental com executor local de workflows.** O pacote contém instruções, templates e uma CLI Python para estado de tarefas, DAG, gates e recuperação. Não contém scheduler, adapters de providers, execução automática de hooks, banco de memória ou dashboard. Use o [contrato do Todo](skills/nexus/references/workflow-state.md) para operar a CLI; dispatch e implementação continuam nas ferramentas reais do host.
+**Status: skill portátil com componentes locais opcionais.** `skills/nexus/` contém instruções, templates, um [helper de memória JSON](skills/nexus/references/memory.md) e a [CLI de workflows](skills/nexus/references/workflow-state.md) para tarefas, DAG, gates e recuperação. A [CLI de agentes e review](runtime/README.md) fornece roteamento, adapters textuais e Council. Esses componentes são acionados explicitamente; não há scheduler, dashboard ou ligação automática entre eles. Implementação, testes do projeto e dispatch do workflow continuam nas ferramentas reais do host.
 
 ## Começar
 
@@ -20,7 +20,8 @@ Exemplo de solicitação: “Use NEXUS para planejar a sincronização offline d
 | [Políticas](skills/nexus/references/policies.md) | Testes adaptativos, contexto e modelos |
 | [Agentes](skills/nexus/references/agents.md) | Ownership e revisão por pilar |
 | [Hooks](skills/nexus/references/hooks.md) | Contratos lógicos e limites de execução |
-| [Memória](skills/nexus/references/memory.md) | Proveniência, validade e isolamento |
+| [Memória](skills/nexus/references/memory.md) | Persistência local opt-in, proveniência, recuperação e isolamento |
+| [Helper de memória](skills/nexus/scripts/memory.py) | CLI Python sem dependências; filesystem local POSIX |
 | [Princípios cognitivos](skills/nexus/references/cognitive.md) | Premissas, alternativas e evidências |
 | [Templates](skills/nexus/assets/templates/spec.md) | Spec, plano, tarefa, ADR e memória |
 | [Escopo](docs/phase-1.md) | Entrega atual e próximos refinamentos |
@@ -34,11 +35,11 @@ python3 scripts/validate.py
 python3 -m unittest discover -s tests -v
 ```
 
-A validação estrutural cobre metadados essenciais e destinos de links Markdown locais. A suíte de testes exercita o executor e a CLI; não demonstra aderência geral dos agentes nem compatibilidade de instalação entre hosts.
+O validador cobre metadados e links Markdown locais. A suíte em `tests/` exercita memória e workflows, incluindo persistência, concorrência e recuperação. Veja as [evidências de memória](docs/memory-validation.md), a [auditoria de workflows](docs/workflow-implementation.md) e suas [evidências](docs/workflow-validation.md). Não demonstra aderência geral de agentes ou instalação entre hosts.
 
-Veja as [evidências da base](docs/validation.md).
+Para o runtime textual opcional, execute `python3 -m unittest discover -s runtime/tests -v`. Os testes usam dados sintéticos e HTTP em loopback; não exigem credenciais nem comprovam acesso autenticado a providers. Veja [escopo e limites](runtime/README.md) e o [desenho do incremento](docs/agents-review-runtime-design.md).
 
-Para a ampliação autorizada de workflows, consulte a [auditoria e decisões](docs/workflow-implementation.md) e as [evidências de validação](docs/workflow-validation.md). Os documentos da fase 1 registram a base anterior; o escopo executável novo é delimitado nessas referências.
+As [evidências da base](docs/validation.md) e os documentos da fase 1 registram o estágio documental anterior; os incrementos executáveis têm escopo nas referências acima.
 
 ## Origem e limites
 
