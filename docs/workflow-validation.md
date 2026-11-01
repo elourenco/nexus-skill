@@ -46,3 +46,7 @@ Os dois testes finais adicionais cobrem timeout do lock e integridade da memóri
 - Não foi realizado benchmark de latência/throughput. Tempos do demo são observações de um caso sintético, não capacidade do executor.
 - `skill-creator/scripts/quick_validate.py` não executou no Python padrão por falta de PyYAML. Essa dependência pertence ao validador auxiliar, não ao pacote; nenhuma instalação global foi feita. A validação obrigatória do repositório é independente desse módulo.
 - A CI existente da base executa a validação estrutural. A suíte nova foi executada localmente; não há evidência de execução remota da suíte nem de instalação em consumidores reais.
+
+## Integração dos módulos — 2026-10-31
+
+Resolução com main preserva memória JSON e runtime textual de agentes. Templates distinguem operação documental de operação pela CLI: store JSON é a única autoridade quando opt-in; `validating` precede `done`; `cancelled` é terminal; run incerto mantém reserva até `reconcile_run`. Cenários documentais verificados: editar projeção não altera store; retomar sem confirmação não libera recursos; revisão Markdown não substitui revisão global. A CI herdada de main descobre toda a suíte de memória/workflows em `tests/` e a suíte textual separada.

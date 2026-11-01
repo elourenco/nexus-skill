@@ -27,13 +27,13 @@ Registre SPEC/PLAN como `artifact` após a aceitação necessária no host. O ex
 
 ## Execução, Todo e paralelismo
 
-Estados: `pending`, `ready`, `running`, `validating`, `blocked`, `done`, `cancelled`. `validating` acrescenta uma fronteira explícita para testes/review aos estados anteriores. Cada operação aceita produz snapshot e histórico na mesma transação.
+Com executor opt-in, estados: `pending`, `ready`, `running`, `validating`, `blocked`, `done`, `cancelled`. `validating` acrescenta uma fronteira explícita para testes/review aos estados anteriores. Cada operação aceita produz snapshot e histórico na mesma transação.
 
 `ready` exige dependências `done`, contratos atuais, autorização atribuída e gates anteriores à execução. `start`/`dispatch` também verificam budget conhecido, tentativas, concorrência e recursos. Dependência inexistente ou cíclica falha sem mutação. Cancelar predecessor não satisfaz dependências.
 
 Declare arquivos/diretórios, bancos, portas e recursos compartilhados com nomes comuns entre agentes. Execute em paralelo apenas tarefas independentes e com recursos disjuntos. Reservas duram pela implementação **e validação**. Worktrees não isolam bancos, portas ou serviços externos. O executor coordena um único estado local; não detecta outros workflows, checkouts ou ferramentas que ignorem esse contrato.
 
-A fonte de verdade é o store JSON. `show` projeta o Todo em Markdown; `show --format json` permite outro adapter. Pela CLI é possível criar, atualizar, reatribuir, bloquear, adicionar dependências, vincular arquivos, solicitar review, retomar, concluir e consultar histórico. Markdown é uma projeção atualizável, sem botões ou sincronização bidirecional. Um Todo nativo, quando realmente disponível, deve traduzir ações para o mesmo contrato; não manter segundo estado independente.
+Ao usar o executor opt-in, a fonte de verdade é o store JSON. Sem executor, use o [contrato documental dos templates](../assets/templates/contracts.md) com seus seis estados e serialização manual; a etapa de validação fica dentro de `running`. Não há migração ou sincronização automática entre esses modos. `show` projeta o Todo em Markdown; `show --format json` permite outro adapter. Pela CLI é possível criar, atualizar, reatribuir, bloquear, adicionar dependências, vincular arquivos, solicitar review, retomar, concluir e consultar histórico. Markdown é uma projeção atualizável, sem botões ou sincronização bidirecional. Um Todo nativo, quando realmente disponível, deve traduzir ações para o mesmo contrato; não manter segundo estado independente.
 
 ## Testes adaptativos e gates
 
