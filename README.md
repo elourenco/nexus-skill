@@ -2,7 +2,7 @@
 
 Fundação de uma skill portátil de engenharia: especificação, decisões arquiteturais, execução incremental e validação com evidências.
 
-**Status: skill portátil com runtime textual opcional.** `skills/nexus/` contém instruções e templates independentes de provider. A [CLI de agentes e review](runtime/README.md) acrescenta roteamento, adapters textuais e Council; edição de código, execução de testes e persistência de memória permanecem no host. Não há scheduler, execução automática de hooks, banco de memória ou dashboard.
+**Status: skill portátil com memória local e runtime textual opcionais.** `skills/nexus/` contém instruções, templates e um [helper opt-in de memória local em JSON](skills/nexus/references/memory.md), independentes de provider. A [CLI de agentes e review](runtime/README.md) acrescenta roteamento, adapters textuais e Council. A CLI não edita projetos, executa seus testes nem aciona o helper de memória automaticamente; essas ações permanecem sob controle do host. Não há scheduler, execução automática de hooks, banco de dados ou dashboard.
 
 ## Começar
 
@@ -19,7 +19,8 @@ Exemplo de solicitação: “Use NEXUS para planejar a sincronização offline d
 | [Políticas](skills/nexus/references/policies.md) | Testes adaptativos, contexto e modelos |
 | [Agentes](skills/nexus/references/agents.md) | Ownership e revisão por pilar |
 | [Hooks](skills/nexus/references/hooks.md) | Contratos lógicos e limites de execução |
-| [Memória](skills/nexus/references/memory.md) | Proveniência, validade e isolamento |
+| [Memória](skills/nexus/references/memory.md) | Persistência local opt-in, proveniência, recuperação e isolamento |
+| [Helper de memória](skills/nexus/scripts/memory.py) | CLI Python sem dependências; filesystem local POSIX |
 | [Princípios cognitivos](skills/nexus/references/cognitive.md) | Premissas, alternativas e evidências |
 | [Templates](skills/nexus/assets/templates/spec.md) | Spec, plano, tarefa, ADR e memória |
 | [Escopo](docs/phase-1.md) | Entrega atual e próximos refinamentos |
@@ -30,9 +31,10 @@ Requer Python 3.10 ou superior, sem dependências externas:
 
 ```sh
 python3 scripts/validate.py
+python3 -m unittest discover -s tests -v
 ```
 
-A verificação cobre metadados essenciais e destinos de links Markdown locais. Não demonstra aderência comportamental dos agentes nem compatibilidade de instalação entre hosts.
+O validador cobre metadados essenciais e destinos de links Markdown locais. Os testes exercitam persistência e recuperação do helper em arquivos temporários. Não demonstram compatibilidade de instalação entre hosts nem execução automática de hooks. Veja as [evidências de memória](docs/memory-validation.md).
 
 Veja as [evidências da base](docs/validation.md).
 
