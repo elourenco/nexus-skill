@@ -291,6 +291,65 @@ class HooksTest(unittest.TestCase):
         self.run_event(self.event(event_id="cache-3"))
         self.assertEqual((self.workspace / "count").read_text(), "xx")
 
+    def test_cache_invalidated_when_executable_permission_removed(self):
+        script = self.workspace / "check.py"
+        script.write_text("#!/bin/sh\nexit 0\n")
+        script.chmod(0o700)
+        self.write_registry([hook(config={"argv": ["./check.py"], "read_only": True, "cache_seconds": 60})])
+        self.assertEqual(self.run_event()[0], 0)
+        _, cached = self.run_event(self.event(event_id="cached"))
+        self.assertEqual(cached["hooks"][0]["attempts"], 0)
+        script.chmod(0o600)
+        code, result = self.run_event(self.event(event_id="not-executable"))
+        self.assertEqual(code, 2)
+        self.assertEqual(result["hooks"][0]["error_code"], "COMMAND_UNAVAILABLE")
+        self.assertEqual(result["hooks"][0]["attempts"], 1)
+
+    def test_completion_rejects_receipt_after_executable_permission_removed(self):
+        script = self.workspace / "check.py"
+        script.write_text("#!/bin/sh\nexit 0\n")
+        script.chmod(0o700)
+        completion = hook(id="completion", event=["task.completed"], handler="evidence",
+                          permissions=[], config={"required_hooks": ["check"]})
+        self.write_registry([hook(config={"argv": ["./check.py"], "read_only": True}), completion])
+        self.assertEqual(self.run_event()[0], 0)
+        complete = self.event(event_id="complete", event="task.completed", inputs={"evidence": ["event-1"]})
+        self.assertEqual(self.run_event(complete)[0], 0)
+        script.chmod(0o600)
+        complete["event_id"] = "complete-after-chmod"
+        code, result = self.run_event(complete)
+        self.assertEqual(code, 2)
+        self.assertEqual(result["hooks"][0]["error_code"], "MISSING_EVIDENCE")
+
+    def test_memory_lone_surrogates_rejected_before_claim_and_next_event_succeeds(self):
+        write = hook(id="memory", handler="memory.write", event=["memory.capture"],
+                     execution_mode="EXECUTE", permissions=["memory.write"], failure_policy="warn", config={})
+        self.write_registry([write])
+        for field in ("content", "source"):
+            for surrogate in ("\ud800", "\udfff"):
+                with self.subTest(field=field, surrogate=repr(surrogate)):
+                    self.state = self.root / f"{field}-{ord(surrogate)}.sqlite"
+                    memory = {"id": "decision-1", "content": "Decisão válida 🌎", "source": "fixture", "expected_version": 0}
+                    malformed = dict(memory, **{field: surrogate})
+                    code, result = self.run_event(self.event(event="memory.capture", inputs={"memory": malformed}),
+                                                  allow=("memory.write",))
+                    self.assertEqual(code, 3)
+                    self.assertEqual(result["error_code"], "INVALID_EVENT")
+                    self.assertFalse(self.state.exists(), "invalid event must not open state or claim workspace")
+                    code, result = self.run_event(self.event(event_id="valid-next", event="memory.capture", inputs={"memory": memory}),
+                                                  allow=("memory.write",))
+                    self.assertEqual(code, 0)
+                    self.assertEqual(result["hooks"][0]["output"]["version"], 1)
+                    with sqlite3.connect(self.state) as db:
+                        self.assertEqual(db.execute("SELECT content FROM memory").fetchone()[0], memory["content"])
+                        self.assertEqual(db.execute("SELECT count(*) FROM events WHERE status='running'").fetchone()[0], 0)
+
+    def test_lone_surrogate_path_rejected_before_opening_state(self):
+        code, result = self.run_event(self.event(files=["\ud800"]))
+        self.assertEqual(code, 3)
+        self.assertEqual(result["error_code"], "INVALID_EVENT")
+        self.assertFalse(self.state.exists())
+
     def test_command_mutating_declared_scope_cannot_create_evidence(self):
         (self.workspace / "check.py").write_text("from pathlib import Path\nPath('source.txt').write_text('changed')")
         code, result = self.run_event()

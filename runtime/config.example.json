@@ -1,0 +1,50 @@
+{
+  "providers": [
+    {
+      "id": "remote-a",
+      "kind": "openai_responses",
+      "enabled": false,
+      "max_parallel": 1,
+      "data_classes": ["public"],
+      "api_key_env": "OPENAI_API_KEY"
+    },
+    {
+      "id": "remote-b",
+      "kind": "anthropic_messages",
+      "enabled": false,
+      "max_parallel": 1,
+      "data_classes": ["public"],
+      "api_key_env": "ANTHROPIC_API_KEY",
+      "api_version": "2026-10-21"
+    }
+  ],
+  "models": [
+    {
+      "id": "configured-a",
+      "provider": "remote-a",
+      "model": "REPLACE_WITH_VERIFIED_MODEL_ID",
+      "capabilities": ["text", "reasoning", "code_review"],
+      "level": 2,
+      "context_tokens": 32000,
+      "max_output_tokens": 2000
+    },
+    {
+      "id": "configured-b",
+      "provider": "remote-b",
+      "model": "REPLACE_WITH_VERIFIED_MODEL_ID",
+      "capabilities": ["text", "reasoning", "code_review"],
+      "level": 3,
+      "context_tokens": 32000,
+      "max_output_tokens": 2000
+    }
+  ],
+  "routing": {"policy": "balanced", "order": ["configured-a", "configured-b"]},
+  "limits": {
+    "max_calls": 8,
+    "max_parallel": 2,
+    "timeout_seconds": 30,
+    "deadline_seconds": 90,
+    "max_prompt_bytes": 24000,
+    "max_output_tokens": 2000
+  }
+}

@@ -2,8 +2,10 @@
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import re
+import stat
 
 EVENTS = (
     "session.start", "session.resume", "session.end", "task.created", "spec.validated",
@@ -31,9 +33,19 @@ def identifier(value):
     return isinstance(value, str) and IDENTIFIER.fullmatch(value) is not None
 
 
+def utf8_string(value):
+    if not isinstance(value, str):
+        return False
+    try:
+        value.encode("utf-8")
+    except UnicodeEncodeError:
+        return False
+    return True
+
+
 def strings(value, limit=64):
     return (isinstance(value, list) and len(value) <= limit
-            and all(isinstance(v, str) and len(v) <= 2048 and "\x00" not in v for v in value))
+            and all(utf8_string(v) and len(v) <= 2048 and "\x00" not in v for v in value))
 
 
 def canonical(value):
@@ -144,8 +156,8 @@ def validate_event(event):
     if "memory" in inputs:
         m = inputs["memory"]
         require(isinstance(m, dict) and set(m) == {"id", "content", "source", "expected_version"}, code)
-        require(identifier(m["id"]) and isinstance(m["content"], str) and 0 < len(m["content"]) <= 4096, code)
-        require(isinstance(m["source"], str) and 0 < len(m["source"]) <= 512, code)
+        require(identifier(m["id"]) and utf8_string(m["content"]) and 0 < len(m["content"]) <= 4096, code)
+        require(utf8_string(m["source"]) and 0 < len(m["source"]) <= 512, code)
         require(type(m["expected_version"]) is int and 0 <= m["expected_version"] < 1000000, code)
 
 
@@ -164,7 +176,8 @@ def snapshot(workspace, files):
         require(target.is_file(), "INVALID_PATH")
         with target.open("rb") as stream:
             content = stream.read(2 * 1024 * 1024 + 1)
+            executable = stat.S_IMODE(os.fstat(stream.fileno()).st_mode) & 0o111
         total += len(content)
         require(len(content) <= 2 * 1024 * 1024 and total <= 16 * 1024 * 1024, "SCOPE_TOO_LARGE")
-        values.append([name, hashlib.sha256(content).hexdigest()])
+        values.append([name, hashlib.sha256(content).hexdigest(), executable])
     return digest(values) if values else None

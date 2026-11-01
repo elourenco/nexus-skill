@@ -72,6 +72,12 @@ O registro padrão atende a **este repositório documental**. Em um consumidor, 
 
 Comandos usam `argv`, sem shell ou interpolação do payload; `{python}` representa o interpretador corrente. `read_only` é declaração do operador, **não sandbox**: revise scripts e executáveis. `cache_seconds` é opcional, 0–300, default 0, somente para comandos de leitura.
 
+## Fronteira com memória de projeto
+
+Os handlers `memory.capture`, `memory.refresh`, `memory.checkpoint` e `memory.retrieve` operam somente a tabela de memória do SQLite deste executor, por workspace/ID. Essa tabela guarda conteúdo, fonte e versões para registros/checkpoints locais; não implementa scopes de projeto, provenance estruturada, expiração ou Context Packs. A [memória JSON](memory.md) continua a fonte canônica para conhecimento reutilizável do projeto e requer chamadas explícitas ao helper `memory.py`.
+
+Não há leitura, importação ou sincronização entre os stores. Um `memory.retrieve` com `records=[]` informa ausência apenas no SQLite selecionado; não comprova ausência no helper JSON. O caller deve escolher a rota e registrar qual store contém a evidência, sem duplicar registros como se fossem sincronizados.
+
 ## Perfis e workflow
 
 | Perfil | Seleção | Admissão por evento |
