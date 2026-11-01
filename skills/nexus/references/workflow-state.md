@@ -1,6 +1,6 @@
 # Contrato executável do Todo — versão 1
 
-Leia ao operar ou integrar o [workflow](workflow.md). Requer Python 3.10+ e filesystem local POSIX com `flock`, `fsync` e rename atômico; não usa dependências externas, servidor ou banco. Não há scheduler, SDK de provider, executor de hooks nem adapter nativo de Todo.
+Leia ao operar ou integrar o [workflow](workflow.md). Requer Python 3.10+ e filesystem local POSIX com `flock`, `fsync` e rename atômico; não usa dependências externas, servidor ou banco. Este componente não contém scheduler, SDK de provider ou adapter nativo de Todo. O executor opcional de hooks e o runtime textual de agentes são componentes separados, sem acionamento automático pelo workflow.
 
 ## Camadas
 

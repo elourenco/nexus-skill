@@ -101,11 +101,13 @@ O índice evita carregar corpos de todos os registros em cada consulta normal; c
 
 ## Legado e integrações
 
+O helper JSON é a fonte canônica de memória reutilizável de projeto descrita neste módulo. O SQLite opcional do executor de hooks mantém registros/checkpoints isolados por workspace/ID, sob seu próprio contrato. Não há importação, consulta cruzada, sincronização ou equivalência entre IDs/revisões dos stores. Escolha a rota de leitura/escrita explicitamente; `records=[]` em um hook indica ausência somente naquele SQLite, não ausência na memória JSON. Garantias de provenance estruturada, scope, expiração e Context Pack deste documento aplicam-se apenas ao helper JSON. Não grave o mesmo registro nos dois stores presumindo reconciliação automática.
+
 Nunca migrar automaticamente Markdown existente. Inventarie arquivos/IDs, preserve os originais e converta somente registros selecionados pelo template; referência/provenance apontam ao legado. Use ID estável e CAS=0; duplicata detectada exige reutilizar/reconciliar a existente. Sem fonte/data confiável, marque hipótese/baixa confiança e revalide. Campos extras são erro explícito, não são descartados. O template novo não modifica artefatos já criados pelo template antigo.
 
 | Consumidor | Integração nesta fase |
 | --- | --- |
-| [Hooks](hooks.md) | `context.load`: retrieval e revalidação; `memory.capture`: captura autorizada. Refresh ocorre durante revalidação. São chamadas manuais ao helper, sem registro/execução automática de hooks. |
+| [Hooks](hooks.md) | Para memória reutilizável de projeto, o host chama este helper JSON explicitamente. O executor local de hooks usa outro store SQLite para seus handlers `memory.*`; não chama este helper, não lê seus registros e não aplica seu contrato de scope/expiração/Context Pack. `context.load` no executor é recomendação, não retrieval do helper. |
 | [Workflow](workflow.md) | No início/retomada, pack Working/Project; antes da próxima ação, conferir estado real. Ao interromper, checkpoint com próxima ação e efeitos incertos. |
 | [Agents](agents.md) | Receber somente pack necessário; definir autor e ownership. CAS/lock não substituem coordenação de tarefas. |
 | Reviews | Recuperar decisões e ADRs dos contratos afetados; revalidar contra o diff e fontes atuais. |
