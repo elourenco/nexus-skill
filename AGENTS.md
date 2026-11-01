@@ -1,6 +1,6 @@
 # Desenvolvimento do NEXUS
 
-- Esta fase entrega uma skill documental. Runtime, dashboard e adapters exigem escopo próprio.
+- O núcleo é uma skill portátil em `skills/nexus/`, com helpers locais opt-in de memória, workflows e hooks. O runtime textual de agentes em `runtime/` tem escopo separado. Preserve essas fronteiras; novos runtimes, dashboards ou adapters exigem escopo próprio.
 - A fonte de verdade do pacote é `skills/nexus/`. Mantenha o ponto de entrada curto e referências sob demanda.
 - Não adicionar frameworks, serviços, dependências ou diretórios vazios sem consumidor real.
 - Mudanças devem considerar latência, throughput, concorrência e recuperação proporcionalmente ao comportamento alterado; não inventar medições.

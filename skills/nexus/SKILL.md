@@ -5,7 +5,7 @@ description: Use when a software engineering task needs coordinated specificatio
 
 # NEXUS Cognitive Engineering
 
-Transforme problemas de software em soluções sustentáveis com raciocínio crítico, execução ágil, validação e uso eficiente de IA. Identificador de ativação preservado: `nexus`.
+Transforme problemas de software em soluções sustentáveis com raciocínio crítico, execução ágil, validação e uso eficiente de IA. Identificador de ativação preservado: `nexus`. A skill é portátil; memória, workflow e hooks locais são opcionais, acionados explicitamente e sem integração automática entre si.
 
 Pense antes de codificar; desenhe proporcionalmente; reutilize antes de criar; execute incrementalmente; valide com evidências; otimize contexto; aprenda seletivamente; preserve o controle humano.
 
@@ -51,18 +51,18 @@ Dependências abaixo são condicionais ao uso; cada módulo fornece seu contrato
 | Módulo / caminho | Ativação e responsabilidade | Contrato fornecido | Dependências / limites |
 | --- | --- | --- | --- |
 | [Policies](references/policies.md) | Antes de alterar/verificar, delegar, escalar ou trabalhar com budget | Testes proporcionais, capacidade, consumo e contexto | Política do host; sem medição não garante teto monetário |
-| [Workflows](references/workflow.md) | Etapas, artefatos, tarefas ou retomada | Modos, estados, dependências, execução e recuperação | Policies; Templates conforme artefato; sem scheduler |
+| [Workflows](references/workflow.md) | Etapas, artefatos, tarefas ou retomada | Modos, estados, dependências e recuperação; [contrato da CLI/Todo](references/workflow-state.md) quando adotado | Policies; Templates conforme artefato; sem scheduler |
 | [Cognitive Principles](references/cognitive.md) | Ambiguidade, hipótese fraca ou decisão material | Premissas, alternativas e evidência contrária | Fontes atuais; não prova correção |
-| [Agents & Review](references/agents.md) | Delegação útil ou Review Council pertinente ao risco | Ownership, contratos de delegação e pilares de revisão | Policies e capacidades reais; papéis não são agentes instalados |
-| [Hooks](references/hooks.md) | Evento relevante ao modo, contexto, risco, permissão e budget | Mapa de eventos e gates | Capacidades verificadas; sem executor, checagem manual explícita |
-| [Memory](references/memory.md) | Retomada com histórico ou aprendizado duradouro | Proveniência, revalidação e isolamento | Fontes atuais; template de memória ao registrar; sem persistência automática |
-| Templates: [spec](assets/templates/spec.md), [plan](assets/templates/plan.md), [task](assets/templates/task.md), [ADR](assets/templates/adr.md), [memory](assets/templates/memory.md) | Somente ao produzir o artefato correspondente | Campos de aceite, rastreabilidade e evidência | Recebem fontes e IDs/revisões; sem carregar módulos de volta; arquivos não executam ações |
+| [Agents & Review](references/agents.md) | Delegação útil ou Review Council pertinente ao risco | Ownership, contratos de delegação e pilares de revisão | Policies e capacidades reais; runtime textual opcional, sem instalar agentes no host |
+| [Hooks](references/hooks.md) | Evento relevante ao modo, contexto, risco, permissão e budget | Eventos, permissões e recibos do executor local opt-in | Capacidades verificadas; sem executor, checagem manual explícita |
+| [Memory](references/memory.md) | Retomada com histórico ou aprendizado duradouro | Proveniência, revalidação e isolamento; helper JSON opt-in | Fontes atuais; JSON e memória SQLite dos hooks são stores separados; sem persistência automática |
+| Templates: [spec](assets/templates/spec.md), [plan](assets/templates/plan.md), [task](assets/templates/task.md), [ADR](assets/templates/adr.md), [memory](assets/templates/memory.md), [review](assets/templates/review.md), [evidence](assets/templates/evidence.md) | Somente ao produzir o artefato correspondente | Campos de aceite, rastreabilidade e evidência | Recebem fontes e IDs/revisões; sem carregar módulos de volta; arquivos não executam ações |
 
 ## Capacidades e progresso
 
 Use Policies para solicitar capacidades ao roteador/adapters configurados e verificados no host. Um único provider suficiente permite continuar; capacidade ausente exige fallback explícito ou bloqueio, sem simular troca de modelo. Teto rígido sem controle verificável exige renegociar escopo/limite antes do trabalho dependente; economia não elimina gates.
 
-Mostrar tarefas/plano/bloqueios/progresso, continuar implementação, revisar tarefa e retomar projeto consultam a fonte existente. Use a fonte persistente existente do host (Task Orchestrator, quando disponível). Esta fase não o fornece: sem fonte nativa, registros de tarefa são a autoridade e o todo do plano é sua visão, conforme Workflows. Reconcilie divergências antes de transições; não mantenha lista paralela no prompt nem presuma sincronização com todo nativo. Sem persistência, apresente o estado e declare que não foi salvo.
+Mostrar tarefas/plano/bloqueios/progresso, continuar implementação, revisar tarefa e retomar projeto consultam a fonte existente. Escolha uma única fonte persistente: a existente no host, o [orquestrador local opt-in](references/workflow-state.md), ou registros Markdown no modo documental. Ao adotar a CLI local, o store JSON é a autoridade e Markdown é projeção; sem executor, as TASKS Markdown são a autoridade, conforme Workflows. Não há migração ou sincronização automática entre fontes. Reconcilie divergências antes de transições; não mantenha lista paralela no prompt nem presuma sincronização com todo nativo. Sem persistência, apresente o estado e declare que não foi salvo.
 
 Resolva papéis em agentes disponíveis; delegue contratos resumidos com referências e ownership conforme Agents & Review. Sem delegação, execute sequencialmente e declare independência indisponível quando exigida. Hooks seleciona eventos pertinentes; falha do executor preserva gates. Verifique estado externo antes de retry de mutação incerta.
 
