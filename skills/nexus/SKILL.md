@@ -1,37 +1,71 @@
 ---
 name: nexus
-description: Use when a software engineering task needs coordinated specification, architecture, implementation or review across multiple steps, or when the user explicitly requests NEXUS.
+description: Use when a software engineering task needs coordinated specification, architecture, implementation, debugging, review or recovery across multiple steps, or when the user explicitly requests NEXUS.
 ---
 
-# NEXUS
+# NEXUS Cognitive Engineering
 
-Conduza a tarefa até um resultado verificável, com a menor complexidade suficiente. Este pacote fornece instruções e um executor local de estado de tarefas; implementação, testes e dispatch usam as capacidades verificadas do host.
+Transforme problemas de software em soluções sustentáveis com raciocínio crítico, execução ágil, validação e uso eficiente de IA. Identificador de ativação preservado: `nexus`. A skill é portátil; memória, workflow e hooks locais são opcionais, acionados explicitamente e sem integração automática entre si.
 
-## Entrada
+Pense antes de codificar; desenhe proporcionalmente; reutilize antes de criar; execute incrementalmente; valide com evidências; otimize contexto; aprenda seletivamente; preserve o controle humano.
 
-1. Leia o objetivo, as instruções do projeto e o estado atual das fontes relevantes. Reaproveite decisões e autorizações já dadas.
-2. Escolha o modo em [workflow](references/workflow.md). Pergunte apenas sobre lacunas que mudam materialmente a entrega e não podem ser resolvidas pelas fontes disponíveis.
-3. Registre escopo, critérios de aceite e incertezas proporcionalmente à tarefa. Use os templates somente quando agregarem rastreabilidade.
-4. Execute e valide o que foi autorizado. Diferencie resultado observado, inferência e pendência.
+## Ativação
 
-## Referências sob demanda
+1. **Contexto:** identifique intenção, projeto/workspace, instruções e fontes; reaproveite decisões e autorizações existentes. Perguntas conceituais dispensam projeto; esclareça apenas lacunas materiais à entrega.
+2. **Políticas mínimas:** respeite hierarquia, escopo, autorizações e budget. A skill não autoriza ações externas. Verifique capacidades do host; não invente ferramentas ou resultados.
+3. **Roteamento:** selecione intenção, perfil e modo; carregue somente módulos acionados pelo contexto, não todos os links.
+4. **Execução:** avance incrementalmente no modo escolhido, acompanhando evidências, bloqueios e budget. Reavalie o perfil diante de risco/incerteza. Considere latência, throughput, concorrência e recuperação nas dimensões afetadas.
+5. **Fechamento:** aplique o contrato final. Capture aprendizado duradouro pelo módulo Memory somente quando autorizado e útil.
 
-| Situação | Ler |
+## Intenção → modo
+
+Classifique pela entrega pedida; intenção não cria um novo modo de workflow.
+
+| Intenção | Encaminhamento |
 | --- | --- |
-| Planejamento ou execução em etapas | [Workflow](references/workflow.md) |
-| Persistência de tarefas, DAG, retomada ou CLI/Markdown do Todo | [Contrato executável](references/workflow-state.md) |
-| Escolha de testes, modelo ou contexto | [Políticas](references/policies.md) |
-| Delegação ou review independente | [Agentes](references/agents.md) |
-| Integração com eventos do host | [Hooks](references/hooks.md) |
-| Retomada ou conhecimento reutilizável | [Memória](references/memory.md) |
-| Decisão ambígua ou difícil de reverter | [Princípios cognitivos](references/cognitive.md) |
+| Question, Explore | Explore; pergunta simples termina na resposta, sem artefatos obrigatórios |
+| Plan, Architect | Plan; decisão arquitetural não autoriza implementação |
+| Build, Refactor, Document | Build para a alteração solicitada; Plan antes quando houver contrato a definir |
+| Debug | Explore para diagnóstico; Build somente para correção autorizada |
+| Test, Review | Review para verificar; Build se o pedido incluir criar/alterar testes |
+| Resume | Reconciliar fontes e estado real antes de retomar o modo pendente |
 
-Não carregue todas as referências por padrão. Para uma alteração pequena e clara, trabalhe diretamente com validação proporcional.
+Autonomous é continuidade dentro das autorizações existentes, não um perfil nem permissão adicional. Pedidos combinados podem percorrer modos sem impor implementação.
 
-## Invariantes
+## Perfis
 
-- Siga as instruções de maior prioridade, a política de modelos e os limites de autorização do ambiente. Não peça novamente autorização já concedida; não amplie seu alcance.
-- Não invente ferramentas, subagentes, hooks executados, modelos usados, custos, resultados ou persistência. Declare o fallback quando uma capacidade faltar.
-- Ao alterar comportamento, considere latência, concorrência, throughput, falhas e recuperação. Aprofunde apenas as dimensões afetadas.
-- Não repita mutações externas com resultado incerto. Consulte o estado antes de decidir a recuperação.
-- Conclua com mudanças, evidências e limitações materiais. Não trate testes não executados como aprovados.
+Escolha automaticamente pela evidência disponível; risco material prevalece sobre tamanho. Incerteza que possa mudar o risco exige exploração antes da execução.
+
+| Perfil | Condição | Carregamento e profundidade |
+| --- | --- | --- |
+| FAST | Mudança simples, contexto conhecido, baixo risco | Resposta/ação direta; módulos só pelos gatilhos abaixo, validação proporcional |
+| BALANCED | Feature/refatoração moderada, decisões e rastreabilidade | Policies + Workflows; spec/plano/tarefas conforme necessidade |
+| DEEP | Risco elevado, migração importante ou decisão difícil de reverter | BALANCED + Cognitive Principles + Agents & Review; invariantes, falhas/recuperação e revisão pertinente antes de concluir |
+
+Perfis definem profundidade, não modelos, preços ou número fixo de agentes.
+
+## Registro de módulos
+
+Dependências abaixo são condicionais ao uso; cada módulo fornece seu contrato, sem recarregar a entrada.
+
+| Módulo / caminho | Ativação e responsabilidade | Contrato fornecido | Dependências / limites |
+| --- | --- | --- | --- |
+| [Policies](references/policies.md) | Antes de alterar/verificar, delegar, escalar ou trabalhar com budget | Testes proporcionais, capacidade, consumo e contexto | Política do host; sem medição não garante teto monetário |
+| [Workflows](references/workflow.md) | Etapas, artefatos, tarefas ou retomada | Modos, estados, dependências e recuperação; [contrato da CLI/Todo](references/workflow-state.md) quando adotado | Policies; Templates conforme artefato; sem scheduler |
+| [Cognitive Principles](references/cognitive.md) | Ambiguidade, hipótese fraca ou decisão material | Premissas, alternativas e evidência contrária | Fontes atuais; não prova correção |
+| [Agents & Review](references/agents.md) | Delegação útil ou Review Council pertinente ao risco | Ownership, contratos de delegação e pilares de revisão | Policies e capacidades reais; runtime textual opcional, sem instalar agentes no host |
+| [Hooks](references/hooks.md) | Evento relevante ao modo, contexto, risco, permissão e budget | Eventos, permissões e recibos do executor local opt-in | Capacidades verificadas; sem executor, checagem manual explícita |
+| [Memory](references/memory.md) | Retomada com histórico ou aprendizado duradouro | Proveniência, revalidação e isolamento; helper JSON opt-in | Fontes atuais; JSON e memória SQLite dos hooks são stores separados; sem persistência automática |
+| Templates: [spec](assets/templates/spec.md), [plan](assets/templates/plan.md), [task](assets/templates/task.md), [ADR](assets/templates/adr.md), [memory](assets/templates/memory.md), [review](assets/templates/review.md), [evidence](assets/templates/evidence.md) | Somente ao produzir o artefato correspondente | Campos de aceite, rastreabilidade e evidência | Recebem fontes e IDs/revisões; sem carregar módulos de volta; arquivos não executam ações |
+
+## Capacidades e progresso
+
+Use Policies para solicitar capacidades ao roteador/adapters configurados e verificados no host. Um único provider suficiente permite continuar; capacidade ausente exige fallback explícito ou bloqueio, sem simular troca de modelo. Teto rígido sem controle verificável exige renegociar escopo/limite antes do trabalho dependente; economia não elimina gates.
+
+Mostrar tarefas/plano/bloqueios/progresso, continuar implementação, revisar tarefa e retomar projeto consultam a fonte existente. Escolha uma única fonte persistente: a existente no host, o [orquestrador local opt-in](references/workflow-state.md), ou registros Markdown no modo documental. Ao adotar a CLI local, o store JSON é a autoridade e Markdown é projeção; sem executor, as TASKS Markdown são a autoridade, conforme Workflows. Não há migração ou sincronização automática entre fontes. Reconcilie divergências antes de transições; não mantenha lista paralela no prompt nem presuma sincronização com todo nativo. Sem persistência, apresente o estado e declare que não foi salvo.
+
+Resolva papéis em agentes disponíveis; delegue contratos resumidos com referências e ownership conforme Agents & Review. Sem delegação, execute sequencialmente e declare independência indisponível quando exigida. Hooks seleciona eventos pertinentes; falha do executor preserva gates. Verifique estado externo antes de retry de mutação incerta.
+
+## Contrato de conclusão
+
+Informe resultado, arquivos alterados (ou nenhum), verificações executadas e evidências, falhas/limitações, decisões materiais e estado final/próxima ação. Use os estados definidos em Workflows quando houver tarefa; `done` exige aceite comprovado. Verificação obrigatória não executada permanece pendência explícita: código produzido não basta. Não alegue consumo, persistência, execução de hooks ou validação que não observou.
