@@ -1,0 +1,1075 @@
+{
+  "version": 1,
+  "hooks": [
+    {
+      "id": "event.observe",
+      "description": "event.observe",
+      "event": [
+        "session.start",
+        "session.resume",
+        "session.end",
+        "task.created",
+        "spec.validated",
+        "plan.ready",
+        "task.started",
+        "code.pre_edit",
+        "code.post_edit",
+        "code.pre_commit",
+        "test.completed",
+        "review.requested",
+        "review.completed",
+        "task.blocked",
+        "task.failed",
+        "task.completed",
+        "memory.retrieve",
+        "memory.capture",
+        "memory.refresh"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "FAST",
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "OBSERVE",
+      "priority": 0,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "observe",
+      "config": {}
+    },
+    {
+      "id": "context.load",
+      "description": "Leia as instruções do projeto e confira fontes atuais; recupere apenas IDs de memória pertinentes via memory.retrieve, com autorização.",
+      "event": [
+        "session.start",
+        "session.resume",
+        "task.started"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "FAST",
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Leia as instruções do projeto e confira fontes atuais; recupere apenas IDs de memória pertinentes via memory.retrieve, com autorização."
+      }
+    },
+    {
+      "id": "architecture.guard",
+      "description": "Identifique invariantes, compatibilidade, latência, throughput e recuperação; registre a decisão e solicite revisão proporcional ao risco. Esta recomendação não constitui um Architecture Gate aprovado.",
+      "event": [
+        "plan.ready",
+        "code.pre_edit"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": [
+          "contract_change",
+          "high_risk"
+        ]
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Identifique invariantes, compatibilidade, latência, throughput e recuperação; registre a decisão e solicite revisão proporcional ao risco. Esta recomendação não constitui um Architecture Gate aprovado."
+      }
+    },
+    {
+      "id": "reuse.scan",
+      "description": "Busque componentes e contratos existentes antes de adicionar abstrações ou dependências.",
+      "event": [
+        "plan.ready"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Busque componentes e contratos existentes antes de adicionar abstrações ou dependências."
+      }
+    },
+    {
+      "id": "test.select",
+      "description": "Selecione testes pelas invariantes alteradas e caminhos de falha; não repita verificações sem mudança relevante.",
+      "event": [
+        "plan.ready",
+        "code.pre_edit"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Selecione testes pelas invariantes alteradas e caminhos de falha; não repita verificações sem mudança relevante."
+      }
+    },
+    {
+      "id": "reasoning.challenge",
+      "description": "Qual premissa mudaria a decisão se estivesse errada? Explicite a evidência necessária.",
+      "event": [
+        "plan.ready",
+        "review.requested"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": [
+          "ambiguous",
+          "high_risk",
+          "contract_change"
+        ]
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Qual premissa mudaria a decisão se estivesse errada? Explicite a evidência necessária."
+      }
+    },
+    {
+      "id": "assumptions.validate",
+      "description": "Separe premissas verificadas de hipóteses; confira fontes e contratos mutáveis.",
+      "event": [
+        "plan.ready",
+        "review.requested"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": [
+          "ambiguous",
+          "high_risk",
+          "contract_change"
+        ]
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Separe premissas verificadas de hipóteses; confira fontes e contratos mutáveis."
+      }
+    },
+    {
+      "id": "bias.challenge",
+      "description": "Busque evidência contrária à alternativa preferida; registre limitações.",
+      "event": [
+        "plan.ready",
+        "review.requested"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "DEEP"
+        ],
+        "any_flags": [
+          "ambiguous",
+          "high_risk",
+          "contract_change"
+        ]
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Busque evidência contrária à alternativa preferida; registre limitações."
+      }
+    },
+    {
+      "id": "alternatives.compare",
+      "description": "Compare alternativas concretas por complexidade, custo operacional, latência e recuperação.",
+      "event": [
+        "plan.ready",
+        "review.requested"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "DEEP"
+        ],
+        "any_flags": [
+          "ambiguous",
+          "high_risk",
+          "contract_change"
+        ]
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Compare alternativas concretas por complexidade, custo operacional, latência e recuperação."
+      }
+    },
+    {
+      "id": "hypothesis.falsify",
+      "description": "Defina uma reprodução ou teste capaz de refutar a hipótese antes de outra tentativa.",
+      "event": [
+        "task.failed"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": [
+          "ambiguous",
+          "high_risk",
+          "contract_change"
+        ]
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Defina uma reprodução ou teste capaz de refutar a hipótese antes de outra tentativa."
+      }
+    },
+    {
+      "id": "complexity.reduce",
+      "description": "Remova camadas sem consumidor; escolha a menor solução que preserve as invariantes.",
+      "event": [
+        "plan.ready",
+        "review.requested"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": [
+          "ambiguous",
+          "high_risk",
+          "contract_change"
+        ]
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Remova camadas sem consumidor; escolha a menor solução que preserve as invariantes."
+      }
+    },
+    {
+      "id": "decision.capture",
+      "description": "Após revisão, registre decisão, fonte e condição de revalidação usando memory.capture autorizado.",
+      "event": [
+        "plan.ready",
+        "review.requested"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": [
+          "ambiguous",
+          "high_risk",
+          "contract_change"
+        ]
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Após revisão, registre decisão, fonte e condição de revalidação usando memory.capture autorizado."
+      }
+    },
+    {
+      "id": "model.route",
+      "description": "Use a política e capacidades verificadas do host para selecionar papel e modelo; não acione outro modelo automaticamente.",
+      "event": [
+        "review.requested"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Use a política e capacidades verificadas do host para selecionar papel e modelo; não acione outro modelo automaticamente."
+      }
+    },
+    {
+      "id": "budget.check",
+      "description": "Confira limites informados pelo usuário; declare orçamento monetário indisponível quando o host não o medir.",
+      "event": [
+        "task.started"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "FAST",
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Confira limites informados pelo usuário; declare orçamento monetário indisponível quando o host não o medir."
+      }
+    },
+    {
+      "id": "review.dispatch",
+      "description": "Defina pilares, ownership e fontes para revisão; a delegação exige ferramenta disponível e autorização do host.",
+      "event": [
+        "review.requested"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Defina pilares, ownership e fontes para revisão; a delegação exige ferramenta disponível e autorização do host."
+      }
+    },
+    {
+      "id": "failure.recover",
+      "description": "Reúna reprodução e causa; para efeitos incertos confira o estado antes de retry. Não libere claim ativo sem reconciliação.",
+      "event": [
+        "task.failed",
+        "task.blocked"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "FAST",
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ADVISE",
+      "priority": 40,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Reúna reprodução e causa; para efeitos incertos confira o estado antes de retry. Não libere claim ativo sem reconciliação."
+      }
+    },
+    {
+      "id": "validation.run",
+      "description": "validation.run",
+      "event": [
+        "code.post_edit"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "FAST",
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ENFORCE",
+      "priority": 60,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 5,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "block",
+      "permissions": [
+        "command:validation.run"
+      ],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "command",
+      "config": {
+        "argv": [
+          "{python}",
+          "scripts/validate.py"
+        ],
+        "read_only": true,
+        "cache_seconds": 60
+      }
+    },
+    {
+      "id": "lint.check",
+      "description": "Configure um handler command com o linter real do consumidor, revisão do argv e autorização command:lint.check; lint não foi executado por esta recomendação.",
+      "event": [
+        "code.post_edit"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ADVISE",
+      "priority": 50,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Configure um handler command com o linter real do consumidor, revisão do argv e autorização command:lint.check; lint não foi executado por esta recomendação."
+      }
+    },
+    {
+      "id": "typecheck.run",
+      "description": "Configure o typechecker real do consumidor e sua permissão; não inferir sucesso sem execução.",
+      "event": [
+        "code.post_edit"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ADVISE",
+      "priority": 50,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Configure o typechecker real do consumidor e sua permissão; não inferir sucesso sem execução."
+      }
+    },
+    {
+      "id": "security.scan",
+      "description": "Selecione e configure análise de segurança conforme o diff e os contratos; esta recomendação não é um scan executado.",
+      "event": [
+        "code.post_edit"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ADVISE",
+      "priority": 50,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Selecione e configure análise de segurança conforme o diff e os contratos; esta recomendação não é um scan executado."
+      }
+    },
+    {
+      "id": "completion.verify",
+      "description": "completion.verify",
+      "event": [
+        "task.completed",
+        "code.pre_commit"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "FAST",
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "ENFORCE",
+      "priority": 90,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "block",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "evidence",
+      "config": {
+        "required_hooks": [
+          "validation.run"
+        ]
+      }
+    },
+    {
+      "id": "memory.retrieve",
+      "description": "memory.retrieve",
+      "event": [
+        "memory.retrieve"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "FAST",
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "OBSERVE",
+      "priority": 20,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [
+        "memory.read"
+      ],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "memory.read",
+      "config": {}
+    },
+    {
+      "id": "memory.capture",
+      "description": "memory.capture",
+      "event": [
+        "memory.capture"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "FAST",
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "EXECUTE",
+      "priority": 80,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [
+        "memory.write"
+      ],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "memory.write",
+      "config": {}
+    },
+    {
+      "id": "memory.refresh",
+      "description": "memory.refresh",
+      "event": [
+        "memory.refresh"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "FAST",
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": []
+      },
+      "execution_mode": "EXECUTE",
+      "priority": 80,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [
+        "memory.write"
+      ],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "memory.write",
+      "config": {}
+    },
+    {
+      "id": "memory.checkpoint",
+      "description": "memory.checkpoint",
+      "event": [
+        "task.blocked",
+        "task.failed",
+        "session.end"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "FAST",
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": [
+          "checkpoint"
+        ]
+      },
+      "execution_mode": "EXECUTE",
+      "priority": 80,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [
+        "memory.write"
+      ],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "memory.write",
+      "config": {}
+    },
+    {
+      "id": "memory.after_completion",
+      "description": "Se houver aprendizado autorizado, envie memory.capture ou memory.refresh com fonte e versão esperada. O executor não infere nem salva a conversa.",
+      "event": [
+        "task.completed"
+      ],
+      "trigger_conditions": {
+        "profiles": [
+          "BALANCED",
+          "DEEP"
+        ],
+        "any_flags": [
+          "decision"
+        ]
+      },
+      "execution_mode": "ADVISE",
+      "priority": 95,
+      "inputs": [
+        "event envelope"
+      ],
+      "outputs": [
+        "status",
+        "gate_impact",
+        "output"
+      ],
+      "timeout": 1,
+      "retry_policy": {
+        "max_attempts": 1
+      },
+      "failure_policy": "warn",
+      "permissions": [],
+      "enabled": true,
+      "supported_adapters": [
+        "local"
+      ],
+      "handler": "advice",
+      "config": {
+        "prompt": "Se houver aprendizado autorizado, envie memory.capture ou memory.refresh com fonte e versão esperada. O executor não infere nem salva a conversa."
+      }
+    }
+  ]
+}

@@ -17,3 +17,9 @@ jobs:
           persist-credentials: false
       - name: Validate skill and local references
         run: python3 scripts/validate.py
+      - name: Test optional text runtime with local HTTP fixtures
+        run: python3 -m unittest discover -s runtime/tests -v
+      - name: Validate optional hook registry
+        run: python3 skills/nexus/scripts/hook_engine.py validate
+      - name: Test local memory, workflows and hooks
+        run: python3 -m unittest discover -s tests -v
