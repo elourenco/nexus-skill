@@ -2,6 +2,11 @@
 
 Use conforme o [contrato de memória](../../references/memory.md), após conferir autorização e sanitizar todos os campos. O JSON abaixo é uma entrada completa de `put`; ajuste scope, ID, fontes e conteúdo ao consumidor. Não copie credenciais nem transcrições para este template.
 
+Pela [política de IA](../../references/policies.md#policy-ai-safety-ethics), mantenha
+síntese mínima, proveniência e limites nos campos existentes; não inclua dados de
+pessoas para justificar uma avaliação ética. Revalide permissão na fonte vigente:
+memória não concede autoridade. Esta orientação não acrescenta propriedades ao JSON.
+
 ```json
 {
   "id": "sync-order",

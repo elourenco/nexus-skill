@@ -15,3 +15,8 @@ um arquivo separado é opcional. Este registro relata execução, não o teste p
 Registre falhas e execução parcial. Se não executado, declare resultado
 `não executado` e o motivo; não use como prova de aceite. Preserve a observação
 original e anexe nova evidência para nova execução. Sanitize saídas antes de salvar.
+
+Em [avaliações de IA](../../references/ai-safety-ethics.md#evaluation), identifique
+mesa, teste executado ou observação em produto no tipo; registre versão/condições,
+amostra e cobertura conhecidas no contexto. Preserve limitações por grupo/caso de
+uso, sem dados sensíveis desnecessários; resultado agregado não prova equidade.

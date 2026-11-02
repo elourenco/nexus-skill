@@ -114,6 +114,12 @@ antes de retry. Reabrir uma decisão não autoriza repetir efeitos.
 
 ### `bias.challenge`
 
+Este procedimento questiona vieses de raciocínio na decisão de engenharia.
+Não comprova equidade de um produto: impactos assimétricos sobre pessoas exigem
+a [avaliação pertinente ao domínio](ai-safety-ethics.md#ai-products), dados permitidos
+e limites explícitos. Na comparação de alternativas, inclua afetados, finalidade
+e menor exposição quando materiais; não infira dano ou neutralidade sem evidência.
+
 - **Trigger:** justificativa baseada em familiaridade, primeira proposta ou seleção apenas de evidências favoráveis.
 - **Inputs:** comuns + opção preferida e justificativa observável.
 - **Procedimento:** procure contraevidência e teste a adequação de uma alternativa real; confronte o padrão familiar com a restrição atual. Reutilize comparação já feita.

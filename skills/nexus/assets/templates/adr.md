@@ -16,3 +16,8 @@ duradoura. Use [referências e validade](contracts.md), sem duplicar a SPEC.
 - Compatibilidade e reversibilidade:
 - Evidências e condição para reavaliar:
 - Substituído por (ID/link, quando superseded):
+
+Em decisões de [produto com IA](../../references/ai-safety-ethics.md#ai-products),
+inclua nas consequências os afetados e danos pertinentes, nas alternativas menor
+exposição/autonomia, e na decisão os responsáveis e controles. Em evidências,
+registre limites da avaliação; em recuperação, capacidade de intervir e corrigir.

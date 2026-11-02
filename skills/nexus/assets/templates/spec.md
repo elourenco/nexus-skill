@@ -24,3 +24,8 @@ Use [contratos e perfis](contracts.md); preencha somente a profundidade necessá
 Em BALANCED, agrupe campos narrativos em parágrafos curtos. Em DEEP, detalhe
 contratos, alternativas ainda abertas e cenários de falha. Registre “não se aplica”
 com motivo para dimensões sem impacto; não invente metas ou medições.
+
+Pelos [gatilhos de IA](../../references/ai-safety-ethics.md#risk-triggers), inclua
+nos campos de contexto/risco pessoas afetadas e danos; em contratos, dados/destinos
+permitidos, controles e supervisão; em aceite, critérios de avaliação e contestação
+pertinentes. Registre limitação de evidência sem presumir equidade ou conformidade.

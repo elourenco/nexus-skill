@@ -31,6 +31,12 @@ Uma única fonte é autoridade; sem persistência, o relato no chat não é esta
 
 Aplique [testes proporcionais](policies.md#policy-testing) e [review pertinente](agents.md#review-council-adaptativo). Reutilize evidência somente quando inputs, revisão, configuração, run/geração aplicáveis e ambiente permanecerem válidos; não execute duas vezes o mesmo check válido só por atravessar uma etapa. Mudança relevante invalida a cobertura afetada; check obrigatório ausente impede conclusão. O executor preserva recibos, gerações e revalidação de `complete`/`deliver`: [gates executáveis](workflow-state.md#testes-adaptativos-e-gates).
 
+Critérios pertinentes de [segurança e ética](policies.md#policy-ai-safety-ethics)
+entram no aceite/risco/evidência existentes. A aplicação é responsabilidade do
+agente e revisor: o executor não interpreta requisitos éticos em prosa nem instala
+controles de produto. Preserve enums e schemas; registre bloqueio somente da ação
+dependente de controle indispensável. Concluir análise não aprova o objeto analisado.
+
 ## Dispatch e execução persistente
 
 O agente atual é padrão; delegação depende de benefício, capacidades e autorização do host. A CLI não despacha providers: [registro, dispatch, ack e resultado](workflow-state.md#dispatch-e-execução-persistente) precisam das ferramentas reais do host. Não repita mutação externa de resultado incerto.
