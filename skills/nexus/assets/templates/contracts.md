@@ -23,6 +23,13 @@ metadados da skill e links, não esquema dos artefatos. Os contratos Markdown s�
 
 ## Identidade e referências
 
+Para [segurança e ética em IA](../../references/policies.md#policy-ai-safety-ethics),
+use os campos existentes: risco/impacto e afetados, controle e responsável,
+aceite, evidência e limitações. Preencha apenas dimensões pertinentes ao caso,
+referenciando `nexus.policies` revisão 2; não copie a política nem imponha um
+formulário ético completo a FAST. Regras documentais novas não acrescentam campos
+ao JSON dos helpers nem alteram estados ou esta versão do contrato de artefatos.
+
 - Cada artefato tem ID estável no escopo do projeto. Preserve IDs existentes,
   inclusive formatos diferentes; para novos use, por exemplo, `SPEC-001`,
   `PLAN-001`, `TASK-001`, `REV-001`, `EVD-001`, `ADR-001`, `MEM-001`.

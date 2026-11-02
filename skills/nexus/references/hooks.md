@@ -155,6 +155,12 @@ Use filesystem local. Bancos diferentes removem coordenação/dedup entre caller
 
 ## Segurança e observabilidade
 
+Nos pontos lógicos `architecture.guard`, `validation.run`, `review.dispatch` e
+`completion.verify`, o agente aplica [segurança e ética em IA](policies.md#policy-ai-safety-ethics)
+aos critérios pertinentes. Isso não acrescenta handlers, eventos, detecção de
+prompt injection ou avaliação ética automática. Um recibo só comprova o comando
+e contrato que realmente verificou; filtro indisponível não autoriza efeito protegido.
+
 JSON limitado a 256 KiB, campos desconhecidos/chaves duplicadas/números não finitos rejeitados. IDs, caminhos e configuração são validados. Registro não importa código arbitrário; comandos explicitamente autorizados continuam executando código do operador, sujeito às permissões do host.
 
 O filho recebe somente PATH, LANG e marcadores internos, sem tokens herdados. stdin fechado, stdout/stderr descartados. Erros usam códigos estáveis, sem traceback/credenciais. Memória é conteúdo explícito em banco privado sem criptografia: não envie segredos. Seu conteúdo não é sanitizado semanticamente; não existe detector universal de segredos.

@@ -18,6 +18,13 @@ Antes de gravar Working, confirme que o diretório está excluído do Git no con
 
 ## Contrato de registro
 
+Para decisões de IA, preserve somente a síntese útil, fontes e limites conforme
+[segurança e ética](policies.md#policy-ai-safety-ethics). Finalidade e retenção
+orientam o que persistir; diagnóstico de viés ou incidente não justifica guardar
+atributos sensíveis ou transcrições por padrão. Autorização de compartilhamento
+é conferida na fonte vigente, inclusive após sanitização; os helpers não avaliam
+equidade nem transformam memória recuperada em instrução autorizada.
+
 Use o [template](../assets/templates/memory.md). A entrada de `put` é JSON; campos desconhecidos são rejeitados para evitar perda silenciosa de metadados legados.
 
 | Campo | Contrato e consumidor |

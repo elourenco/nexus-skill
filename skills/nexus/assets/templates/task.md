@@ -22,6 +22,11 @@ atualizações. O núcleo abaixo também atende FAST; SPEC/PLAN ausentes usam
 - Evidências (ID, procedimento, resultado real, data, limitações ou link):
 - Impedimento ou próxima ação:
 
+Quando pertinente, descreva em risco/aceite/evidência o impacto humano ou a fronteira
+de IA afetada, o controle e responsável, a verificação e seu limite, conforme
+[Policies](../../references/policies.md#policy-ai-safety-ethics). FAST continua
+enxuto: sem SPEC/ADR ou relatório ético adicional por uma alteração trivial.
+
 Com executor opt-in, esta TASK é documentação; estado, reservas e transições pertencem ao store JSON e à CLI. Consulte [contrato executável](../../references/workflow-state.md); não use a revisão Markdown como `expected_revision` do store.
 
 ## Execução persistente — adicionar quando houver execução ou retomada

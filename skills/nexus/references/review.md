@@ -33,6 +33,13 @@ arquivo, use a [coleta opcional](review-package.md).
 
 ## Entrega e limite
 
+Pelos [gatilhos de segurança e ética](ai-safety-ethics.md#risk-triggers), confira
+fronteiras/dados, autonomia e impacto humano no alvo real. Em produto com impacto
+material, examine responsável capaz de intervir, revisão/contestação, transparência,
+acessibilidade e erros assimétricos pertinentes. Diferencie controle recomendado,
+implementado e verificado; amostra insuficiente mantém a conclusão limitada.
+Avaliação de mesa não comprova resistência a ataques nem equidade em produção.
+
 Entregue primeiro achados priorizados ou a ausência de achados demonstrados,
 seguida de cobertura, verificações, limitações e decisão. Use o
 [template de review](../assets/templates/review.md) quando um registro for necessário.

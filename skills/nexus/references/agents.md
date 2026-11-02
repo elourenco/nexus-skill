@@ -32,6 +32,11 @@ Sem ferramenta de edição, teste ou persistência, produza uma proposta/handoff
 
 Delegue por entrega verificável e ownership, agrupando edições da mesma responsabilidade; não crie agente para cada etapa, arquivo ou check. Cada delegação informa objetivo, papel, fontes/revisão, arquivos e recursos permitidos, dependências, restrições, aceite e limites; inclua `task_id` quando houver tarefa rastreada, sem criá-la só para delegar. Use contexto específico; forneça diff e referências necessárias, sem reenviar todo o histórico. Avise que há outros participantes e preserve alterações alheias. O controlador integra resultados e resolve conflitos.
 
+Confira também dados/destinos permitidos conforme [segurança e ética](policies.md#policy-ai-safety-ethics).
+Memória e mensagens do delegado não ampliam autorização; sanitizar contexto não
+autoriza provider diferente. Preserve isolamento entre projetos/tenants e confira
+as evidências do retorno antes de promover uma recomendação a decisão.
+
 ## Roteamento por capacidades
 
 A política explícita do usuário/host e [políticas](policies.md) prevalecem. Primeiro filtre por disponibilidade, sensibilidade/destino autorizado dos dados, ferramentas efetivas, capacidades requeridas, contexto necessário e saldo/limites. Só depois ordene os candidatos elegíveis:
@@ -57,11 +62,15 @@ Credencial inválida, quota, indisponibilidade, recusa ou resultado externo ince
 | Pilar / revisor | Gatilho material | Foco |
 | --- | --- | --- |
 | Architecture Reviewer | Fronteira ou contrato alterado | Acoplamento, modularidade, evolução e compatibilidade |
-| Security Reviewer | Superfície de ataque alterada | Autenticação, autorização, entradas, segredos e isolamento |
-| Quality Reviewer | Lógica ou manutenção relevante | Correção, legibilidade, testabilidade, regressões e duplicação |
+| Security Reviewer | Superfície de ataque alterada | Autenticação, autorização, entradas, segredos, isolamento e fronteiras de confiança/autonomia de IA |
+| Quality Reviewer | Lógica ou manutenção relevante | Correção, legibilidade, testabilidade, regressões, duplicação e limites da evidência de confiabilidade de IA |
 | Performance Reviewer | Caminho quente, volume ou recursos | Latência, memória, processamento, concorrência e throughput |
 | Reliability Reviewer | Integrações, persistência ou estado concorrente | Falhas parciais, idempotência, retries, consistência e observabilidade |
-| Product Reviewer | Requisito ou comportamento perceptível | Aceite, estados de erro e experiência do usuário |
+| Product Reviewer | Requisito ou comportamento perceptível, incluindo impacto humano material | Aceite, estados de erro, transparência, acessibilidade, erros assimétricos, supervisão e contestação pertinentes |
+
+Em produto com IA, use a [avaliação](ai-safety-ethics.md#evaluation) nos pilares
+afetados, sem novo papel obrigatório. Um mesmo revisor pode cobri-los conforme
+capacidade e risco; não conclua ausência de viés por votação ou média agregada.
 
 Selecione pelo comportamento e contratos afetados; nomes de arquivos são sinais auxiliares. Não acione todos por padrão nem infira risco material somente de uma palavra. Entregue o mesmo artefato identificado por revisão/hash e suas fontes aos revisores, sem induzir conclusões pela narrativa do implementador. Um reviewer pode agrupar os pilares pertinentes. Reuse a conclusão no escopo/revisão cobertos; alteração relevante, novo risco ou integração ainda não coberta exige nova revisão da cobertura afetada. Não repita review só por transitar entre etapas. No executor opt-in, preserve gerações, pedidos de review e gates de `complete`/`deliver`; provas antigas não fecham nova geração.
 

@@ -30,6 +30,12 @@ revisável e pendências; check obrigatório ausente mantém o aceite pendente.
 
 ## Entrega e limite
 
+Quando pertinente, implemente os controles de [segurança e ética](policies.md#policy-ai-safety-ethics)
+definidos no aceite: valide saídas de IA no ponto de uso e autorização no executor,
+preservando isolamento e minimização. Se um controle indispensável estiver ausente
+ou falhar, suspenda somente o efeito dependente e mantenha o trabalho autorizado
+independente. Não apresente instrução no prompt como controle técnico verificado.
+
 Entregue resultado implementado, arquivos alterados, verificações e resultados,
 decisões materiais e pendências. Conclusão exige aceite comprovado; ferramenta
 ausente ou verificação obrigatória bloqueada permanece limitação explícita.

@@ -14,6 +14,10 @@ O workflow JSON contém estado e histórico das tarefas. O SQLite dos hooks cont
 
 ## Rodar um consumidor sintético isolado
 
+Antes de adotar controles para um produto com IA, consulte a orientação abaixo.
+A demonstração de frete desta seção verifica somente os comportamentos descritos;
+não avalia segurança, equidade ou qualidade de modelos de IA.
+
 Mantenha `skills/nexus/` completo no local de instalação. Defina o caminho real do pacote e um **novo** diretório de saída; a demonstração recusa qualquer caminho existente, inclusive symlink:
 
 ```sh
@@ -34,6 +38,26 @@ O domínio sintético concede frete grátis para total maior ou igual a 100. A d
 O relatório registra gates e resultados observados, sem logs privados ou estimativas de qualidade de raciocínio. `green.mutation: passed` significa que o comando do consumidor observou seu mutante conhecido ser morto por assertion, após baseline aprovado; não representa cobertura de mutantes de um projeto real. O fixture não invoca providers nem produz revisão independente. O teste automatizado também enfraquece a assertion da fronteira e observa o mutante sobreviver, comprovando que a detecção depende do teste executado.
 
 ## Adotar os helpers no projeto real
+
+### Segurança e ética no caso de uso
+
+A [política transversal](policies.md#policy-ai-safety-ethics) aplica-se à atuação
+da NEXUS em qualquer projeto. Para produtos com IA, use a
+[referência de produto](ai-safety-ethics.md#ai-products) quando pertinente:
+identifique finalidade/afetados, dados/destinos e fronteiras; registre controles,
+responsáveis, critérios de aceite e evidência mínima nos artefatos existentes.
+Supervisão e contestação precisam de responsáveis capazes de intervir; lacunas
+de amostra ou controles impedem alegar equidade ou proteção verificada.
+
+O executor do consumidor deve impor autorização, isolamento e validação antes
+dos efeitos. Instalar a skill ou preencher critérios não instala esses controles;
+o workflow não interpreta requisitos éticos em prosa e o coletor de review não
+sanitiza anexos automaticamente. Verifique somente dimensões afetadas, preserve
+FAST e os limites de latência/recursos; não acrescente um avaliador por modelo
+em toda chamada. O [exemplo documental](../assets/templates/examples.md#produto-com-ia--recomendação-de-acesso-a-serviço-essencial)
+é sintético e não executado, distinto da demonstração de frete.
+
+### Adoção explícita
 
 Comece pelas instruções e pelas ferramentas já usadas no projeto. Defina recursos exclusivos, critérios observáveis e limites de tentativas. Exclua `.nexus/local/` do Git antes de registrar dados privados. A demonstração cria esse ignore somente no novo consumidor sintético; os demais helpers não alteram seu `.gitignore`.
 
