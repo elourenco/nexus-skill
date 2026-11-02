@@ -17,7 +17,7 @@ Se uma decisão depender de instruções incompatíveis que a hierarquia não re
 ## Princípios de engenharia
 
 - Comece pela menor solução que preserve contratos e invariantes. Procure implementação e padrões existentes antes de criar abstrações, dependências ou serviços; reutilize o que tiver semântica compatível.
-- Evolua em incrementos revisáveis. Separe domínios, responsabilidades e ownership nos pontos em que protegem contratos, evitando fragmentação sem consumidor real.
+- Agrupe edições relacionadas em incrementos revisáveis antes dos checks, preservando pontos intermediários exigidos por TDD, caracterização ou risco. Separe domínios, responsabilidades e ownership nos pontos em que protegem contratos, evitando fragmentação sem consumidor real.
 - Dimensione arquitetura, documentação e observabilidade pelo impacto. Defina como detectar falhas relevantes, com correlação e dados sanitizados quando necessários; não registre payloads privados por conveniência.
 - Preserve manutenção e reversibilidade: explicite compatibilidade, recuperação e efeitos que rollback não desfaz. Revalide estado compartilhado antes de agir e preserve alterações alheias.
 - Considere latência, throughput, concorrência, falhas e recuperação nas dimensões afetadas. Defina invariantes de interleaving, idempotência e limites de recursos quando houver estado compartilhado ou I/O; não acrescente infraestrutura distribuída a operações locais sem necessidade.
@@ -32,7 +32,7 @@ de estado justificado. Carregue somente nesse contexto; não imponha novas camad
 
 ## Perfis de execução
 
-Perfil define profundidade; o modo de [workflow](workflow.md) define a atividade. Por exemplo, Build pode usar qualquer perfil. Escolha pelo comportamento alterado, alcance, incerteza e reversibilidade, não pela quantidade de linhas ou por palavras como “pagamento”.
+Perfil define profundidade de análise e validação; o modo de [workflow](workflow.md) define a atividade. Acompanhamento direto ou rastreado é escolha documental independente: direto admite chat/diff/evidência, sem TASK/SPEC/PLAN ou estado obrigatório. Reutilize a fonte existente no rastreado; crie persistência somente se útil ou solicitada. Ao adotar o executor opt-in, seus contratos e gates permanecem obrigatórios. Por exemplo, Build pode usar qualquer perfil. Escolha pelo comportamento alterado, alcance, incerteza e reversibilidade, não pela quantidade de linhas ou por palavras como “pagamento”.
 
 | Perfil | Classificação explícita | Execução e review |
 | --- | --- | --- |
@@ -59,7 +59,7 @@ Informação insuficiente impede assumir FAST: investigue em BALANCED e classifi
 
 As estratégias se combinam. TDD é preferencial para invariantes críticas, não universal; política específica do projeto prevalece. Quando test-first não for viável, registre impedimento, risco e verificação alternativa antes de implementar, sem dispensar um gate obrigatório. Caracterização registra o legado, não legitima um defeito de segurança como aceite.
 
-Não use quantidade de testes como prova de qualidade, nem escreva testes que apenas espelhem a implementação. Não amplie ou repita a suíte sem mudança, falha ou dúvida concreta. Para performance, compare cargas equivalentes e registre ambiente, amostra, latência e throughput; sem medição, declare hipótese. Cubra saturação, timeout, cancelamento e backpressure quando pertinentes.
+Não use quantidade de testes como prova de qualidade, nem escreva testes que apenas espelhem a implementação. Não amplie ou repita a suíte sem mudança, falha ou dúvida concreta. Um check válido pode atender etapas distintas se inputs, revisão, configuração, run/geração aplicáveis e ambiente forem os mesmos; não execute duas vezes só para cumprir rituais. Preserve revalidação de `complete`/`deliver` e as exigências de recibos do executor, sem alterar cache ou engine. Para performance, compare cargas equivalentes e registre ambiente, amostra, latência e throughput; sem medição, declare hipótese. Cubra saturação, timeout, cancelamento e backpressure quando pertinentes.
 
 Quando testes precisarem demonstrar sensibilidade a defeitos em lógica crítica,
 use [checks de qualidade seletivos](quality-checks.md): mutation testing no escopo
@@ -92,9 +92,9 @@ Escalar não resolve credencial inválida, ambiente quebrado ou contexto ausente
 
 ## Economia de contexto
 
-- Busque símbolos, contratos e arquivos relevantes antes da leitura integral; depois leia o suficiente para entender o comportamento afetado. Carregue referências progressivamente, sem omitir contratos críticos para economizar tokens.
+- Reutilize leituras válidas para a mesma revisão e contexto; consulte apenas seções pertinentes de autoridade, perfil, testes e conclusão, além de módulos acionados. Busque símbolos, contratos e arquivos relevantes antes da leitura integral; depois leia o suficiente para entender o comportamento afetado. Carregue referências progressivamente, sem omitir contratos críticos para economizar tokens.
 - Prefira incrementos pequenos. Delegue objetivo, fontes, ownership, restrições e aceite, evitando reenviar histórico completo. Mantenha um responsável por recurso; paralelize apenas trabalho independente com isolamento e limite de concorrência conhecido. Sem isso, execute sequencialmente.
-- Preserve em resumo estruturado: objetivo/escopo, decisões e fontes, revisão dos artefatos, pendências, hipóteses descartadas, tentativas, consumo conhecido, limites e próxima ação. Use os campos existentes da [tarefa](../assets/templates/task.md); persistência segue [memória](memory.md) e a política do host.
+- Preserve em resumo estruturado: objetivo/escopo, decisões e fontes, revisão dos artefatos, pendências, hipóteses descartadas, tentativas, consumo conhecido, limites e próxima ação. Quando adotar registro documental rastreado, use os campos da [tarefa](../assets/templates/task.md); na execução direta, o relato pode bastar. Persistência segue [memória](memory.md) e a política do host.
 - Reutilize evidências e cache disponíveis somente com origem, escopo, versão e condição de validade compatíveis. Revalide estado mutável antes de ações relevantes; cache não é prova de autorização atual. Não compartilhe cache privado entre projetos/providers sem autorização, nem afirme cache hit ou economia sem medição.
 
 ### Limites suaves e rígidos
@@ -146,7 +146,7 @@ Em tarefa exclusivamente de análise/review, o aceite pode ser identificar e rep
 
 Uma verificação obrigatória bloqueada impede DONE; marcá-la como bloqueada torna o relatório honesto, não a tarefa concluída. Se houver múltiplas condições, registre todas por parte afetada; como resultado agregado use FAILED para falha observada, senão BLOCKED para impedimento indispensável, senão NEEDS_REVIEW para julgamento pendente. DONE só é válido quando todas as partes do escopo atual satisfazem seus critérios. Exceções válidas seguem [autoridade](#policy-authority), com aceite revisado e risco residual visível.
 
-Preserve os estados de ciclo de vida de [workflow](workflow.md). Resultado é um campo adicional, não uma substituição: DONE permite `done`; BLOCKED usa `blocked`; No modo documental, FAILED/NEEDS_REVIEW mantêm `running` enquanto há correção/review autorizado em curso, ou `blocked` ao aguardar dependência/decisão. No executor opt-in, implementação em curso usa `running`, testes/review após resultado usam `validating`, e falha de execução usa `blocked`; as operações e reservas seguem o [contrato executável](workflow-state.md), sem alterar estado por edição Markdown. Registre o resultado no impedimento/evidências da tarefa. `pending`, `ready` e `cancelled` continuam válidos. No cancelamento, registre motivo e efeitos conhecidos, preservando resultados já observados; se nenhum resultado tiver sido avaliado, deixe-o sem atribuição. Não force DONE ou FAILED apenas pelo cancelamento, que também não implica reversão de efeitos.
+Execução direta relata resultado e evidências sem criar estados. Quando houver acompanhamento rastreado, preserve os estados da fonte adotada; os contratos NEXUS abaixo aplicam-se aos templates documentais e à CLI. Resultado é um campo adicional, não uma substituição: DONE permite `done`; BLOCKED usa `blocked`; No modo documental, FAILED/NEEDS_REVIEW mantêm `running` enquanto há correção/review autorizado em curso, ou `blocked` ao aguardar dependência/decisão. No executor opt-in, implementação em curso usa `running`, testes/review após resultado usam `validating`, e falha de execução usa `blocked`; as operações e reservas seguem o [contrato executável](workflow-state.md), sem alterar estado por edição Markdown. Registre o resultado no impedimento/evidências da tarefa. `pending`, `ready` e `cancelled` continuam válidos. No cancelamento, registre motivo e efeitos conhecidos, preservando resultados já observados; se nenhum resultado tiver sido avaliado, deixe-o sem atribuição. Não force DONE ou FAILED apenas pelo cancelamento, que também não implica reversão de efeitos.
 
 <a id="policy-contract"></a>
 
@@ -154,7 +154,7 @@ Preserve os estados de ciclo de vida de [workflow](workflow.md). Resultado é um
 
 Identificador documental: `nexus.policies`; revisão: `1`. Os anchors `policy-*` e os títulos existentes “Testes adaptativos”, “Roteamento” e “Economia de contexto” são pontos de consulta preservados. Mudanças incompatíveis nesse contrato exigem revisar consumidores e incrementar a revisão. Não há schema executável ou enforcement automático.
 
-Entrada mínima da decisão: objetivo/aceite, fontes de autoridade, escopo/ownership, risco e reversibilidade, capacidades verificadas, limites e evidências atuais. Informação ausente fica explícita; se indispensável, bloqueia a ação correspondente. Saída mínima: perfil e motivo, classe da próxima operação, regras aplicadas, testes/review, rota disponível, limites/consumo/tentativas, evidências e resultado ou próxima ação. Para FAST, isso pode caber no relato e diff; não exija preencher artefatos sem utilidade.
+Entrada mínima da decisão: objetivo/aceite, fontes de autoridade, escopo/ownership, risco e reversibilidade, capacidades verificadas, limites e evidências atuais. Informação ausente fica explícita; se indispensável, bloqueia a ação correspondente. Saída mínima: perfil e motivo, classe da próxima operação, regras aplicadas, testes/review, rota disponível, limites/consumo/tentativas, evidências e resultado ou próxima ação. Na execução direta de qualquer perfil, isso pode caber no relato e diff; não exija preencher artefatos sem utilidade.
 
 | Consumidor existente | Consulta canônica e aplicação |
 | --- | --- |

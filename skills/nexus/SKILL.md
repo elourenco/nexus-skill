@@ -15,13 +15,13 @@ Ao executar helpers de uma instalação, resolva os scripts a partir do caminho 
 
 1. **Contexto:** identifique intenção, projeto/workspace, instruções e fontes; reaproveite decisões e autorizações existentes. Perguntas conceituais dispensam projeto; esclareça apenas lacunas materiais à entrega.
 2. **Políticas mínimas:** respeite hierarquia, escopo, autorizações e budget. A skill não autoriza ações externas. Verifique capacidades do host; não invente ferramentas ou resultados.
-3. **Roteamento:** selecione intenção, perfil e modo; carregue somente módulos acionados pelo contexto, não todos os links.
-4. **Execução:** avance incrementalmente no modo escolhido, acompanhando evidências, bloqueios e budget. Reavalie o perfil diante de risco/incerteza. Considere latência, throughput, concorrência e recuperação nas dimensões afetadas.
+3. **Roteamento:** selecione intenção e perfil de risco; escolha acompanhamento direto ou rastreado conforme [Workflows](references/workflow.md). Carregue somente a seção pertinente ainda não válida no contexto.
+4. **Execução:** com plano aprovado, avance na próxima pendência autorizada; reabra decisões somente por nova evidência ou mudança material. Agrupe edições relacionadas antes dos checks, acompanhando evidências, bloqueios e budget. Reavalie o perfil diante de risco/incerteza. Considere latência, throughput, concorrência e recuperação nas dimensões afetadas.
 5. **Fechamento:** aplique o contrato final. Capture aprendizado duradouro pelo módulo Memory somente quando autorizado e útil.
 
 ## Intenção → modo
 
-Classifique pela entrega pedida; intenção não cria um novo modo de workflow. Para os procedimentos abaixo, leia uma vez o [contrato de invocação](references/invocation.md) e somente o procedimento selecionado. As entradas especializadas usam essas mesmas fontes; não é necessário instalá-las para usar o núcleo por linguagem natural.
+Classifique pela entrega pedida; intenção não cria um novo modo de workflow. Para os procedimentos abaixo, consulte o [contrato de invocação](references/invocation.md) e somente o procedimento selecionado; reutilize leituras válidas para a mesma revisão e contexto. As entradas especializadas usam essas mesmas fontes; não é necessário instalá-las para usar o núcleo por linguagem natural.
 
 | Intenção / entrada | Encaminhamento |
 | --- | --- |
@@ -41,11 +41,11 @@ Escolha automaticamente pela evidência disponível; risco material prevalece so
 
 | Perfil | Condição | Carregamento e profundidade |
 | --- | --- | --- |
-| FAST | Mudança simples, contexto conhecido, baixo risco | Resposta/ação direta; módulos só pelos gatilhos abaixo, validação proporcional |
-| BALANCED | Feature/refatoração moderada, decisões e rastreabilidade | Policies + Workflows; spec/plano/tarefas conforme necessidade |
-| DEEP | Risco elevado, migração importante ou decisão difícil de reverter | BALANCED + Decisões e hipóteses + Agents & Review; invariantes, falhas/recuperação e revisão pertinente antes de concluir |
+| FAST | Mudança simples, contexto conhecido, baixo risco | Diff e validação pertinentes; módulos sob demanda |
+| BALANCED | Feature/refatoração moderada | Contratos, falhas e plano curto conforme necessidade; Policies por seção |
+| DEEP | Risco elevado, migração importante ou decisão difícil de reverter | Invariantes, compatibilidade/recuperação e review exigido; referências pertinentes |
 
-Perfis definem profundidade, não modelos, preços ou número fixo de agentes.
+Perfis definem profundidade, não persistência, modelos ou número de agentes. Execução direta dispensa TASK/SPEC/PLAN e estado obrigatório em qualquer perfil, preservando gates de risco; adotar a CLI opt-in mantém todos os seus contratos. O host escolhe NEXUS ou outro workflow condutor, como Superpowers, respeitando precedência; esta skill não desativa outras.
 
 ## Registro de módulos
 
@@ -65,10 +65,10 @@ Dependências abaixo são condicionais ao uso; cada módulo fornece seu contrato
 
 Use Policies para solicitar capacidades ao roteador/adapters configurados e verificados no host. Um único provider suficiente permite continuar; capacidade ausente exige fallback explícito ou bloqueio, sem simular troca de modelo. Teto rígido sem controle verificável exige renegociar escopo/limite antes do trabalho dependente; economia não elimina gates.
 
-Mostrar tarefas/plano/bloqueios/progresso, continuar implementação, revisar tarefa e retomar projeto consultam a fonte existente. Escolha uma única fonte persistente: a existente no host, o [orquestrador local opt-in](references/workflow-state.md), ou registros Markdown no modo documental. Ao adotar a CLI local, o store JSON é a autoridade e Markdown é projeção; sem executor, as TASKS Markdown são a autoridade, conforme Workflows. Não há migração ou sincronização automática entre fontes. Reconcilie divergências antes de transições; não mantenha lista paralela no prompt nem presuma sincronização com todo nativo. Sem persistência, apresente o estado e declare que não foi salvo.
+Mostrar tarefas/plano/bloqueios/progresso, continuar implementação, revisar tarefa e retomar projeto consultam a fonte existente. Reutilize a fonte existente; crie persistência somente se útil ou solicitada. Quando adotada, escolha uma única autoridade: a existente no host, o [orquestrador local opt-in](references/workflow-state.md), ou registros Markdown rastreados. Ao adotar a CLI local, o store JSON é a autoridade e Markdown é projeção; ao adotar os templates documentais sem executor, TASKS Markdown são a autoridade, conforme Workflows. Não há migração ou sincronização automática entre fontes. Reconcilie divergências antes de transições; não mantenha lista paralela no prompt nem presuma sincronização com todo nativo. Sem persistência, apresente o estado e declare que não foi salvo.
 
 Resolva papéis em agentes disponíveis; delegue contratos resumidos com referências e ownership conforme Agents & Review. Sem delegação, execute sequencialmente e declare independência indisponível quando exigida. Hooks seleciona eventos pertinentes; falha do executor preserva gates. Verifique estado externo antes de retry de mutação incerta.
 
 ## Contrato de conclusão
 
-Informe resultado, arquivos alterados (ou nenhum), verificações executadas e evidências, falhas/limitações, decisões materiais e estado final/próxima ação. Use os estados definidos em Workflows quando houver tarefa; `done` exige aceite comprovado. Verificação obrigatória não executada permanece pendência explícita: código produzido não basta. Não alegue consumo, persistência, execução de hooks ou validação que não observou.
+Informe resultado, arquivos alterados (ou nenhum), verificações executadas e evidências, falhas/limitações, decisões materiais e estado final/próxima ação. Use os estados da fonte adotada quando houver tarefa rastreada; `done` exige aceite comprovado. Verificação obrigatória não executada permanece pendência explícita: código produzido não basta. Não alegue consumo, persistência, execução de hooks ou validação que não observou.
