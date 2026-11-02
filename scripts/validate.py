@@ -1,14 +1,76 @@
 #!/usr/bin/env python3
-"""Validate this repository's simple skill metadata and local Markdown links."""
+"""Validate NEXUS skill metadata, local links and its skills-only plugin package."""
 
+import json
 import re
 import sys
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 
-def validate(root: Path) -> list[str]:
+def validate_plugins(root: Path) -> list[str]:
+    """Check this package's narrow contract, not the full upstream host schemas."""
     errors = []
+
+    def read_object(relative):
+        try:
+            value = json.loads((root / relative).read_text(encoding="utf-8"))
+            if not isinstance(value, dict):
+                raise ValueError("expected a JSON object")
+            return value
+        except (OSError, ValueError) as exc:
+            errors.append(f"{relative}: {exc}")
+            return {}
+
+    manifests = [read_object(f".{host}-plugin/plugin.json") for host in ("claude", "codex")]
+    allowed = {"name", "version", "description", "skills", "author", "homepage",
+               "repository", "license", "keywords", "interface"}
+    for host, manifest in zip(("claude", "codex"), manifests):
+        label = f".{host}-plugin/plugin.json"
+        if set(manifest) - allowed:
+            errors.append(f"{label}: unsupported fields for this skills-only package")
+        if manifest.get("name") != "nexus":
+            errors.append(f"{label}: name must be nexus")
+        version = manifest.get("version")
+        if not isinstance(version, str) or not re.fullmatch(r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)", version):
+            errors.append(f"{label}: version must be a numeric major.minor.patch release")
+        if not isinstance(manifest.get("description"), str) or not manifest["description"].strip():
+            errors.append(f"{label}: description is required")
+        if manifest.get("skills") != "./skills/":
+            errors.append(f"{label}: skills must use the shared ./skills/ directory")
+    if manifests[0].get("version") != manifests[1].get("version"):
+        errors.append("plugin versions differ between hosts")
+    skills = root / "skills"
+    if not skills.is_dir() or not skills.resolve().is_relative_to(root.resolve()):
+        errors.append("skills directory must exist inside the plugin root")
+
+    for host, relative in (("claude", ".claude-plugin/marketplace.json"),
+                           ("codex", ".agents/plugins/marketplace.json")):
+        catalog = read_object(relative)
+        if catalog.get("name") != "nexus-local":
+            errors.append(f"{relative}: marketplace name must be nexus-local")
+        expected = {"name": "nexus", "source": "./"}
+        if host == "claude":
+            owner = catalog.get("owner")
+            if not isinstance(owner, dict) or not isinstance(owner.get("name"), str) or not owner["name"].strip():
+                errors.append(f"{relative}: owner.name is required")
+        else:
+            expected.update(source={"source": "local", "path": "./"},
+                            policy={"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+                            category="Developer Tools")
+        if catalog.get("plugins") != [expected]:
+            errors.append(f"{relative}: expected one local nexus entry at ./ with no component overrides")
+
+    # Hosts also auto-discover components that are not declared in a manifest.
+    for relative in ("hooks", "agents", "commands", ".mcp.json", "mcp.json", ".app.json", ".lsp.json", "plugin.json"):
+        path = root / relative
+        if path.is_file() or (path.is_dir() and any(p.is_file() for p in path.rglob("*"))):
+            errors.append(f"{relative}: outside the skills-only plugin scope")
+    return errors
+
+
+def validate(root: Path) -> list[str]:
+    errors = validate_plugins(root)
     entry = root / "skills/nexus/SKILL.md"
     if not entry.is_file():
         return ["skills/nexus/SKILL.md: missing entrypoint"]
@@ -51,4 +113,4 @@ if __name__ == "__main__":
         print(failure, file=sys.stderr)
     if failures:
         sys.exit(1)
-    print("OK: skill metadata and local Markdown link destinations")
+    print("OK: skill metadata, local Markdown links and skills-only plugin package")
