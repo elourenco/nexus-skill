@@ -43,7 +43,7 @@ Escolha automaticamente pela evidência disponível; risco material prevalece so
 | --- | --- | --- |
 | FAST | Mudança simples, contexto conhecido, baixo risco | Resposta/ação direta; módulos só pelos gatilhos abaixo, validação proporcional |
 | BALANCED | Feature/refatoração moderada, decisões e rastreabilidade | Policies + Workflows; spec/plano/tarefas conforme necessidade |
-| DEEP | Risco elevado, migração importante ou decisão difícil de reverter | BALANCED + Cognitive Principles + Agents & Review; invariantes, falhas/recuperação e revisão pertinente antes de concluir |
+| DEEP | Risco elevado, migração importante ou decisão difícil de reverter | BALANCED + Decisões e hipóteses + Agents & Review; invariantes, falhas/recuperação e revisão pertinente antes de concluir |
 
 Perfis definem profundidade, não modelos, preços ou número fixo de agentes.
 
@@ -55,7 +55,7 @@ Dependências abaixo são condicionais ao uso; cada módulo fornece seu contrato
 | --- | --- | --- | --- |
 | [Policies](references/policies.md) | Antes de alterar/verificar, delegar, escalar ou trabalhar com budget | Testes proporcionais, capacidade, consumo e contexto | Política do host; sem medição não garante teto monetário |
 | [Workflows](references/workflow.md) | Etapas, artefatos, tarefas ou retomada | Modos, estados, dependências e recuperação; [contrato da CLI/Todo](references/workflow-state.md) quando adotado | Policies; Templates conforme artefato; sem scheduler |
-| [Cognitive Principles](references/cognitive.md) | Ambiguidade, hipótese fraca ou decisão material | Premissas, alternativas e evidência contrária | Fontes atuais; não prova correção |
+| [Decisões e hipóteses](references/cognitive.md) | Ambiguidade, hipótese fraca ou decisão material | Premissas, alternativas e evidência contrária | Fontes atuais; não prova correção |
 | [Agents & Review](references/agents.md) | Delegação útil ou Review Council pertinente ao risco | Ownership, contratos de delegação e pilares de revisão | Policies e capacidades reais; runtime textual opcional, sem instalar agentes no host |
 | [Hooks](references/hooks.md) | Evento relevante ao modo, contexto, risco, permissão e budget | Eventos, permissões e recibos do executor local opt-in | Capacidades verificadas; sem executor, checagem manual explícita |
 | [Memory](references/memory.md) | Retomada com histórico ou aprendizado duradouro | Proveniência, revalidação e isolamento; helper JSON opt-in | Fontes atuais; JSON e memória SQLite dos hooks são stores separados; sem persistência automática |

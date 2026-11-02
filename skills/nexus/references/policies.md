@@ -23,6 +23,11 @@ Se uma decisão depender de instruções incompatíveis que a hierarquia não re
 - Considere latência, throughput, concorrência, falhas e recuperação nas dimensões afetadas. Defina invariantes de interleaving, idempotência e limites de recursos quando houver estado compartilhado ou I/O; não acrescente infraestrutura distribuída a operações locais sem necessidade.
 - Declare sucesso com evidências. Diferencie observação, inferência e hipótese; não transforme melhoria esperada de desempenho em medição. Mudanças fora do escopo exigem autorização antes da execução.
 
+Quando a alteração envolver estados de domínio, dados externos ou ownership,
+aplique o [checklist de modelagem](domain-design.md): estados válidos por construção,
+parsing na fronteira, decisão determinística separada do I/O e compartilhamento
+de estado justificado. Carregue somente nesse contexto; não imponha novas camadas.
+
 <a id="policy-execution"></a>
 
 ## Perfis de execução
@@ -55,6 +60,11 @@ Informação insuficiente impede assumir FAST: investigue em BALANCED e classifi
 As estratégias se combinam. TDD é preferencial para invariantes críticas, não universal; política específica do projeto prevalece. Quando test-first não for viável, registre impedimento, risco e verificação alternativa antes de implementar, sem dispensar um gate obrigatório. Caracterização registra o legado, não legitima um defeito de segurança como aceite.
 
 Não use quantidade de testes como prova de qualidade, nem escreva testes que apenas espelhem a implementação. Não amplie ou repita a suíte sem mudança, falha ou dúvida concreta. Para performance, compare cargas equivalentes e registre ambiente, amostra, latência e throughput; sem medição, declare hipótese. Cubra saturação, timeout, cancelamento e backpressure quando pertinentes.
+
+Quando testes precisarem demonstrar sensibilidade a defeitos em lógica crítica,
+use [checks de qualidade seletivos](quality-checks.md): mutation testing no escopo
+afetado, com timeout e limiar do consumidor. Complexidade e duplicação são sinais
+para investigação, sem thresholds universais nem instalação automática de ferramentas.
 
 Selecione os pilares de [review](agents.md) pelo risco. Para risco material, use independência real quando disponível; ausência dessa capacidade deve ser declarada. Autoavaliação não equivale a review independente e não satisfaz um gate que o exija.
 
