@@ -2,6 +2,14 @@
 
 Fundação de uma skill portátil de engenharia: especificação, decisões arquiteturais, execução incremental e validação com evidências.
 
+[Segurança e ética em IA](skills/nexus/references/ai-safety-ethics.md) orientam tanto
+a atuação da NEXUS quanto os produtos com IA que ela ajuda a construir: autorização,
+privacidade, confiabilidade, impacto humano e supervisão proporcional ao risco.
+As regras vivem em [Policies](skills/nexus/references/policies.md#policy-ai-safety-ethics)
+e chegam às seis entradas pelos contratos compartilhados, com detalhes sob demanda.
+São instruções e critérios de avaliação; não instalam barreiras técnicas, certificam
+conformidade ou comprovam resistência a prompt injection.
+
 **Status: skill portátil com componentes locais opcionais.** `skills/nexus/` contém instruções, templates, um [helper de memória JSON](skills/nexus/references/memory.md), o [executor local de hooks](skills/nexus/references/hooks.md) com journal SQLite e a [CLI de workflows](skills/nexus/references/workflow-state.md) para tarefas, DAG, gates e recuperação. A [CLI de agentes e review](runtime/README.md) fornece roteamento, adapters textuais e Council. Esses componentes são acionados explicitamente; não há scheduler, dashboard ou ligação automática entre eles. Implementação, testes do projeto e dispatch do workflow continuam nas ferramentas reais do host.
 
 ## Começar
@@ -87,6 +95,7 @@ pastas em qualquer host. Este repositório não modifica configurações globais
 | [Workflow](skills/nexus/references/workflow.md) | FAST/BALANCED/DEEP, Explore/Plan/Build/Review e Autonomous |
 | [Todo executável](skills/nexus/references/workflow-state.md) | Store local, orquestração, CLI/Markdown e limites do runtime |
 | [Políticas](skills/nexus/references/policies.md) | Testes adaptativos, contexto e modelos |
+| [Segurança e ética em IA](skills/nexus/references/ai-safety-ethics.md) | Conduta do agente, impacto humano nos produtos, controles e evidências proporcionais |
 | [Agentes](skills/nexus/references/agents.md) | Ownership e revisão por pilar |
 | [Hooks](skills/nexus/references/hooks.md) | Executor local opt-in, permissões, recibos e recuperação |
 | [Memória](skills/nexus/references/memory.md) | Persistência local opt-in, proveniência, recuperação e isolamento |
@@ -100,6 +109,8 @@ pastas em qualquer host. Este repositório não modifica configurações globais
 ## Validar
 
 Para adotar os componentes locais, siga o [consumidor mínimo](skills/nexus/references/consumer-guide.md).
+O [registro de segurança e ética](docs/ai-safety-ethics-validation.md) distingue
+verificações estruturais, aplicação documental dos cenários e limites da entrega.
 O exemplo executável demonstra falha, bloqueio, correção e recuperação com recibos
 reais. Os [checks de qualidade](skills/nexus/references/quality-checks.md) reutilizam
 o executor de hooks com flags, escopo e thresholds definidos pelo consumidor.

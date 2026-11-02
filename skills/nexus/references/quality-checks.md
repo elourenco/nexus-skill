@@ -39,6 +39,14 @@ Escolha thresholds por invariantes, criticidade e baseline do consumidor. Faça 
 
 ## Checks caros, latência e falhas
 
+Para comportamento de IA, selecione [avaliações](ai-safety-ethics.md#evaluation)
+pelas fronteiras e danos do caso de uso: entradas adversariais, saídas inválidas,
+controle indisponível e impactos assimétricos pertinentes, junto de casos legítimos.
+Use dados sintéticos ou autorizados mínimos; registre alvo, método, amostra e
+limitações. Diferencie mesa, execução e observação em produto. Não há scanner,
+threshold universal de equidade ou chamada obrigatória a outro modelo; os checks
+da fixture de frete não validam esses comportamentos de IA.
+
 Cada hook aceita timeout máximo de 60 s por tentativa. FAST admite evento de até 10 s; BALANCED e DEEP, até 120 s. A admissão reserva o pior timeout/backoff antes de iniciar cada hook. Os tempos configurados no fixture são 2 s para tests, 2 s para complexity e 6 s para mutation; são limites, não medições de performance. Caso o ambiente seja lento, ajuste perfil e limites conscientemente. Não aumente retries para esconder falhas determinísticas.
 
 Para mutation suites ou análises que excedam esses limites, execute a ferramenta no runner do próprio projeto e mantenha NEXUS fora da execução longa. **Não há importador nativo de recibos externos**. Se quiser aproveitar esse resultado em uma policy hook_receipts, o consumidor precisa implementar um comando local curto de verificação, também revisado e autorizado, que rejeite artefato ausente, inválido ou obsoleto. Seu contrato deve vincular workspace/task, workflow/run/generation atuais, hashes de todos os inputs, ferramenta/versão, thresholds, instante e resultado medido. O verificador não pode apenas ler um booleano passed. Artefato e verificador entram no snapshot; o journal recebe a execução desse verificador. Esta integração adicional não é implementada pelo fixture e precisa de testes de adulteração, obsolescência e falhas parciais antes de uso.

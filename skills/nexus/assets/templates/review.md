@@ -26,6 +26,12 @@ por achado. Ausência de achados deve ser declarada, com limites da inspeção.
 - Justificativa e limitações:
 - Gates aplicáveis e resultado (fonte):
 
+Para [avaliação de IA](../../references/ai-safety-ethics.md#evaluation), registre
+em condição/impacto os afetados e fronteiras pertinentes; em evidências/limitações,
+alvo, método e amostra. Diferencie controle recomendado, implementado e verificado.
+Supervisão nominal ou amostra insuficiente não comprova segurança/equidade; uma
+review concluída pode manter o objeto não aprovado.
+
 “Corrigido” exige revalidação; “aceito” exige registro do responsável autorizado
 conforme o projeto; “descartado” exige evidência/justificativa. Findings bloqueantes
 abertos impedem aprovação. Aceite de risco não dispensa gate obrigatório. Mudança

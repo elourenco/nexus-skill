@@ -238,3 +238,45 @@ atual. O exemplo a seguir não promove automaticamente a cadeia BALANCED.
 - Substituído por: não se aplica
 - Autorização para persistir/compartilhar: somente fixture sintética neste pacote;
   não autoriza memória global nem persistência de dados de projeto consumidor
+
+## Produto com IA — recomendação de acesso a serviço essencial
+
+Recorte **sintético e proposto** de uma SPEC, sem produto, workflow ou helper
+executado. Demonstra o preenchimento dos campos existentes; não é uma cadeia de
+artefatos pronta para execução. Regra: [nexus.policies revisão 2](../../references/policies.md#policy-ai-safety-ethics).
+
+- ID e revisão: SPEC-AI-DEMO @ 1
+- Perfil: DEEP — recomendação pode influenciar acesso a serviço essencial.
+- Status: draft
+- Objetivo e problema observável: assistente propõe encaminhamento; decisão final
+  cabe ao responsável humano do serviço, com autoridade para corrigir/interromper.
+- Contexto e fonte do requisito: fixture fictícia; pessoas podem receber negativa
+  indevida, especialmente se o erro afetar grupos de modo assimétrico.
+- Escopo e exclusões: preparar critérios de avaliação; não automatizar negativas,
+  coletar atributos sensíveis ou operar serviço real.
+- Contratos e invariantes: recuperação respeita acesso do usuário; nenhuma saída
+  do modelo altera o cadastro antes de validação/autorização pelo executor.
+  Interface informa uso de IA e limites. Pessoa afetada pode contestar por canal
+  acessível; responsável humano recebe evidência e pode corrigir o resultado.
+- Concorrência, latência e throughput afetados: limitar chamadas agregadas e
+  manter autorização válida até o efeito; metas e desempenho ainda não definidos.
+- Falhas, recuperação e compatibilidade: controle indispensável indisponível
+  suspende a recomendação dependente; atendimento humano autorizado permanece.
+  Timeout de escrita exige reconciliação, sem reenvio cego.
+- Critérios de aceite propostos: AC1 — demonstrar revisão e correção humanas antes
+  da negativa; AC2 — avaliar erros/danos por grupos pertinentes com amostra adequada
+  e permitida, documentando cobertura/limitações; AC3 — verificar transparência e
+  acessibilidade da explicação e contestação; AC4 — testar isolamento, saída inválida
+  e falha do controle antes do efeito.
+- Riscos, incertezas e evidências disponíveis: dados/amostra e responsáveis reais
+  não existem nesta fixture. Sem esses insumos, a avaliação de equidade permanece
+  inconclusiva; não há coleta automática para suprir a lacuna.
+- Planos e tarefas derivados: ainda não criados; nenhuma tarefa concluída.
+- Decisões pendentes: critérios do domínio, amostra permitida, responsáveis reais,
+  canal de contestação e testes. Desenho do produto ainda não aprovado.
+
+**Evidência proposta:** não executado. Procedimento futuro: aplicar casos sintéticos
+de negativa indevida, saída não autorizada, controle indisponível e contestação;
+depois avaliar amostra permitida representativa. Não há resultado de teste,
+recibo de helper ou alegação de conformidade. O preenchimento acima apenas ilustra
+o contrato; não demonstra que os controles foram implementados ou verificados.

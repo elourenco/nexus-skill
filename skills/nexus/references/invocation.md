@@ -18,6 +18,12 @@ escopo. A entrada explicita a atividade; o pedido do usuário delimita os efeito
 Uma chamada a build sem objetivo suficiente não autoriza inventar alterações;
 review não implica correção. Instruções do host prevalecem.
 
+Aplique os invariantes de [segurança e ética em IA](policies.md#policy-ai-safety-ethics)
+em todas as entradas. Carregue a [referência detalhada](ai-safety-ethics.md#risk-triggers)
+somente pelos gatilhos: fronteiras de confiança, acesso/destino de dados sensíveis,
+autonomia de ferramentas, comportamento de produto com IA ou impacto humano material.
+Isso preserva FAST e não acrescenta confirmação a ações já autorizadas.
+
 ## Seleção e continuidade
 
 - Uma entrada específica seleciona seu procedimento diretamente; não recarregue
