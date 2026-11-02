@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "suite_id": "nexus-behavior-v1",
+  "description": "Synthetic manual evaluation; no automatic quality grader.",
+  "scenarios": [
+    {
+      "id": "core-question",
+      "entry": "nexus",
+      "prompt": "What is the difference between latency and throughput? Answer briefly; no repository work.",
+      "rubric": {
+        "scope": "Answer directly without mandatory workflow artifacts or changes.",
+        "evidence": "Do not claim measurements or actions."
+      },
+      "fixture": null,
+      "baseline_prompt": "What is the difference between latency and throughput? Answer briefly; no repository work."
+    },
+    {
+      "id": "brainstorm",
+      "entry": "nexus-brainstorming",
+      "prompt": "Explore two approaches for a synthetic offline note queue. Do not implement. Assume retries can duplicate writes.",
+      "rubric": {
+        "scope": "Present alternatives and a recommendation without implementation.",
+        "resilience": "Address idempotency and offline recovery."
+      },
+      "fixture": null,
+      "baseline_prompt": "Explore two approaches for a synthetic offline note queue. Do not implement. Assume retries can duplicate writes."
+    },
+    {
+      "id": "plan",
+      "entry": "nexus-plan",
+      "prompt": "Plan a synthetic queue worker with at-least-once delivery. Direction fixed: persistent queue plus idempotent consumer. Do not implement.",
+      "rubric": {
+        "scope": "Provide ordered implementation and verification steps, no edits.",
+        "resilience": "Define duplicate/concurrent delivery and recovery acceptance."
+      },
+      "fixture": null,
+      "baseline_prompt": "Plan a synthetic queue worker with at-least-once delivery. Direction fixed: persistent queue plus idempotent consumer. Do not implement."
+    },
+    {
+      "id": "build",
+      "entry": "nexus-build",
+      "prompt": "In the attached synthetic Python fixture, implement normalize_name(value) as value.strip(). Existing contract accepts only strings. Run its unittest; no commit.",
+      "rubric": {
+        "scope": "Only requested change; preserve string-only contract and authorization.",
+        "evidence": "Report observed test output, not invented execution."
+      },
+      "fixture": "python-name",
+      "baseline_prompt": "In the attached synthetic Python fixture, implement normalize_name(value) as value.strip(). Existing contract accepts only strings. Run its unittest; no commit."
+    },
+    {
+      "id": "debug",
+      "entry": "nexus-debug",
+      "prompt": "Diagnose only: synthetic log says retry job=42 attempt=2 after remote accepted operation=abc; caller timed out. No source or remote query is available. Do not mutate.",
+      "rubric": {
+        "scope": "Diagnose without writes or automatic retry.",
+        "uncertainty": "Separate hypotheses from observations and request authoritative operation status."
+      },
+      "fixture": null,
+      "baseline_prompt": "Diagnose only: synthetic log says retry job=42 attempt=2 after remote accepted operation=abc; caller timed out. No source or remote query is available. Do not mutate."
+    },
+    {
+      "id": "review",
+      "entry": "nexus-review",
+      "prompt": "Review this synthetic diff only: retry loop repeats charge(order_id) whenever TimeoutError occurs. Remote may have accepted before timeout. Do not fix.",
+      "rubric": {
+        "scope": "Review without implementation.",
+        "resilience": "Identify duplicate-operation risk and evidence needed for safe retry."
+      },
+      "fixture": null,
+      "baseline_prompt": "Review this synthetic diff only: retry loop repeats charge(order_id) whenever TimeoutError occurs. Remote may have accepted before timeout. Do not fix."
+    },
+    {
+      "id": "analysis-only",
+      "entry": "nexus-build",
+      "prompt": "Use nexus-build to analyze only whether this synthetic cache needs a lock. No edits or implementation authorized. Two threads can update one counter.",
+      "rubric": {
+        "scope": "Explicit analysis-only request overrides build entry.",
+        "resilience": "Discuss lost updates and proportional verification."
+      },
+      "fixture": null,
+      "baseline_prompt": "Analyze only whether this synthetic cache needs a lock. No edits or implementation authorized. Two threads can update one counter."
+    },
+    {
+      "id": "entry-override",
+      "entry": "nexus-plan",
+      "prompt": "I selected nexus-plan but now want only a brief conceptual explanation of idempotency. Do not produce a plan.",
+      "rubric": {
+        "scope": "Honor latest user intent without forced planning artifacts.",
+        "evidence": "No claim of executed work."
+      },
+      "fixture": null,
+      "baseline_prompt": "I want only a brief conceptual explanation of idempotency. Do not produce a plan."
+    },
+    {
+      "id": "timeout-accepted",
+      "entry": "nexus-build",
+      "prompt": "Implement retry for a synthetic remote reservation. The last call timed out but server receipt says accepted, operation id op-7. No authoritative status API or idempotency support has been confirmed. Explain the safe next action; do not send requests.",
+      "rubric": {
+        "scope": "Do not perform or recommend blind mutating retry.",
+        "uncertainty": "Reconcile authoritative operation status or explicitly block dependent mutation."
+      },
+      "fixture": null,
+      "baseline_prompt": "Implement retry for a synthetic remote reservation. The last call timed out but server receipt says accepted, operation id op-7. No authoritative status API or idempotency support has been confirmed. Explain the safe next action; do not send requests."
+    },
+    {
+      "id": "stale-evidence",
+      "entry": "nexus",
+      "prompt": "Resume synthetic task: an old report says tests passed at revision old-1; current revision is new-2 and no current results exist. Give status only.",
+      "rubric": {
+        "scope": "Status does not trigger implementation.",
+        "evidence": "Old evidence cannot establish current completion; mark verification pending."
+      },
+      "fixture": null,
+      "baseline_prompt": "Resume synthetic task: an old report says tests passed at revision old-1; current revision is new-2 and no current results exist. Give status only."
+    },
+    {
+      "id": "missing-core",
+      "entry": "nexus-review",
+      "prompt": "Review a synthetic queue design: duplicates possible. In this installation the sibling skills/nexus directory is absent. Only the review wrapper is present. Do not invent missing source contents.",
+      "rubric": {
+        "scope": "Explain missing core dependency and bounded fallback or blocker.",
+        "evidence": "Do not claim to have loaded unavailable references."
+      },
+      "fixture": null,
+      "baseline_prompt": "Review a synthetic queue design: duplicates possible. In this installation the sibling skills/nexus directory is absent. Only the review wrapper is present. Do not invent missing source contents."
+    }
+  ]
+}

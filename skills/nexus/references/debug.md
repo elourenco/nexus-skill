@@ -6,6 +6,10 @@ Aplica-se o [contrato de invocação](invocation.md). Diferencie “diagnostique
 
 ## Procedimento
 
+**Entrada:** sintoma, esperado e fontes. **Decisão:** próxima observação que distingue
+as causas. **Evidência:** reprodução ou limite explícito. **Saída:** causa sustentada,
+hipóteses restantes e próxima ação; correção somente no escopo autorizado.
+
 1. Delimite sintoma, resultado esperado, versão/ambiente, frequência e impacto.
    Consulte código, testes, logs sanitizados e mudanças relevantes antes de
    solicitar informações ausentes. Não exponha segredos ou transcrições privadas.

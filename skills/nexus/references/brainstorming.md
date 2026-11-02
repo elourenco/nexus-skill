@@ -7,6 +7,10 @@ Aplica-se o [contrato de invocação](invocation.md).
 
 ## Procedimento
 
+**Entrada:** problema e restrições. **Decisão:** alternativas viáveis e recomendação.
+**Evidência:** fontes, premissas e experimento discriminante quando necessário.
+**Saída:** direção ou lacuna decisiva; discussão não autoriza implementação.
+
 1. Identifique resultado desejado, contexto existente, restrições e decisões já
    tomadas. Consulte as fontes disponíveis antes de perguntar; esclareça somente
    lacunas que possam mudar a recomendação.
