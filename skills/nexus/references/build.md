@@ -5,6 +5,10 @@ solicitado. Aplica-se o [contrato de invocação](invocation.md).
 
 ## Procedimento
 
+**Entrada:** objetivo, aceite e autorização. **Decisão:** menor incremento válido.
+**Evidência:** verificações executadas sobre o alvo atual. **Saída:** alteração
+revisável e pendências; check obrigatório ausente mantém o aceite pendente.
+
 1. Identifique objetivo, aceite e autorização existentes. Inspecione instruções do
    projeto, estado real dos arquivos e plano quando houver; preserve trabalho alheio.
    Um plano formal não é requisito para mudança pequena e clara. Se faltar contrato

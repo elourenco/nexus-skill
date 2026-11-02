@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 
 from .store import WorkflowError
+from .receipts import read_receipt, validate_policy
 
 MODES = {'FAST', 'BALANCED', 'DEEP'}
 STRATEGIES = {'tdd', 'test-after', 'characterization', 'integration-contract', 'inspection'}
@@ -63,13 +64,14 @@ def digest(value):
 class Orchestrator:
     FIELDS = {
         'mode': 'mode reason', 'artifact': 'kind path revision source reason',
-        'create': 'task_id title goal criteria owner role priority risk review_required resources files depends_on strategy authorization complexity',
-        'amend': 'task_id title goal criteria owner role priority resources files strategy authorization reason',
+        'create': 'task_id title goal criteria owner role priority risk review_required resources files depends_on strategy authorization complexity evidence_policy',
+        'amend': 'task_id title goal criteria owner role priority resources files strategy authorization reason evidence_policy',
         'depend': 'task_id dependency', 'reconcile': 'task_id reason', 'ready': 'task_id', 'start': 'task_id',
         'dispatch': 'task_id agent_id capabilities route_source', 'ack': 'task_id run_id handle source',
         'result': 'task_id run_id outcome source summary', 'evidence': 'task_id kind outcome source detail criteria',
         'request_review': 'task_id reviewer pillars source',
-        'review': 'task_id reviewer source findings request_id', 'resolve': 'task_id finding_id source',
+        'review': 'task_id reviewer reviewer_handle source findings request_id', 'resolve': 'task_id finding_id source',
+        'import_receipt': 'task_id event_id source',
         'complete': 'task_id', 'rework': 'task_id reason', 'block': 'task_id reason next_action',
         'resume': 'task_id reason', 'recover': 'task_id diagnosis discarded source next_action',
         'interrupt': 'task_id reason', 'reconcile_run': 'task_id run_id outcome source next_action',
@@ -255,6 +257,8 @@ class Orchestrator:
         }
         task['run']['context']['artifacts'] = {
             key: value for key, value in state['artifacts'].items() if key in task['bindings']}
+        if 'evidence_policy' in task:
+            task['run']['context']['evidence_policy'] = task['evidence_policy']
         task['run']['context']['constraints'] = [
             'Follow host instructions and existing authorization; no additional permissions are granted.',
             'Other agents may be working: preserve their edits and respect assigned resources.',
@@ -327,6 +331,9 @@ class Orchestrator:
             'run': None, 'claimed': False, 'blocker': None, 'next_action': 'Mark ready after checking dependencies',
             'created_at': now(), 'started_at': None, 'completed_at': None,
         }
+        if 'evidence_policy' in r:
+            state['tasks'][ident]['evidence_policy'] = validate_policy(
+                state['workspace'], r['evidence_policy'], state['tasks'][ident]['files'])
 
     def _op_amend(self, state, r):
         task = self._task(state, r)
@@ -345,6 +352,10 @@ class Orchestrator:
         if 'priority' in r:
             require(type(r['priority']) is int and 0 <= r['priority'] <= 3, 'priority must be 0..3')
             task['priority'] = r['priority']
+        if 'evidence_policy' in r:
+            task['evidence_policy'] = r['evidence_policy']
+        if 'evidence_policy' in task:
+            validate_policy(state['workspace'], task['evidence_policy'], task['files'])
         self._invalidate(task)
 
     def _op_depend(self, state, r):
@@ -447,9 +458,32 @@ class Orchestrator:
         task['review_required'] = True
         task['next_action'] = 'Dispatch review in host; attach receipt with request_id'
 
+    def _op_import_receipt(self, state, r):
+        task = self._task(state, r)
+        require(task['status'] == 'validating', 'Receipt import requires implementation result')
+        receipt = read_receipt(state, task, identifier(r.get('event_id')))
+        task['evidence'].append({'id': r['operation_id'], 'generation': task['generation'],
+            'at': now(), 'kind': 'test', 'outcome': 'passed', 'source': text(r, 'source'),
+            'detail': 'Verified required local read-only hook checks', 'criteria': [], 'receipt': receipt})
+        task['failure_streak'] = 0
+
+    def _review_provenance(self, task, review):
+        reviewer = text(review, 'reviewer')
+        handle = text(review, 'reviewer_handle')
+        text(review, 'source')
+        run = task['run'] or {}
+        identities = [task['owner'], run.get('handle'), (run.get('agent') or {}).get('id')]
+        implementers = {value.strip().casefold() for value in identities if isinstance(value, str)}
+        require(reviewer.casefold() not in implementers and handle.casefold() not in implementers,
+                'Independent review cannot use a declared implementer identity')
+
     def _op_review(self, state, r):
         task = self._task(state, r)
         require(task['status'] == 'validating', 'Review requires implementation result')
+        if task.get('evidence_policy', {}).get('independent_review'):
+            self._review_provenance(task, r)
+        elif 'reviewer_handle' in r:
+            text(r, 'reviewer_handle')
         findings = r.get('findings')
         require(isinstance(findings, list), 'findings list required, including empty if no findings')
         if 'request_id' in r:
@@ -468,7 +502,8 @@ class Orchestrator:
                                      'status': 'open', 'generation': task['generation']}
         task['reviews'].append({'at': now(), 'generation': task['generation'],
             'reviewer': text(r, 'reviewer'), 'source': text(r, 'source'), 'findings': findings,
-            'request_id': r.get('request_id')})
+            'request_id': r.get('request_id'),
+            **({'reviewer_handle': text(r, 'reviewer_handle')} if 'reviewer_handle' in r else {})})
         task['next_action'] = 'Resolve blocking findings, or complete with acceptance evidence'
 
     def _op_resolve(self, state, r):
@@ -482,6 +517,18 @@ class Orchestrator:
         self._contracts(state, task)
         require(all(state['tasks'][d]['status'] == 'done' for d in task['depends_on']), 'Dependency is not done')
         require(self._proof(task, 'test'), 'Latest test evidence must pass')
+        policy = task.get('evidence_policy', {})
+        if 'hook_receipts' in policy:
+            latest = [e for e in task['evidence'] if e['generation'] == task['generation'] and e['kind'] == 'test'][-1]
+            receipt = latest.get('receipt')
+            require(isinstance(receipt, dict), 'Latest test evidence must be an imported hook receipt')
+            require(read_receipt(state, task, receipt.get('event_id')) == receipt,
+                    'Imported hook receipt changed; run checks and explicitly import again')
+        if policy.get('independent_review'):
+            reviews = [r for r in task['reviews'] if r['generation'] == task['generation']]
+            require(bool(reviews), 'Independent review provenance required')
+            for review in reviews:
+                self._review_provenance(task, review)
         accepted = {}
         for item in task['evidence']:
             if item['generation'] == task['generation'] and item['kind'] == 'acceptance':

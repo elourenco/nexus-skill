@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "package_version": "0.3.0",
+  "expected_entries": [
+    "nexus",
+    "nexus-brainstorming",
+    "nexus-build",
+    "nexus-debug",
+    "nexus-plan",
+    "nexus-review"
+  ],
+  "inference_executed": false,
+  "profiles": "isolated temporary directories; no credentials copied",
+  "commands": [
+    {
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "codex-cli 0.166.0-alpha.5.1\n",
+      "stderr": "",
+      "latency_ms": 17
+    },
+    {
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+        "plugin",
+        "marketplace",
+        "add",
+        "/Users/elourenco/Documents/ChatGPT/nexus-skill",
+        "--json"
+      ],
+      "returncode": 0,
+      "stdout": "{\n  \"marketplaceName\": \"nexus-local\",\n  \"installedRoot\": \"/Users/elourenco/Documents/ChatGPT/nexus-skill\",\n  \"alreadyAdded\": false\n}\n",
+      "stderr": "",
+      "latency_ms": 26
+    },
+    {
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+        "plugin",
+        "add",
+        "nexus@nexus-local",
+        "--json"
+      ],
+      "returncode": 0,
+      "stdout": "{\n  \"pluginId\": \"nexus@nexus-local\",\n  \"name\": \"nexus\",\n  \"marketplaceName\": \"nexus-local\",\n  \"version\": \"0.3.0\",\n  \"installedPath\": \"/private/var/folders/y4/9bmksdfj1bjf61l9dllllwqh0000gn/T/nexus-host-discovery-ppeqszif/codex/plugins/cache/nexus-local/nexus/0.3.0\",\n  \"authPolicy\": \"ON_INSTALL\"\n}\n",
+      "stderr": "",
+      "latency_ms": 191
+    },
+    {
+      "command": [
+        "/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex",
+        "plugin",
+        "list",
+        "--json"
+      ],
+      "returncode": 0,
+      "stdout": "{\n  \"installed\": [\n    {\n      \"pluginId\": \"nexus@nexus-local\",\n      \"name\": \"nexus\",\n      \"marketplaceName\": \"nexus-local\",\n      \"version\": \"0.3.0\",\n      \"installed\": true,\n      \"enabled\": true,\n      \"source\": {\n        \"source\": \"local\",\n        \"path\": \"/Users/elourenco/Documents/ChatGPT/nexus-skill\"\n      },\n      \"marketplaceSource\": {\n        \"sourceType\": \"local\",\n        \"source\": \"/Users/elourenco/Documents/ChatGPT/nexus-skill\"\n      },\n      \"installPolicy\": \"AVAILABLE\",\n      \"authPolicy\": \"ON_INSTALL\"\n    }\n  ],\n  \"available\": []\n}\n",
+      "stderr": "",
+      "latency_ms": 22
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/claude",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "2.1.308 (Claude Code)\n",
+      "stderr": "",
+      "latency_ms": 134
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/claude",
+        "plugin",
+        "validate",
+        "/Users/elourenco/Documents/ChatGPT/nexus-skill/.claude-plugin/plugin.json",
+        "--strict",
+        "--json"
+      ],
+      "returncode": 0,
+      "stdout": "{\n  \"success\": true,\n  \"strict\": true,\n  \"target\": \"/Users/elourenco/Documents/ChatGPT/nexus-skill/.claude-plugin/plugin.json\",\n  \"manifest\": {\n    \"file\": \"/Users/elourenco/Documents/ChatGPT/nexus-skill/.claude-plugin/plugin.json\",\n    \"type\": \"plugin\",\n    \"errors\": [],\n    \"warnings\": [],\n    \"notes\": [],\n    \"gatingHooks\": []\n  },\n  \"contents\": [],\n  \"advice\": [],\n  \"directory\": {\n    \"profile\": null,\n    \"findings\": [\n      {\n        \"code\": \"LICENSE_MISSING\",\n        \"title\": \"License missing\",\n        \"severity\": \"error\",\n        \"blocking\": true,\n        \"hold\": false,\n        \"file\": \"LICENSE\",\n        \"field\": \"\",\n        \"message\": \"This plugin has no LICENSE file and plugin.json has no `license`. The directory requires one of them.\",\n        \"fix\": \"Add a LICENSE file to the plugin folder, or set `license` (an SPDX id) in plugin.json. A LICENSE at the repository root also counts for a plugin in a sub-folder.\"\n      },\n      {\n        \"code\": \"ICON_MISSING\",\n        \"title\": \"No icon\",\n        \"severity\": \"warning\",\n        \"blocking\": false,\n        \"hold\": false,\n        \"file\": \".claude-plugin/plugin.json\",\n        \"field\": \"icon\",\n        \"message\": \"No icon found in the plugin. The validator looked for `icon` in plugin.json and for a file at .claude-plugin/icon.png or .svg, assets/icon.png or .svg, or a similar path.\",\n        \"fix\": \"Add a square PNG to the plugin folder at .claude-plugin/icon.png, or set `icon` in plugin.json to the path of a square PNG or JPEG in the plugin: 512 to 2048 px on each side, under 2 MB. SVG and WebP are not accepted. That file may become the listing icon only once: the first time the plugin is saved or submitted in the developer portal. Adding or changing it later does not change the icon.\"\n      }\n    ],\n    \"undecided\": [],\n    \"incomplete\": false,\n    \"failure\": null,\n    \"notes\": [\n      \"This folder also holds a marketplace manifest. The plugin directory treats such a folder as a plugin, so these checks cover only the plugin in this folder. To check another plugin that the marketplace lists, run validate on that plugin's folder.\"\n    ]\n  }\n}\n",
+      "stderr": "",
+      "latency_ms": 878
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/claude",
+        "plugin",
+        "marketplace",
+        "add",
+        "/Users/elourenco/Documents/ChatGPT/nexus-skill",
+        "--json"
+      ],
+      "returncode": 0,
+      "stdout": "{\"command\":\"marketplace-add\",\"outcome\":\"ok\",\"marketplace\":\"nexus-local\",\"message\":\"Successfully added marketplace: nexus-local (declared in user settings)\"}\n",
+      "stderr": "",
+      "latency_ms": 638
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/claude",
+        "plugin",
+        "install",
+        "nexus@nexus-local",
+        "--json"
+      ],
+      "returncode": 0,
+      "stdout": "{\"command\":\"install\",\"outcome\":\"ok\",\"plugin\":\"nexus@nexus-local\",\"pluginId\":\"nexus@nexus-local\",\"scope\":\"user\",\"message\":\"Successfully installed plugin: nexus@nexus-local (scope: user)\"}\n",
+      "stderr": "",
+      "latency_ms": 632
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/claude",
+        "plugin",
+        "list",
+        "--json"
+      ],
+      "returncode": 0,
+      "stdout": "[\n  {\n    \"id\": \"nexus@nexus-local\",\n    \"version\": \"0.3.0\",\n    \"scope\": \"user\",\n    \"enabled\": true,\n    \"installPath\": \"/var/folders/y4/9bmksdfj1bjf61l9dllllwqh0000gn/T/nexus-host-discovery-ppeqszif/claude/plugins/cache/nexus-local/nexus/0.3.0\",\n    \"readFromFolder\": \"/Users/elourenco/Documents/ChatGPT/nexus-skill\",\n    \"folderVersion\": \"0.3.0\",\n    \"installedAt\": \"2026-11-02T17:47:52.044Z\",\n    \"lastUpdated\": \"2026-11-02T17:47:52.044Z\",\n    \"projectEnabled\": false\n  }\n]\n",
+      "stderr": "",
+      "latency_ms": 341
+    },
+    {
+      "command": [
+        "/opt/homebrew/bin/claude",
+        "plugin",
+        "details",
+        "nexus@nexus-local"
+      ],
+      "returncode": 0,
+      "stdout": "nexus 0.3.0\n  Description: Engenharia orientada por especifica\u00e7\u00e3o, arquitetura, execu\u00e7\u00e3o incremental e valida\u00e7\u00e3o com evid\u00eancias.\n  Source: nexus@nexus-local\n\nComponent inventory\n  Skills (6)  nexus, nexus-brainstorming, nexus-build, nexus-debug, nexus-plan, nexus-review\n  Agents (0)\n  Hooks (0)\n  MCP servers (0)\n  LSP servers (0)\n\nProjected token cost\n  Always-on:   ~298 tok   added to every session\n\nPer-component (rounded)\n  component            always-on  on-invoke\n  nexus-debug                ~50       ~100\n  nexus-build                ~50        ~90\n  nexus-review               ~50        ~90\n  nexus-brainstorming        ~50        ~90\n  nexus-plan                 ~50        ~90\n  nexus                      ~50      ~2.1k\n\n  On-invoke cost is paid each time a skill or agent fires.\n  Token counts are estimates and may differ from actual usage.\n",
+      "stderr": "",
+      "latency_ms": 422
+    }
+  ],
+  "codex": {
+    "status": "pass",
+    "entries": [
+      "nexus",
+      "nexus-brainstorming",
+      "nexus-build",
+      "nexus-debug",
+      "nexus-plan",
+      "nexus-review"
+    ],
+    "skills": [
+      {
+        "name": "nexus:nexus",
+        "description": "Use when the user requests NEXUS generally, status or resumption, or a software engineering task needs coordination across multiple stages. Use a named nexus-* entry directly when the user selects one.",
+        "path": "/private/var/folders/y4/9bmksdfj1bjf61l9dllllwqh0000gn/T/nexus-host-discovery-ppeqszif/codex/plugins/cache/nexus-local/nexus/0.3.0/skills/nexus/SKILL.md",
+        "scope": "user",
+        "enabled": true,
+        "pluginId": "nexus@nexus-local"
+      },
+      {
+        "name": "nexus:nexus-brainstorming",
+        "description": "Use when NEXUS brainstorming, discovery, problem framing or comparison of design alternatives is requested, before an approach is settled. Not for executing an already defined plan.",
+        "path": "/private/var/folders/y4/9bmksdfj1bjf61l9dllllwqh0000gn/T/nexus-host-discovery-ppeqszif/codex/plugins/cache/nexus-local/nexus/0.3.0/skills/nexus-brainstorming/SKILL.md",
+        "scope": "user",
+        "enabled": true,
+        "pluginId": "nexus@nexus-local"
+      },
+      {
+        "name": "nexus:nexus-build",
+        "description": "Use when NEXUS implementation, refactoring, documentation changes or test creation is requested within an authorized scope or existing plan. Not for analysis-only requests.",
+        "path": "/private/var/folders/y4/9bmksdfj1bjf61l9dllllwqh0000gn/T/nexus-host-discovery-ppeqszif/codex/plugins/cache/nexus-local/nexus/0.3.0/skills/nexus-build/SKILL.md",
+        "scope": "user",
+        "enabled": true,
+        "pluginId": "nexus@nexus-local"
+      },
+      {
+        "name": "nexus:nexus-debug",
+        "description": "Use when NEXUS investigation or correction of a bug, failing test, timeout or unexpected behavior is requested. Not for reviewing a diff without a diagnostic request.",
+        "path": "/private/var/folders/y4/9bmksdfj1bjf61l9dllllwqh0000gn/T/nexus-host-discovery-ppeqszif/codex/plugins/cache/nexus-local/nexus/0.3.0/skills/nexus-debug/SKILL.md",
+        "scope": "user",
+        "enabled": true,
+        "pluginId": "nexus@nexus-local"
+      },
+      {
+        "name": "nexus:nexus-plan",
+        "description": "Use when NEXUS planning, implementation steps or architectural contracts are requested for a defined direction. Not for implementing the plan or open-ended brainstorming.",
+        "path": "/private/var/folders/y4/9bmksdfj1bjf61l9dllllwqh0000gn/T/nexus-host-discovery-ppeqszif/codex/plugins/cache/nexus-local/nexus/0.3.0/skills/nexus-plan/SKILL.md",
+        "scope": "user",
+        "enabled": true,
+        "pluginId": "nexus@nexus-local"
+      },
+      {
+        "name": "nexus:nexus-review",
+        "description": "Use when NEXUS review of an existing diff, implementation, contract or design is requested. Not for implementing fixes unless the user also requests them, or for open-ended design exploration.",
+        "path": "/private/var/folders/y4/9bmksdfj1bjf61l9dllllwqh0000gn/T/nexus-host-discovery-ppeqszif/codex/plugins/cache/nexus-local/nexus/0.3.0/skills/nexus-review/SKILL.md",
+        "scope": "user",
+        "enabled": true,
+        "pluginId": "nexus@nexus-local"
+      }
+    ]
+  },
+  "claude": {
+    "status": "pass",
+    "entries": [
+      "nexus",
+      "nexus-brainstorming",
+      "nexus-build",
+      "nexus-debug",
+      "nexus-plan",
+      "nexus-review"
+    ],
+    "enabled": true,
+    "native_inventory": "nexus 0.3.0\n  Description: Engenharia orientada por especifica\u00e7\u00e3o, arquitetura, execu\u00e7\u00e3o incremental e valida\u00e7\u00e3o com evid\u00eancias.\n  Source: nexus@nexus-local\n\nComponent inventory\n  Skills (6)  nexus, nexus-brainstorming, nexus-build, nexus-debug, nexus-plan, nexus-review\n  Agents (0)\n  Hooks (0)\n  MCP servers (0)\n  LSP servers (0)\n\nProjected token cost\n  Always-on:   ~298 tok   added to every session\n\nPer-component (rounded)\n  component            always-on  on-invoke\n  nexus-debug                ~50       ~100\n  nexus-build                ~50        ~90\n  nexus-review               ~50        ~90\n  nexus-brainstorming        ~50        ~90\n  nexus-plan                 ~50        ~90\n  nexus                      ~50      ~2.1k\n\n  On-invoke cost is paid each time a skill or agent fires.\n  Token counts are estimates and may differ from actual usage.\n"
+  }
+}

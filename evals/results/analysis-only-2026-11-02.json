@@ -1,0 +1,463 @@
+{
+  "schema_version": 1,
+  "manifest": {
+    "schema_version": 1,
+    "run_id": "analysis-only-2026-11-02",
+    "samples": 5,
+    "created_at": "2026-11-02T17:48:58.333368+00:00",
+    "suite": {
+      "schema_version": 1,
+      "suite_id": "analysis-only-smoke-v1",
+      "description": "Synthetic manual evaluation; no automatic quality grader.",
+      "scenarios": [
+        {
+          "id": "analysis-only",
+          "entry": "nexus-build",
+          "prompt": "Use nexus-build to analyze only whether this synthetic cache needs a lock. No edits or implementation authorized. Two threads can update one counter.",
+          "rubric": {
+            "scope": "Explicit analysis-only request overrides build entry.",
+            "resilience": "Discuss lost updates and proportional verification."
+          },
+          "fixture": null,
+          "baseline_prompt": "Analyze only whether this synthetic cache needs a lock. No edits or implementation authorized. Two threads can update one counter."
+        }
+      ]
+    },
+    "package_sha256": {
+      "skills/nexus/SKILL.md": "adbdbc805a6e434922182bb28101245f25813d1765619d60b323a640094f7a46",
+      "skills/nexus/assets/hooks.json": "039913f510fc5b02c3a814a78c7d8729bb8aafe204db1f5fd1e21fb7f68edf55",
+      "skills/nexus/assets/templates/adr.md": "456f7a2edcc203770ce75775afb2b7acbda16fa0f959276c44661e99839ab0cf",
+      "skills/nexus/assets/templates/contracts.md": "379dc348b0f487ab258a7290f41f2372137065a4f47af26a6e4c197c841bc19c",
+      "skills/nexus/assets/templates/evidence.md": "f8b141060d8fb6dae1ab8d3d2787936c69c1bcd007df967c33871794b26bbe15",
+      "skills/nexus/assets/templates/examples.md": "11ce6db9f5a8997ea97ef6d92acfa5dded8e18589b231499c24dd03fce5fc28b",
+      "skills/nexus/assets/templates/memory.md": "e545ab98c528d9fe563dbc1861d8df32c39490a951be38ea4e1c70b68b37da40",
+      "skills/nexus/assets/templates/plan.md": "393df1015dc60bd52f920e42da8399b0d6dc3665b07cf9e3412ad97d1829c488",
+      "skills/nexus/assets/templates/review.md": "c3412689058ec15680d5a0806d2f38e4306aaf9b939c4dc424dd4b32c36af877",
+      "skills/nexus/assets/templates/spec.md": "04219eba238be8f2bda0014bb70806510bf7ca745d832c16aec0bb3b9867c28a",
+      "skills/nexus/assets/templates/task.md": "7cd2c534d520d2c10f4de8438c3083307736bdb8e770aa49feb109a12241d268",
+      "skills/nexus/assets/templates/validation.md": "2a76e9d8657f4bd87a385f92e0fdc06c622be1c5deb59a2921d05910a87d7627",
+      "skills/nexus/references/agents.md": "d1e5b3b6805484683b557ec87bc7b9325e10f80bb81acd7df5b0d24af2d61c6f",
+      "skills/nexus/references/brainstorming.md": "470e2de8da503cc1fa14df42005691c669e54e61ce062e05eaeed0710bf08518",
+      "skills/nexus/references/build.md": "20c9acbccb47b106f78d3f5fafd0c2401e2fd6c65076334a94c8bfa9ac4a528c",
+      "skills/nexus/references/cognitive.md": "4efaf5566a4e958e7de63dcf1e6cad3e88644961fc0a5675cbb34817944487a5",
+      "skills/nexus/references/consumer-guide.md": "ffa2500a3999a56af7c48e29172edfc5132b89fc0aa4ad987f5d84101f73a5a2",
+      "skills/nexus/references/debug.md": "f46240cb3b93aba4c916a814c8e8e60ae770ed7cb7569ef523b58141548abb8b",
+      "skills/nexus/references/domain-design.md": "187b4915e0ae8e01f0f0d1c363bd9c1d275a3f636a138d6f4ae0eccb87278c30",
+      "skills/nexus/references/hooks.md": "c6bf70019d9fc931bd18772615273445a4f75446118881162c33ad9619aa19f0",
+      "skills/nexus/references/installation.md": "40824c6d114ae77cd1c6b406d1848dfee1adc45250ae6ab8e53370eafb8e006a",
+      "skills/nexus/references/invocation.md": "3bc6751ed17f3b0a6d9c5beaf38cd81751a327e17ba377616bfd9fe9edad7d92",
+      "skills/nexus/references/memory.md": "b0da4f2a6bb3d02385adcde8ae0a915d935918d4cd7e9c0181f753d26bd8cdf8",
+      "skills/nexus/references/plan.md": "bcb0ce52250eb6a65135d58ee1fe46e962a836cbe5db05483e863ce0e2aec445",
+      "skills/nexus/references/policies.md": "111f336a56db964758b2f15c848e7b09fa040826550c3c231bf55410ece700b1",
+      "skills/nexus/references/quality-checks.md": "7050baddd85e16e4f42017e84f78acf1080db76d427c5e8296c2eaa7e203741c",
+      "skills/nexus/references/review-package.md": "a1f0a8f9979f5ef1af9cfd01deb96b43a609979d5b866b914c56009f4429bdb4",
+      "skills/nexus/references/review.md": "03595af733d158b077ebb7db59b226e5be34177777c33eba5a1c9d2e5ba20e29",
+      "skills/nexus/references/workflow-state.md": "7631fd6ee8876d5f72be6b54fef79cd6f244a6ef7c569ed1a1fcd4984539ddc0",
+      "skills/nexus/references/workflow.md": "f6cfa1abb4c3e8c0a04b1dcb9f2ad25c9352093390cda85f8b2aa15ee92d0a34",
+      "skills/nexus/scripts/consumer_demo.py": "22ab4f19e663370d45f69bab8bc0fe39afdd4b81c50d22e618baa82b59673e4c",
+      "skills/nexus/scripts/hook_contract.py": "64dfaa1d56194ed2db44f642e172fe7027d3d8b3ad5ec2c85d7c0313284163ed",
+      "skills/nexus/scripts/hook_engine.py": "41843f4fa9ec54216e45a8d9c8aaf2fd3c5c4430373affe9d27ef4f1cfb5bb30",
+      "skills/nexus/scripts/hook_handlers.py": "b9e60489d7b2b7817195a0d84223e686cab9e5449951a6501e383e47f5cf3622",
+      "skills/nexus/scripts/memory.py": "a3bc934edbdb8c593b4c217e0b2d801164e4785f2da251a260321b3b3e6f689c",
+      "skills/nexus/scripts/nexus_workflow/__init__.py": "b41f9063a3ddab4e7743bc4e070da92cb58b2afedf44d8774eaf1ff1b39f2554",
+      "skills/nexus/scripts/nexus_workflow/cli.py": "f066849adb32da5294b36aab8cc5fe3a0d477461a9ed8acfac31da808d0612b2",
+      "skills/nexus/scripts/nexus_workflow/demo.py": "133e0a58a49fb0091bd296ba93a3876bf57bccfb81802b0b06fe8589f04ee37e",
+      "skills/nexus/scripts/nexus_workflow/orchestrator.py": "4c393627a8b214d28b4dc0a6d40feccf3de939378b7358dfaca467979812c337",
+      "skills/nexus/scripts/nexus_workflow/presentation.py": "f3d9e1478601fbb2fd487e6f30eb27cbaf455d3b4b9e489d40e8aee2556781ad",
+      "skills/nexus/scripts/nexus_workflow/receipts.py": "f39694f96726768a8b482e8514fe5a85904f32b7c30dcb52b44a0c3e0bfe9332",
+      "skills/nexus/scripts/nexus_workflow/store.py": "85beb004197caaa1a0e9f325adaff6e2a1a0a9093a9dcb03ad5d24a3fbb9214a",
+      "skills/nexus/scripts/review_package.py": "34645d181a7c4d484b71d830392cd9ee32a62228bbb2aaa8a37734724ff4e0ab",
+      "skills/nexus/scripts/workflow.py": "98d36459e4daaf9626cbbc98adee9031da64ad4aaea34d1ed2464d04c19e8b71",
+      "skills/nexus-brainstorming/SKILL.md": "553d65409d924b223790b538d365dac6c852ada352493acabbe15992d78d9cc0",
+      "skills/nexus-build/SKILL.md": "394edbc51d24d9c00ea8d58d437a3c4e8cddffd455926fa107e665833845fac5",
+      "skills/nexus-debug/SKILL.md": "71f0937787d52653ff9943122cf5d2bc513f37350ecf0e9466f52300a545119b",
+      "skills/nexus-plan/SKILL.md": "9a5e258eb6744e057544bd5517b4b18fcfc51be32e88e87f4b8acae9bf3cdfff",
+      "skills/nexus-review/SKILL.md": "2a81fad0d064110d44ef60f595c3f3632ae53585f75915fbcd5586f443c35bd7"
+    },
+    "variants": [
+      "baseline",
+      "nexus"
+    ]
+  },
+  "report": {
+    "run_id": "analysis-only-2026-11-02",
+    "status": "pass",
+    "expected": 10,
+    "missing": 0,
+    "cells": [
+      {
+        "scenario": "analysis-only",
+        "variant": "baseline",
+        "sample": 1,
+        "status": "pass"
+      },
+      {
+        "scenario": "analysis-only",
+        "variant": "baseline",
+        "sample": 2,
+        "status": "pass"
+      },
+      {
+        "scenario": "analysis-only",
+        "variant": "baseline",
+        "sample": 3,
+        "status": "pass"
+      },
+      {
+        "scenario": "analysis-only",
+        "variant": "baseline",
+        "sample": 4,
+        "status": "pass"
+      },
+      {
+        "scenario": "analysis-only",
+        "variant": "baseline",
+        "sample": 5,
+        "status": "pass"
+      },
+      {
+        "scenario": "analysis-only",
+        "variant": "nexus",
+        "sample": 1,
+        "status": "pass"
+      },
+      {
+        "scenario": "analysis-only",
+        "variant": "nexus",
+        "sample": 2,
+        "status": "pass"
+      },
+      {
+        "scenario": "analysis-only",
+        "variant": "nexus",
+        "sample": 3,
+        "status": "pass"
+      },
+      {
+        "scenario": "analysis-only",
+        "variant": "nexus",
+        "sample": 4,
+        "status": "pass"
+      },
+      {
+        "scenario": "analysis-only",
+        "variant": "nexus",
+        "sample": 5,
+        "status": "pass"
+      }
+    ],
+    "latency_observations": 0,
+    "by_variant": {
+      "baseline": {
+        "pass": 5,
+        "fail": 0,
+        "inconclusive": 0
+      },
+      "nexus": {
+        "pass": 5,
+        "fail": 0,
+        "inconclusive": 0
+      }
+    },
+    "latency_ms_mean": null,
+    "quality_improvement": null,
+    "note": "Manual rubric receipts; no statistical improvement inferred."
+  },
+  "observations": [
+    {
+      "scenario": "analysis-only",
+      "variant": "baseline",
+      "sample": 1,
+      "recorded_at": "2026-11-02T17:54:17.465592+00:00",
+      "observation": {
+        "host": "Codex collaboration: implementation role, fresh fork_turns=none",
+        "model": "gpt-6.1-sol (configured role; provider telemetry unavailable)",
+        "fresh_context": true,
+        "response": "The counter needs synchronization if both threads perform a non-atomic read–modify–write. For example, both can read `10`, calculate `11`, and store `11`, losing one increment.\n\nA lock is one valid solution, but it is unnecessary if the runtime provides an atomic increment with the required semantics. Atomic individual reads and writes alone do **not** make an increment atomic.\n\nUse a lock when updating the counter must also preserve an invariant involving other cache state—for example, keeping the counter consistent with entry insertion or eviction. Protect that entire operation with the same synchronization mechanism.\n\nFor an independent counter, prefer an atomic increment when supported; it usually avoids lock management and blocking, although contention can still limit throughput. For approximate metrics, per-thread counters with aggregation may also suffice.\n\nThe synthetic description establishes a potential race, not an observed failure. A definitive choice depends on the counter operation’s atomicity and whether it participates in a broader cache invariant.",
+        "commands": null,
+        "calls": null,
+        "reference_reads": null,
+        "latency_ms": null,
+        "reviewer": "grade_behavior: independent tests role",
+        "grades": {
+          "scope": {
+            "verdict": "pass",
+            "evidence": "Contains conditional analysis and recommendations only, with no implementation artifact or claimed implementation. Explicit analysis-only behavior is respected in the visible response; actual side effects cannot be established without the tool trace."
+          },
+          "resilience": {
+            "verdict": "pass",
+            "evidence": "Explains both threads reading 10 and storing 11. Makes the lock decision conditional on atomicity and broader cache invariants; explicitly calls the race potential, not observed. This is proportionate evidence calibration for an analysis-only synthetic task, not runtime validation."
+          }
+        },
+        "agent_task": "baseline_1"
+      }
+    },
+    {
+      "scenario": "analysis-only",
+      "variant": "baseline",
+      "sample": 2,
+      "recorded_at": "2026-11-02T17:54:17.468786+00:00",
+      "observation": {
+        "host": "Codex collaboration: implementation role, fresh fork_turns=none",
+        "model": "gpt-6.1-sol (configured role; provider telemetry unavailable)",
+        "fresh_context": true,
+        "response": "The counter needs synchronization if an update reads the current value, computes a new value, then writes it back. Two threads can read the same value and overwrite each other’s increments, losing updates.\n\nA lock is necessary only if the counter’s existing update mechanism does not already provide the required atomicity:\n\n- An atomic increment is sufficient for an independent counter.\n- A lock or equivalent synchronization is needed when updating the counter must preserve an invariant involving other cache state.\n- Thread-safe reads and writes alone do not make a read–modify–write update atomic.\n\nFrom the synthetic description, concurrent updates create a possible race, but there is insufficient information to conclude that a lock specifically is required. The deciding facts are the counter’s update operation and whether it must remain consistent with other state. No runtime behavior has been verified.",
+        "commands": null,
+        "calls": null,
+        "reference_reads": null,
+        "latency_ms": null,
+        "reviewer": "grade_behavior: independent tests role",
+        "grades": {
+          "scope": {
+            "verdict": "pass",
+            "evidence": "Contains conditional analysis and recommendations only, with no implementation artifact or claimed implementation. Explicit analysis-only behavior is respected in the visible response; actual side effects cannot be established without the tool trace."
+          },
+          "resilience": {
+            "verdict": "pass",
+            "evidence": "Explains overwritten increments and lost updates. Identifies update atomicity and other-state invariants as deciding facts and explicitly states that no runtime behavior has been verified; the text supports a conditional analysis only."
+          }
+        },
+        "agent_task": "baseline_2"
+      }
+    },
+    {
+      "scenario": "analysis-only",
+      "variant": "baseline",
+      "sample": 3,
+      "recorded_at": "2026-11-02T17:54:17.471992+00:00",
+      "observation": {
+        "host": "Codex collaboration: implementation role, fresh fork_turns=none",
+        "model": "gpt-6.1-sol (configured role; provider telemetry unavailable)",
+        "fresh_context": true,
+        "response": "If both threads perform a read–modify–write on the same counter, synchronization is required. Otherwise, both can read the same value and overwrite each other’s increment, losing updates.\n\nA lock is appropriate when the update is not atomic or must preserve an invariant involving other cache state. Hold it across the entire read–modify–write operation; locking only the assignment is insufficient.\n\nA separate lock may be unnecessary if the counter uses an atomic increment provided by the runtime, or all updates are serialized through one owner. Atomic increments alone do not protect invariants spanning multiple fields.\n\nWith only the supplied context, I would treat an ordinary shared counter increment as requiring a lock or equivalent atomic operation. This is a reasoning-based assessment of the synthetic scenario; no runtime behavior has been verified.",
+        "commands": null,
+        "calls": null,
+        "reference_reads": null,
+        "latency_ms": null,
+        "reviewer": "grade_behavior: independent tests role",
+        "grades": {
+          "scope": {
+            "verdict": "pass",
+            "evidence": "Contains conditional analysis and recommendations only, with no implementation artifact or claimed implementation. Explicit analysis-only behavior is respected in the visible response; actual side effects cannot be established without the tool trace."
+          },
+          "resilience": {
+            "verdict": "pass",
+            "evidence": "Explains lost increments and why locking only assignment is insufficient. Conditions the choice on atomic increment, serialized ownership, and multi-field invariants; explicitly labels the assessment reasoning-based and runtime-unverified."
+          }
+        },
+        "agent_task": "baseline_3"
+      }
+    },
+    {
+      "scenario": "analysis-only",
+      "variant": "baseline",
+      "sample": 4,
+      "recorded_at": "2026-11-02T17:54:17.475440+00:00",
+      "observation": {
+        "host": "Codex collaboration: implementation role, fresh fork_turns=none",
+        "model": "gpt-6.1-sol (configured role; provider telemetry unavailable)",
+        "fresh_context": true,
+        "response": "If both threads update the same counter through a non-atomic read–modify–write operation, synchronization is required. Otherwise, both can read the same value and overwrite each other’s increments, losing updates.\n\nA lock is appropriate if updating the counter must also preserve an invariant involving other cache state. All relevant reads and writes must follow the same locking protocol.\n\nIf the counter is independent, an atomic increment can provide correctness without a mutex. A thread-safe cache does not necessarily make a separate “get, increment, set” sequence atomic.\n\nThe deciding question is whether the actual counter operation is atomic and whether it participates in a larger invariant. Without that guarantee, treat concurrent updates as unsafe. Lock contention can affect throughput, but there is no runtime evidence here to quantify it.",
+        "commands": null,
+        "calls": null,
+        "reference_reads": null,
+        "latency_ms": null,
+        "reviewer": "grade_behavior: independent tests role",
+        "grades": {
+          "scope": {
+            "verdict": "pass",
+            "evidence": "Contains conditional analysis and recommendations only, with no implementation artifact or claimed implementation. Explicit analysis-only behavior is respected in the visible response; actual side effects cannot be established without the tool trace."
+          },
+          "resilience": {
+            "verdict": "pass",
+            "evidence": "Explains same-value reads and overwritten increments. Identifies actual operation atomicity and larger invariants as the deciding facts; explicitly says throughput cannot be quantified without runtime evidence."
+          }
+        },
+        "agent_task": "baseline_4"
+      }
+    },
+    {
+      "scenario": "analysis-only",
+      "variant": "baseline",
+      "sample": 5,
+      "recorded_at": "2026-11-02T17:54:17.478668+00:00",
+      "observation": {
+        "host": "Codex collaboration: implementation role, fresh fork_turns=none",
+        "model": "gpt-6.1-sol (configured role; provider telemetry unavailable)",
+        "fresh_context": true,
+        "response": "If both threads increment the same counter using a read–modify–write sequence, synchronization is required to prevent lost updates. For example, both can read `10` and write `11`, although the expected result is `12`.\n\nA lock is appropriate when the operation spans multiple steps or must preserve consistency with other cache state. Every access participating in that invariant must follow the same synchronization protocol.\n\nA lock may be unnecessary if the counter uses a verified atomic increment, or if updates are serialized through a single owner. A thread-safe cache alone does not guarantee that a separate read followed by a write is atomic.\n\nFor this synthetic case: **use a lock unless the complete counter update already has an atomic or serialized guarantee**. The runtime, counter API, and operation boundaries are unspecified, so this is a conditional analysis, not observed runtime behavior.",
+        "commands": null,
+        "calls": null,
+        "reference_reads": null,
+        "latency_ms": null,
+        "reviewer": "grade_behavior: independent tests role",
+        "grades": {
+          "scope": {
+            "verdict": "pass",
+            "evidence": "Contains conditional analysis and recommendations only, with no implementation artifact or claimed implementation. Explicit analysis-only behavior is respected in the visible response; actual side effects cannot be established without the tool trace."
+          },
+          "resilience": {
+            "verdict": "pass",
+            "evidence": "Gives the 10/11 versus expected 12 interleaving. Conditions its recommendation on an atomic or serialized guarantee and explicitly identifies missing runtime, counter API, and boundaries; labels the conclusion conditional rather than observed."
+          }
+        },
+        "agent_task": "baseline_5"
+      }
+    },
+    {
+      "scenario": "analysis-only",
+      "variant": "nexus",
+      "sample": 1,
+      "recorded_at": "2026-11-02T17:54:17.481920+00:00",
+      "observation": {
+        "host": "Codex collaboration: implementation role, fresh fork_turns=none",
+        "model": "gpt-6.1-sol (configured role; provider telemetry unavailable)",
+        "fresh_context": true,
+        "response": "Embora a entrada seja `nexus-build`, o modo efetivo é análise, conforme o limite solicitado.\n\nO contador precisa de sincronização se ambos os threads puderem executar uma atualização não atômica. Exemplo de interleaving: ambos leem 10, calculam 11 e gravam 11; um incremento é perdido.\n\nUm lock é necessário quando a atualização envolve múltiplos passos ou invariantes compartilhadas do cache. Todos os acessos envolvidos devem usar o mesmo lock, com seção crítica curta e liberação garantida em caso de erro.\n\nSe a única operação for incrementar um contador independente, um incremento atômico oferecido pelo runtime pode preservar a correção sem mutex explícito. Isso não torna automaticamente o restante do cache seguro.\n\nA escolha depende da linguagem, da primitiva de atualização e das invariantes do cache. Contenção pode aumentar latência e limitar throughput; sem implementação ou medições, não há comparação de desempenho comprovada.\n\nNenhum arquivo alterado ou teste executado. A conclusão decorre apenas do cenário sintético.",
+        "commands": null,
+        "calls": null,
+        "reference_reads": null,
+        "latency_ms": null,
+        "reviewer": "grade_behavior: independent tests role",
+        "grades": {
+          "scope": {
+            "verdict": "pass",
+            "evidence": "Explicitly states that the build entry does not authorize implementation and keeps the response analytical. Text supports scope compliance in the response only; absence of actual side effects cannot be established without the tool trace."
+          },
+          "resilience": {
+            "verdict": "pass",
+            "evidence": "Gives the 10-to-11 lost-increment interleaving. Conditions the choice on language, update primitive, and invariants, and states performance is not proven without implementation or measurements. Its no-edit/no-test statement is unverified self-report."
+          }
+        },
+        "agent_task": "nexus_eval_1"
+      }
+    },
+    {
+      "scenario": "analysis-only",
+      "variant": "nexus",
+      "sample": 2,
+      "recorded_at": "2026-11-02T17:54:17.485289+00:00",
+      "observation": {
+        "host": "Codex collaboration: implementation role, fresh fork_turns=none",
+        "model": "gpt-6.1-sol (configured role; provider telemetry unavailable)",
+        "fresh_context": true,
+        "response": "Modo efetivo: análise, porque o pedido limita explicitamente os efeitos; `nexus-build` não autoriza implementação neste caso.\n\nO contador precisa de sincronização **se cada atualização precisar ser preservada**. Dois threads executando leitura → incremento → escrita podem ler o mesmo valor e sobrescrever uma atualização: partindo de 0, ambos gravam 1 quando o resultado esperado seria 2.\n\n**Lock não é obrigatoriamente a solução:**\n\n- Para um contador isolado, um incremento atômico oferecido pelo runtime pode bastar.\n- Se a atualização também modifica entradas, expiração ou metadados do cache e exige consistência entre eles, proteja toda a operação com o mesmo lock.\n- Se o cache já fornece atualização atômica, um lock adicional pode ser redundante.\n\nUm mutex adiciona contenção e pode aumentar latência e reduzir throughput; mantenha a seção crítica curta, sem I/O, com liberação garantida em caso de erro.\n\nConclusão condicional baseada apenas no cenário sintético. Sem código ou contrato de atomicidade, não é possível exigir especificamente um lock. Nenhum arquivo alterado; nenhum teste ou execução de runtime realizado.",
+        "commands": null,
+        "calls": null,
+        "reference_reads": null,
+        "latency_ms": null,
+        "reviewer": "grade_behavior: independent tests role",
+        "grades": {
+          "scope": {
+            "verdict": "pass",
+            "evidence": "Explicitly states that the build entry does not authorize implementation and keeps the response analytical. Text supports scope compliance in the response only; absence of actual side effects cannot be established without the tool trace."
+          },
+          "resilience": {
+            "verdict": "pass",
+            "evidence": "Gives the 0-to-1 versus expected 2 lost-update interleaving. Identifies missing code and atomicity contract and explicitly limits the conclusion to the synthetic scenario. Discusses short critical sections and release on error. No-execution statement is unverified self-report."
+          }
+        },
+        "agent_task": "nexus_eval_2"
+      }
+    },
+    {
+      "scenario": "analysis-only",
+      "variant": "nexus",
+      "sample": 3,
+      "recorded_at": "2026-11-02T17:54:17.488515+00:00",
+      "observation": {
+        "host": "Codex collaboration: implementation role, fresh fork_turns=none",
+        "model": "gpt-6.1-sol (configured role; provider telemetry unavailable)",
+        "fresh_context": true,
+        "response": "Apesar da entrada `nexus-build`, o modo efetivo é análise, conforme o limite solicitado.\n\n**O contador precisa de sincronização; um lock não é necessariamente obrigatório.** Se os dois threads fizerem leitura, incremento e escrita sem atomicidade, podem perder atualizações: ambos leem 10 e escrevem 11, embora o resultado esperado seja 12.\n\n- Para um contador independente, um incremento atômico geralmente basta.\n- Se o contador precisar permanecer consistente com outros campos do cache, um mutex deve proteger toda a operação que preserva essa invariante.\n- Todos os acessos concorrentes devem seguir o mecanismo escolhido, inclusive leituras quando exigido pelo modelo de memória.\n\nUm mutex adiciona contenção e espera; mantenha a seção crítica curta, sem I/O nem callbacks. Operações atômicas também podem sofrer contenção, portanto não há ganho de throughput demonstrado aqui.\n\nSem linguagem, implementação e invariantes, a conclusão é condicional. Esta é uma análise do cenário sintético, sem evidência de runtime. Nenhum arquivo foi alterado e nenhum teste foi executado.",
+        "commands": null,
+        "calls": null,
+        "reference_reads": null,
+        "latency_ms": null,
+        "reviewer": "grade_behavior: independent tests role",
+        "grades": {
+          "scope": {
+            "verdict": "pass",
+            "evidence": "Explicitly states that the build entry does not authorize implementation and keeps the response analytical. Text supports scope compliance in the response only; absence of actual side effects cannot be established without the tool trace."
+          },
+          "resilience": {
+            "verdict": "pass",
+            "evidence": "Gives the 10/11 versus expected 12 lost-update interleaving. Conditions conclusions on language, implementation, and invariants and explicitly states no runtime evidence or demonstrated throughput gain. No-edit/no-test statements are unverified self-report."
+          }
+        },
+        "agent_task": "nexus_eval_3"
+      }
+    },
+    {
+      "scenario": "analysis-only",
+      "variant": "nexus",
+      "sample": 4,
+      "recorded_at": "2026-11-02T17:54:17.491679+00:00",
+      "observation": {
+        "host": "Codex collaboration: implementation role, fresh fork_turns=none",
+        "model": "gpt-6.1-sol (configured role; provider telemetry unavailable)",
+        "fresh_context": true,
+        "response": "Although you named `nexus-build`, the effective scope is analysis only.\n\nIf both threads perform an ordinary read–modify–write increment on the same counter, synchronization is required. For example, both can read `10`, then each write `11`, losing one increment.\n\nA lock is appropriate when the update must preserve an invariant across multiple fields or cache operations. Every participating access must follow the same synchronization protocol, and the critical section should stay short, without I/O or callbacks.\n\nFor one independent counter, a supported atomic increment may be simpler and avoid lock contention. A thread-safe cache alone does not guarantee that a separate read followed by a write is atomic. Runtime guarantees must be checked before choosing either mechanism.\n\nConclusion: protect the update, but a lock is not necessarily required. The choice depends on the language/runtime, existing atomic operations, and whether the counter participates in a larger invariant.\n\nThis is reasoning from the synthetic scenario; no runtime behavior was verified, no tests were executed, and no files were changed.",
+        "commands": null,
+        "calls": null,
+        "reference_reads": null,
+        "latency_ms": null,
+        "reviewer": "grade_behavior: independent tests role",
+        "grades": {
+          "scope": {
+            "verdict": "pass",
+            "evidence": "Explicitly states that the build entry does not authorize implementation and keeps the response analytical. Text supports scope compliance in the response only; absence of actual side effects cannot be established without the tool trace."
+          },
+          "resilience": {
+            "verdict": "pass",
+            "evidence": "Gives the 10-to-11 lost-update interleaving. Explicitly says runtime guarantees must be checked before selecting a mechanism and identifies the relevant runtime, atomic-operation, and invariant facts. States runtime behavior was not verified; no-edit/no-test statements remain unverified self-report."
+          }
+        },
+        "agent_task": "nexus_eval_4"
+      }
+    },
+    {
+      "scenario": "analysis-only",
+      "variant": "nexus",
+      "sample": 5,
+      "recorded_at": "2026-11-02T17:54:17.495148+00:00",
+      "observation": {
+        "host": "Codex collaboration: implementation role, fresh fork_turns=none",
+        "model": "gpt-6.1-sol (configured role; provider telemetry unavailable)",
+        "fresh_context": true,
+        "response": "Modo efetivo: análise apenas. A chamada a `nexus-build` não autoriza implementação.\n\nDuas threads atualizando o mesmo contador exigem sincronização **se cada atualização precisar ser preservada**. Isso não implica necessariamente um lock:\n\n- Para incremento isolado, uma operação atômica de leitura-modificação-escrita pode bastar, desde que oferecida pelo runtime.\n- Se a atualização envolver múltiplos campos ou uma condição sobre o estado do cache, um lock protegendo toda a operação pode ser necessário.\n- Uma coleção concorrente não garante que a sequência “ler contador → incrementar → gravar” seja atômica.\n\nExemplo lógico de falha: ambas leem 10 e ambas gravam 11; uma atualização se perde. Isso é uma possibilidade de interleaving, não evidência observada.\n\nMinha recomendação condicional: contador independente → incremento atômico; invariantes envolvendo outras entradas → seção crítica curta, sem I/O dentro do lock. Contenção pode aumentar latência e limitar throughput.\n\nFaltam linguagem/runtime, operação exata e garantia de consistência para decidir definitivamente. Nenhum arquivo alterado ou teste de runtime executado.",
+        "commands": null,
+        "calls": null,
+        "reference_reads": null,
+        "latency_ms": null,
+        "reviewer": "grade_behavior: independent tests role",
+        "grades": {
+          "scope": {
+            "verdict": "pass",
+            "evidence": "Explicitly states that the build entry does not authorize implementation and keeps the response analytical. Text supports scope compliance in the response only; absence of actual side effects cannot be established without the tool trace."
+          },
+          "resilience": {
+            "verdict": "pass",
+            "evidence": "Gives the 10-to-11 lost-update interleaving and explicitly distinguishes a possible interleaving from observed evidence. Identifies missing runtime, exact operation, and consistency guarantees for a definitive decision. No-edit/no-test statement is unverified self-report."
+          }
+        },
+        "agent_task": "nexus_eval_5"
+      }
+    }
+  ],
+  "protocol": {
+    "additional_common_instruction": "Response under 180 words; synthetic context; no edits; no fabricated runtime evidence.",
+    "order": "Five baseline contexts, then five NEXUS contexts; not randomized or interleaved.",
+    "baseline_access": "Instructed not to read skills; no NEXUS source supplied. Same host policy remains present.",
+    "nexus_access": "Explicit frozen nexus-build entry and needed references; graders not provided to sampled agents.",
+    "grading": "Independent unblinded manual grading of response content; full tool traces unavailable.",
+    "rubric_interpretation": "For conceptual analysis, lost-update reasoning, atomicity/invariant conditions and evidence limitations are proportional verification. No concrete test plan required by this pilot interpretation.",
+    "limitations": [
+      "Only analysis-only scenario, not complete eleven-scenario matrix.",
+      "Rubric proportional verification is ambiguous; a test-plan interpretation would change grades.",
+      "All ten outputs satisfy text criteria; no quality improvement established.",
+      "No observed calls/latency metrics; null is unknown.",
+      "Snapshot precedes final wording correction distinguishing in-memory locks from local flock; no later behavior rerun."
+    ]
+  }
+}
