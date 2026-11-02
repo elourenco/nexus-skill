@@ -1,36 +1,52 @@
 # NEXUS — Engineering Intelligence
 
-Fundação de uma skill portátil de engenharia: especificação, decisões arquiteturais, execução incremental e validação com evidências.
+![NEXUS: núcleo conectado a módulos de exploração, planejamento, construção e revisão.](docs/assets/nexus-hero.png)
 
-[Segurança e ética em IA](skills/nexus/references/ai-safety-ethics.md) orientam tanto
-a atuação da NEXUS quanto os produtos com IA que ela ajuda a construir: autorização,
-privacidade, confiabilidade, impacto humano e supervisão proporcional ao risco.
-As regras vivem em [Policies](skills/nexus/references/policies.md#policy-ai-safety-ethics)
-e chegam às seis entradas pelos contratos compartilhados, com detalhes sob demanda.
-São instruções e critérios de avaliação; não instalam barreiras técnicas, certificam
-conformidade ou comprovam resistência a prompt injection.
+**Do problema à implementação, com decisões explícitas e evidências de validação.**
 
-**Status: skill portátil com componentes locais opcionais.** `skills/nexus/` contém instruções, templates, um [helper de memória JSON](skills/nexus/references/memory.md), o [executor local de hooks](skills/nexus/references/hooks.md) com journal SQLite e a [CLI de workflows](skills/nexus/references/workflow-state.md) para tarefas, DAG, gates e recuperação. A [CLI de agentes e review](runtime/README.md) fornece roteamento, adapters textuais e Council. Esses componentes são acionados explicitamente; não há scheduler, dashboard ou ligação automática entre eles. Implementação, testes do projeto e dispatch do workflow continuam nas ferramentas reais do host.
+NEXUS é uma skill portátil de engenharia de software para agentes de IA. Organiza exploração, planejamento, implementação, diagnóstico e revisão, ajustando a profundidade ao risco da mudança. O núcleo é textual: usa as ferramentas do host e carrega referências conforme a tarefa.
+
+[Começar](#começar) · [Entradas](#entradas-disponíveis) · [Componentes](#componentes-e-fronteiras) · [Validação](#validar) · [Referências](#referências)
+
+## O que o NEXUS orienta
+
+- **Decisões antes de alterações:** explicitar premissas, alternativas, contratos e critérios de aceite.
+- **Execução proporcional:** usar FAST, BALANCED ou DEEP conforme risco e incerteza.
+- **Engenharia de sistemas:** considerar latência, throughput, concorrência, falhas e recuperação nas dimensões afetadas.
+- **Conclusão verificável:** distinguir implementação, verificações executadas, evidências e pendências.
+- **Controle humano:** respeitar instruções do host, escopo e autorizações existentes.
+
+**Estado atual:** skill portátil com seis entradas e componentes locais opcionais. O núcleo funciona sozinho; memória, workflows, hooks e runtime textual são adotados explicitamente.
 
 ## Começar
 
-O ponto de entrada geral é [skills/nexus/SKILL.md](skills/nexus/SKILL.md). Carregue esse arquivo no agente e forneça o objetivo e o repositório de trabalho. O núcleo funciona sozinho e seleciona procedimentos conforme o pedido. Para chamadas individuais no seletor do host, o pacote também oferece cinco entradas especializadas.
+### Carregamento direto
 
-Também há empacotamento local como plugin **`nexus@nexus-local`**, versão **0.3.0**, para Claude Code e Codex. Ambos usam o mesmo diretório `skills/`, agora com seis entradas; a instalação não ativa hooks, servidores MCP ou o runtime textual. Veja [instalação e uso](skills/nexus/references/installation.md) e [avaliação e descoberta nos hosts](docs/behavioral-evaluation.md). O [histórico de empacotamento](docs/plugins-validation.md) registra a versão inicial 0.1.0. A licença continua pendente; este incremento não publica uma distribuição.
+Abra [skills/nexus/SKILL.md](skills/nexus/SKILL.md) no agente e informe o objetivo e o repositório de trabalho. O uso textual não exige Python, helpers ou runtime adicional.
 
-Na raiz deste repositório, escolha o host. Estes comandos alteram a configuração do usuário **quando você os executar**:
+> Use NEXUS para planejar a sincronização offline deste projeto. Preserve os contratos existentes e registre os cenários de conflito e recuperação.
+
+### Plugin local
+
+O pacote está disponível como plugin local **`nexus@nexus-local`**, versão **0.3.0**, para Claude Code e Codex. Ambos usam o mesmo diretório `skills/`, com seis entradas; a instalação não ativa hooks, servidores MCP ou o runtime textual. Veja [instalação e uso](skills/nexus/references/installation.md) e [avaliação e descoberta nos hosts](docs/behavioral-evaluation.md). O [histórico de empacotamento](docs/plugins-validation.md) registra a versão inicial 0.1.0. A licença continua pendente; este incremento não publica uma distribuição.
+
+Na raiz deste checkout, escolha o host. Os comandos registram o catálogo e alteram a configuração do seu usuário ao serem executados.
+
+**Claude Code**
 
 ```sh
 claude plugin marketplace add "$PWD"
 claude plugin install nexus@nexus-local
 ```
 
+**Codex**
+
 ```sh
 codex plugin marketplace add "$PWD"
 codex plugin add nexus@nexus-local
 ```
 
-Exemplo de solicitação: “Use NEXUS para planejar a sincronização offline deste projeto; preserve os contratos existentes e registre os cenários de conflito e recuperação.”
+Abra uma nova sessão no projeto consumidor, confira as seis entradas no seletor e faça uma primeira chamada apenas de análise. A disponibilidade dos comandos depende do cliente instalado; consulte o guia de instalação se o comando `plugin` não existir.
 
 ## Entradas disponíveis
 
@@ -56,6 +72,9 @@ estado ou regras. A [invocação](skills/nexus/references/invocation.md) carrega
 o procedimento escolhido e executa no agente atual por padrão.
 
 ## Instalação e invocação por host
+
+<details>
+<summary>Instalação manual, sintaxe por host e verificação de descoberta</summary>
 
 Como plugin, os manifestos incluem o diretório `skills/` completo. Na instalação
 manual de skills standalone, copie **as seis pastas** de `skills/` para o mesmo diretório
@@ -87,7 +106,35 @@ pedido apenas de análise. Confira a leitura do procedimento e o escopo respeita
 A presença dos arquivos não prova descoberta automática ou acesso aos links entre
 pastas em qualquer host. Este repositório não modifica configurações globais.
 
-## Estrutura
+</details>
+
+## Componentes e fronteiras
+
+O núcleo em **`skills/nexus/` é a fonte de verdade**. As cinco entradas especializadas reutilizam seus procedimentos e políticas. Os componentes executáveis abaixo são opcionais e têm escopos distintos.
+
+| Componente | Responsabilidade | Ativação e limites |
+| --- | --- | --- |
+| [Skill portátil](skills/nexus/SKILL.md) | Instruções, procedimentos, políticas e templates | Carregada pelo agente; execução nas ferramentas do host |
+| [Memória local](skills/nexus/references/memory.md) | Store JSON com proveniência, isolamento e recuperação | Helper opt-in; sem persistência automática |
+| [Workflow local](skills/nexus/references/workflow-state.md) | Tarefas, DAG, gates, recibos e recuperação | CLI opt-in; sem scheduler ou dispatch automático |
+| [Hooks locais](skills/nexus/references/hooks.md) | Checks, permissões, recibos e journal SQLite | Executor opt-in; registro e escopo definidos pelo consumidor |
+| [Runtime textual](runtime/README.md) | Roteamento, adapters textuais e Council de review | Componente separado; não instala agentes no host |
+
+Não há dashboard ou ligação automática entre esses componentes. Implementação, testes do projeto consumidor e dispatch do workflow continuam nas ferramentas reais do host. A memória JSON do projeto e o journal SQLite dos hooks são stores separados, sem sincronização automática.
+
+## Segurança, ética e autorização
+
+[Segurança e ética em IA](skills/nexus/references/ai-safety-ethics.md) orientam tanto
+a atuação da NEXUS quanto os produtos com IA que ela ajuda a construir: autorização,
+privacidade, confiabilidade, impacto humano e supervisão proporcional ao risco.
+As regras vivem em [Policies](skills/nexus/references/policies.md#policy-ai-safety-ethics)
+e chegam às seis entradas pelos contratos compartilhados, com detalhes sob demanda.
+São instruções e critérios de avaliação; não instalam barreiras técnicas, certificam
+conformidade ou comprovam resistência a prompt injection.
+
+A skill não concede permissão para commit, push, merge, deploy ou outras ações externas. O [registro de validação](docs/ai-safety-ethics-validation.md) distingue verificações estruturais, aplicação documental dos cenários e limites da entrega.
+
+## Referências
 
 | Caminho | Responsabilidade |
 | --- | --- |
@@ -109,8 +156,6 @@ pastas em qualquer host. Este repositório não modifica configurações globais
 ## Validar
 
 Para adotar os componentes locais, siga o [consumidor mínimo](skills/nexus/references/consumer-guide.md).
-O [registro de segurança e ética](docs/ai-safety-ethics-validation.md) distingue
-verificações estruturais, aplicação documental dos cenários e limites da entrega.
 O exemplo executável demonstra falha, bloqueio, correção e recuperação com recibos
 reais. Os [checks de qualidade](skills/nexus/references/quality-checks.md) reutilizam
 o executor de hooks com flags, escopo e thresholds definidos pelo consumidor.
@@ -120,19 +165,21 @@ aplicação por agentes e testes dos helpers. `scripts/evaluate.py` prepara cond
 baseline/NEXUS com contextos independentes, registra observações reais e mantém
 amostras ausentes como inconclusivas; não inicia inferência nem inventa métricas.
 
-O workflow aceita agora uma política opcional de [recibos dos hooks](skills/nexus/references/workflow-state.md):
+O workflow aceita uma política opcional de [recibos dos hooks](skills/nexus/references/workflow-state.md):
 importação explícita, vínculo a tarefa/run/snapshot e revalidação na conclusão.
 Consumidores antigos continuam usando o contrato declarado. Identidades de review
 são proveniência informada pelo host, não autenticação de independência.
 
-Requer Python 3.10 ou superior, sem dependências externas:
+Na raiz do repositório, com **Python 3.10+**, sem dependências Python externas. Os helpers locais exigem POSIX; o uso textual da skill não depende desse ambiente:
 
 ```sh
 python3 scripts/validate.py
-python3 -m unittest discover -s tests -p test_validate.py -v
 python3 skills/nexus/scripts/hook_engine.py validate
 python3 -m unittest discover -s tests -v
 ```
+
+<details>
+<summary>Cobertura, evidências e limites das verificações</summary>
 
 O validador cobre metadados das seis entradas, links Markdown locais e contratos dos manifestos/catálogos. Os testes de pacote verificam dependências ausentes e portabilidade do núcleo isolado e do conjunto. As [evidências das entradas](docs/entrypoints-validation.md) registram avaliações comportamentais com cenários sintéticos e seus limites. A suíte em `tests/` exercita memória, workflows, hooks e relocação dos helpers, incluindo persistência, concorrência e recuperação. Veja as [evidências de memória](docs/memory-validation.md), a [auditoria de workflows](docs/workflow-implementation.md), suas [evidências](docs/workflow-validation.md) e a [validação de plugins](docs/plugins-validation.md). Os testes Python não demonstram aderência geral de agentes nem substituem a instalação nos hosts.
 
@@ -153,8 +200,10 @@ A [suíte de eficiência](evals/efficiency-suite.json) e o
 avaliam artefatos desnecessários, preservação das validações e consumo observado.
 Consulte os [resultados e limites](docs/efficiency-validation.md) antes de inferir economia.
 
-## Origem e limites
+</details>
+
+## Origem e distribuição
 
 O desenho parte de práticas de desenvolvimento orientado por especificação, execução persistente com limites e arquitetura proporcional ao risco. Superpowers e UB-Mode são referências conceituais citadas no planejamento, não dependências incorporadas nem integrações verificadas. O conteúdo deste repositório é próprio; nenhuma implementação de terceiros foi copiada.
 
-A licença de distribuição ainda será definida. Não publicar releases nem assumir permissão de redistribuição enquanto essa decisão estiver aberta.
+**Licença de distribuição pendente.** Não publicar releases nem assumir permissão de redistribuição enquanto essa decisão estiver aberta.
