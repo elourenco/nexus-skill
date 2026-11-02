@@ -26,6 +26,13 @@ ownership. **Evidência:** fontes e validações propostas identificadas como ta
 
 ## Entrega e limite
 
+Para [produtos com IA](ai-safety-ethics.md#ai-products), inclua no plano existente
+fronteiras de confiança, dados/destinos permitidos, controles e responsáveis,
+supervisão pertinente e cenários de falha. Vincule aceite à evidência necessária;
+uma aprovação se refere ao alvo definido, e mudança material exige revalidação.
+Planeje limites agregados, latência e recuperação dos controles conforme o risco,
+sem impor chamadas adicionais a modelos ou métricas universais de equidade.
+
 Entregue objetivo/escopo, decisões preservadas, etapas com dependências, aceite,
 estratégia de validação, riscos/recuperação e pendências. Use o
 [template de plano](../assets/templates/plan.md) se houver necessidade de arquivo,

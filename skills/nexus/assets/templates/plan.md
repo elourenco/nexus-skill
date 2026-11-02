@@ -14,6 +14,11 @@ referencie requisitos/aceites por ID em vez de reproduzi-los.
 - Recursos compartilhados e limites de concorrência:
 - Recuperação/rollback, quando aplicável (gatilho, ação e verificação):
 
+Quando houver [produto com IA](../../references/ai-safety-ethics.md#ai-products),
+use estratégia/dependências para atribuir controles e responsáveis; testes para
+cenários de dano/erro pertinentes; recuperação para controle indisponível, revisão
+humana e efeitos incertos. Referencie o aceite da SPEC, sem duplicar seus critérios.
+
 ## Decisões, quando necessárias
 
 - Arquitetura proposta e fronteiras afetadas:

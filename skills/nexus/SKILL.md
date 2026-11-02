@@ -14,7 +14,7 @@ Ao executar helpers de uma instalação, resolva os scripts a partir do caminho 
 ## Ativação
 
 1. **Contexto:** identifique intenção, projeto/workspace, instruções e fontes; reaproveite decisões e autorizações existentes. Perguntas conceituais dispensam projeto; esclareça apenas lacunas materiais à entrega.
-2. **Políticas mínimas:** respeite hierarquia, escopo, autorizações e budget. A skill não autoriza ações externas. Verifique capacidades do host; não invente ferramentas ou resultados.
+2. **Políticas mínimas:** respeite hierarquia, escopo, autorizações, budget e [segurança e ética em IA](references/policies.md#policy-ai-safety-ethics) na atuação e nos produtos. A skill não autoriza ações externas. Verifique capacidades do host; não invente ferramentas ou resultados.
 3. **Roteamento:** selecione intenção e perfil de risco; escolha acompanhamento direto ou rastreado conforme [Workflows](references/workflow.md). Carregue somente a seção pertinente ainda não válida no contexto.
 4. **Execução:** com plano aprovado, avance na próxima pendência autorizada; reabra decisões somente por nova evidência ou mudança material. Agrupe edições relacionadas antes dos checks, acompanhando evidências, bloqueios e budget. Reavalie o perfil diante de risco/incerteza. Considere latência, throughput, concorrência e recuperação nas dimensões afetadas.
 5. **Fechamento:** aplique o contrato final. Capture aprendizado duradouro pelo módulo Memory somente quando autorizado e útil.
@@ -54,6 +54,7 @@ Dependências abaixo são condicionais ao uso; cada módulo fornece seu contrato
 | Módulo / caminho | Ativação e responsabilidade | Contrato fornecido | Dependências / limites |
 | --- | --- | --- | --- |
 | [Policies](references/policies.md) | Antes de alterar/verificar, delegar, escalar ou trabalhar com budget | Testes proporcionais, capacidade, consumo e contexto | Política do host; sem medição não garante teto monetário |
+| [Segurança e ética em IA](references/ai-safety-ethics.md) | Mudança em fronteiras de confiança, acesso/destino de dados sensíveis, autonomia, produto com IA ou impacto humano material | Aplicação dos invariantes de Policies à atuação e ao produto; controles, responsabilidade e evidência | Detalhe sob demanda; não instala proteção técnica nem exige auditoria extensa em FAST |
 | [Workflows](references/workflow.md) | Etapas, artefatos, tarefas ou retomada | Modos, estados, dependências e recuperação; [contrato da CLI/Todo](references/workflow-state.md) quando adotado | Policies; Templates conforme artefato; sem scheduler |
 | [Decisões e hipóteses](references/cognitive.md) | Ambiguidade, hipótese fraca ou decisão material | Premissas, alternativas e evidência contrária | Fontes atuais; não prova correção |
 | [Agents & Review](references/agents.md) | Delegação útil ou Review Council pertinente ao risco | Ownership, contratos de delegação e pilares de revisão | Policies e capacidades reais; runtime textual opcional, sem instalar agentes no host |

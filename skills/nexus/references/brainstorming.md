@@ -26,6 +26,12 @@ Aplica-se o [contrato de invocação](invocation.md).
 
 ## Entrega e limite
 
+Quando houver [gatilho de segurança/ética](ai-safety-ethics.md#risk-triggers),
+identifique finalidade, pessoas afetadas e danos previsíveis; compare alternativas
+com menor exposição de dados ou autonomia, inclusive sem IA quando suficiente.
+Explicite a evidência que falta para avaliar impactos. A discussão não autoriza
+coleta de dados sensíveis nem cria auditoria extensa para uma questão simples.
+
 Entregue problema/restrições, alternativas com trade-offs, recomendação e questões
 abertas. Use [SPEC](../assets/templates/spec.md) ou [ADR](../assets/templates/adr.md)
 somente se um registro persistente for necessário. Encerre na recomendação quando
