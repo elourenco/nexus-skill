@@ -1,11 +1,11 @@
 ---
 name: nexus
-description: Use when a software engineering task needs coordinated specification, architecture, implementation, debugging, review or recovery across multiple steps, or when the user explicitly requests NEXUS.
+description: Use when the user requests NEXUS generally, status or resumption, or a software engineering task needs coordination across multiple stages. Use a named nexus-* entry directly when the user selects one.
 ---
 
 # NEXUS Cognitive Engineering
 
-Transforme problemas de software em soluções sustentáveis com raciocínio crítico, execução ágil, validação e uso eficiente de IA. Identificador de ativação preservado: `nexus`. A skill é portátil; memória, workflow e hooks locais são opcionais, acionados explicitamente e sem integração automática entre si.
+Transforme problemas de software em soluções sustentáveis com raciocínio crítico, execução ágil, validação e uso eficiente de IA. Identificador de ativação preservado: `nexus`. O núcleo funciona sozinho; entradas opcionais `nexus-*` selecionam seus procedimentos diretamente. Memória, workflow e hooks locais são opcionais, acionados explicitamente e sem integração automática entre si.
 
 Pense antes de codificar; desenhe proporcionalmente; reutilize antes de criar; execute incrementalmente; valide com evidências; otimize contexto; aprenda seletivamente; preserve o controle humano.
 
@@ -21,18 +21,19 @@ Ao executar helpers de uma instalação, resolva os scripts a partir do caminho 
 
 ## Intenção → modo
 
-Classifique pela entrega pedida; intenção não cria um novo modo de workflow.
+Classifique pela entrega pedida; intenção não cria um novo modo de workflow. Para os procedimentos abaixo, leia uma vez o [contrato de invocação](references/invocation.md) e somente o procedimento selecionado. As entradas especializadas usam essas mesmas fontes; não é necessário instalá-las para usar o núcleo por linguagem natural.
 
-| Intenção | Encaminhamento |
+| Intenção / entrada | Encaminhamento |
 | --- | --- |
-| Question, Explore | Explore; pergunta simples termina na resposta, sem artefatos obrigatórios |
-| Plan, Architect | Plan; decisão arquitetural não autoriza implementação |
-| Build, Refactor, Document | Build para a alteração solicitada; Plan antes quando houver contrato a definir |
-| Debug | Explore para diagnóstico; Build somente para correção autorizada |
-| Test, Review | Review para verificar; Build se o pedido incluir criar/alterar testes |
-| Resume | Reconciliar fontes e estado real antes de retomar o modo pendente |
+| Question | Explore; pergunta simples termina na resposta, sem procedimento ou artefatos obrigatórios |
+| Explore, Brainstorm / `nexus-brainstorming` | [Brainstorming](references/brainstorming.md) em Explore; problema, alternativas e recomendação |
+| Plan, Architect / `nexus-plan` | [Planejamento](references/plan.md) em Plan; contratos e etapas de uma direção definida; alternativas em aberto podem exigir Explore antes |
+| Build, Refactor, Document / `nexus-build` | [Implementação](references/build.md) em Build para a alteração solicitada; Plan antes quando houver contrato material a definir |
+| Debug / `nexus-debug` | [Diagnóstico](references/debug.md) em Explore; Build somente para correção autorizada |
+| Test, Review / `nexus-review` | [Revisão](references/review.md) em Review para verificar; Build se o pedido incluir criar/alterar testes |
+| Status, Resume / `nexus` | Consultar fonte existente; status não inicia execução. Para retomar, reconciliar fontes e estado real antes do modo pendente |
 
-Autonomous é continuidade dentro das autorizações existentes, não um perfil nem permissão adicional. Pedidos combinados podem percorrer modos sem impor implementação.
+Autonomous é continuidade dentro das autorizações existentes, não um perfil nem permissão adicional. Pedidos combinados podem percorrer modos sem impor implementação. Uma chamada não cria subagente; execute no agente atual por padrão e delegue somente com benefício concreto e suporte do host.
 
 ## Perfis
 
