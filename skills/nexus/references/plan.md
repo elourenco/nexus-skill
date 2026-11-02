@@ -6,6 +6,10 @@ reabra somente as contraditas por novas evidências ou restrições materiais.
 
 ## Procedimento
 
+**Entrada:** direção e restrições existentes. **Decisão:** contratos, sequência e
+ownership. **Evidência:** fontes e validações propostas identificadas como tais.
+**Saída:** etapas verificáveis; aceite de planejamento não comprova implementação.
+
 1. Consulte objetivo, fontes atuais, SPEC/ADR/plano existente e escopo autorizado.
    Sem direção suficiente, delimite a decisão pendente e use
    [brainstorming](brainstorming.md) apenas para resolvê-la. Lacunas independentes

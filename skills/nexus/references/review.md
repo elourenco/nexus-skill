@@ -6,6 +6,11 @@ arquitetural ainda em aberto pertence a Explore/Plan; revisão avalia um objeto 
 
 ## Procedimento
 
+**Entrada:** alvo/base e critérios. **Decisão:** defeitos demonstráveis e cobertura.
+**Evidência:** diff/fontes e verificações observadas. **Saída:** achados, limites e
+decisão; nunca autorização implícita para corrigir ou publicar. Para handoff por
+arquivo, use a [coleta opcional](review-package.md).
+
 1. Identifique alvo, revisão/base do diff, requisitos e critérios. Leia artefato e
    fontes pertinentes diretamente, sem depender da narrativa do implementador.
    Se faltar o objeto revisável, obtenha-o nas fontes disponíveis ou peça o insumo;

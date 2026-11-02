@@ -1,6 +1,6 @@
-# Princípios cognitivos operacionais
+# Decisões e hipóteses verificáveis
 
-Este Cognitive Reasoning Engine é um protocolo documental de decisão, sem executor.
+Este módulo é um protocolo documental de decisão, sem executor.
 Use diante de premissa frágil, ambiguidade relevante ou impacto material; consulte
 apenas a profundidade e os contratos pertinentes. Entregue decisão, evidência e
 próxima ação, sem simular pensamento privado, monólogos ou agentes filosóficos.
@@ -27,20 +27,20 @@ Após resolver a incerteza, volte à profundidade suficiente para a próxima uni
 
 ## Princípios como intervenções
 
-| Fundamento | Quando usar e efeito observável |
+| Ação | Quando usar e efeito observável |
 | --- | --- |
-| Questionamento socrático | Quando uma resposta muda a solução, escolha a pergunta decisiva: problema real, evidência da premissa, requisito ambíguo, alternativa simples ou fato que invalidaria a decisão. Consulte fontes antes de perguntar ao usuário; não percorra um questionário. |
-| Primeiros princípios | Se o padrão atual não atende ao contrato, separe requisito fundamental, restrição verificada, suposição herdada e convenção. Reconstrua apenas a parte inadequada a partir das restrições; não reabra requisitos válidos sem evidência. |
-| Lógica aristotélica | Detecte contradições entre premissa e conclusão; separe fato, hipótese e inferência. Sintoma ou correlação temporal não prova causa: procure observação que discrimine causas concorrentes. |
-| Falsificabilidade (Popper) | Para hipótese decisiva, formule previsão testável e o resultado que a refuta. Procure falha e contraexemplo antes de fechar diagnóstico; teste não executado permanece pendente. |
-| Parcimônia (Occam) | Prefira a menor complexidade que preserva invariantes. Compare manutenção, latência, risco e custo operacional total; menos linhas ou menos componentes não é prova de simplicidade. |
-| Foco operacional estoico | Separe ação controlável de dependência externa. Registre bloqueio, condição de retomada e trabalho independente útil; não transforme impossibilidade de observar em sucesso. |
-| Viés de confirmação | Quando houver preferência por hipótese, procure uma evidência contrária com potencial de mudar a escolha; preserve o achado mesmo quando contraria a proposta. |
-| Ancoragem | Quando a primeira opção dominar sem comparação, confronte-a com uma alternativa viável por critérios explícitos; evite opções artificiais só para justificar a favorita. |
-| Efeito Einstellung | Quando “sempre fazemos assim” sustentar uma escolha, confronte o padrão familiar com restrições atuais; mantenha-o se continuar adequado. |
-| Carga cognitiva | Quando dependências excederem o contexto útil, decomponha por contratos, invariantes e ownership; mantenha só fontes pertinentes e referências às evidências. |
-| Metacognição | Ao encerrar ou perder progresso, resuma o que é conhecido, inferido, incerto e precisa ser testado, sem expor raciocínio privado. |
-| Pensamento divergente/convergente | Quando houver escolha material, primeiro levante opções dentro do limite da profundidade; depois selecione por critérios de aceite, custo total e reversibilidade. Encerre a exploração após a comparação. |
+| Esclarecer a pergunta decisiva | Quando uma resposta muda a solução, escolha a pergunta decisiva: problema real, evidência da premissa, requisito ambíguo, alternativa simples ou fato que invalidaria a decisão. Consulte fontes antes de perguntar ao usuário; não percorra um questionário. |
+| Separar requisito de suposição | Se o padrão atual não atende ao contrato, separe requisito fundamental, restrição verificada, suposição herdada e convenção. Reconstrua apenas a parte inadequada a partir das restrições; não reabra requisitos válidos sem evidência. |
+| Verificar a inferência | Detecte contradições entre premissa e conclusão; separe fato, hipótese e inferência. Sintoma ou correlação temporal não prova causa: procure observação que discrimine causas concorrentes. |
+| Definir como refutar | Para hipótese decisiva, formule previsão testável e o resultado que a refuta. Procure falha e contraexemplo antes de fechar diagnóstico; teste não executado permanece pendente. |
+| Escolher a menor solução suficiente | Prefira a menor complexidade que preserva invariantes. Compare manutenção, latência, risco e custo operacional total; menos linhas ou menos componentes não é prova de simplicidade. |
+| Separar ação de dependência externa | Separe ação controlável de dependência externa. Registre bloqueio, condição de retomada e trabalho independente útil; não transforme impossibilidade de observar em sucesso. |
+| Buscar evidência contrária | Quando houver preferência por hipótese, procure uma evidência contrária com potencial de mudar a escolha; preserve o achado mesmo quando contraria a proposta. |
+| Comparar a primeira opção | Quando a primeira opção dominar sem comparação, confronte-a com uma alternativa viável por critérios explícitos; evite opções artificiais só para justificar a favorita. |
+| Reavaliar o padrão conhecido | Quando “sempre fazemos assim” sustentar uma escolha, confronte o padrão familiar com restrições atuais; mantenha-o se continuar adequado. |
+| Decompor por contratos | Quando dependências excederem o contexto útil, decomponha por contratos, invariantes e ownership; mantenha só fontes pertinentes e referências às evidências. |
+| Resumir conhecido e incerto | Ao encerrar ou perder progresso, resuma o que é conhecido, inferido, incerto e precisa ser testado, sem expor raciocínio privado. |
+| Explorar e encerrar a escolha | Quando houver escolha material, primeiro levante opções dentro do limite da profundidade; depois selecione por critérios de aceite, custo total e reversibilidade. Encerre a exploração após a comparação. |
 
 Essas heurísticas apoiam decisões; não provam correção nem eliminam vieses.
 Considere latência, throughput, concorrência e recuperação nas dimensões alteradas;

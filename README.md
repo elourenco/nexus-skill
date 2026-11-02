@@ -8,7 +8,7 @@ Fundação de uma skill portátil de engenharia: especificação, decisões arqu
 
 O ponto de entrada geral é [skills/nexus/SKILL.md](skills/nexus/SKILL.md). Carregue esse arquivo no agente e forneça o objetivo e o repositório de trabalho. O núcleo funciona sozinho e seleciona procedimentos conforme o pedido. Para chamadas individuais no seletor do host, o pacote também oferece cinco entradas especializadas.
 
-Também há empacotamento local como plugin **`nexus@nexus-local`**, versão **0.2.0**, para Claude Code e Codex. Ambos usam o mesmo diretório `skills/`, agora com seis entradas; a instalação não ativa hooks, servidores MCP ou o runtime textual. Veja [instalação e uso](skills/nexus/references/installation.md) e [evidências nos hosts](docs/plugins-validation.md), referentes à versão inicial 0.1.0. A licença continua pendente; este incremento não publica uma distribuição.
+Também há empacotamento local como plugin **`nexus@nexus-local`**, versão **0.3.0**, para Claude Code e Codex. Ambos usam o mesmo diretório `skills/`, agora com seis entradas; a instalação não ativa hooks, servidores MCP ou o runtime textual. Veja [instalação e uso](skills/nexus/references/installation.md) e [avaliação e descoberta nos hosts](docs/behavioral-evaluation.md). O [histórico de empacotamento](docs/plugins-validation.md) registra a versão inicial 0.1.0. A licença continua pendente; este incremento não publica uma distribuição.
 
 Na raiz deste repositório, escolha o host. Estes comandos alteram a configuração do usuário **quando você os executar**:
 
@@ -91,11 +91,28 @@ pastas em qualquer host. Este repositório não modifica configurações globais
 | [Hooks](skills/nexus/references/hooks.md) | Executor local opt-in, permissões, recibos e recuperação |
 | [Memória](skills/nexus/references/memory.md) | Persistência local opt-in, proveniência, recuperação e isolamento |
 | [Helper de memória](skills/nexus/scripts/memory.py) | CLI Python sem dependências; filesystem local POSIX |
-| [Princípios cognitivos](skills/nexus/references/cognitive.md) | Premissas, alternativas e evidências |
+| [Decisões e hipóteses](skills/nexus/references/cognitive.md) | Premissas, alternativas e evidências |
+| [Modelagem](skills/nexus/references/domain-design.md) | Estados, fronteiras e ownership proporcionais à mudança |
+| [Pacote de review](skills/nexus/references/review-package.md) | Coleta Git com hashes, anexos e limites explícitos |
 | [Templates](skills/nexus/assets/templates/spec.md) | Spec, plano, tarefa, ADR e memória |
 | [Escopo](docs/phase-1.md) | Entrega atual e próximos refinamentos |
 
 ## Validar
+
+Para adotar os componentes locais, siga o [consumidor mínimo](skills/nexus/references/consumer-guide.md).
+O exemplo executável demonstra falha, bloqueio, correção e recuperação com recibos
+reais. Os [checks de qualidade](skills/nexus/references/quality-checks.md) reutilizam
+o executor de hooks com flags, escopo e thresholds definidos pelo consumidor.
+
+A [suíte comportamental](docs/behavioral-evaluation.md) separa descoberta nos hosts,
+aplicação por agentes e testes dos helpers. `scripts/evaluate.py` prepara condições
+baseline/NEXUS com contextos independentes, registra observações reais e mantém
+amostras ausentes como inconclusivas; não inicia inferência nem inventa métricas.
+
+O workflow aceita agora uma política opcional de [recibos dos hooks](skills/nexus/references/workflow-state.md):
+importação explícita, vínculo a tarefa/run/snapshot e revalidação na conclusão.
+Consumidores antigos continuam usando o contrato declarado. Identidades de review
+são proveniência informada pelo host, não autenticação de independência.
 
 Requer Python 3.10 ou superior, sem dependências externas:
 
@@ -113,6 +130,9 @@ Para o runtime textual opcional, execute `python3 -m unittest discover -s runtim
 As [evidências da base](docs/validation.md) e os documentos da fase 1 registram o estágio documental anterior; os incrementos executáveis têm escopo nas referências acima.
 
 Consulte os [limites do executor de hooks](skills/nexus/references/hooks.md) e suas [evidências](docs/hooks-validation.md) antes de conceder permissões. O registro padrão valida este repositório; consumidores configuram ferramentas e arquivos que compõem os recibos. A memória SQLite dos hooks é isolada da memória JSON do projeto; não existe sincronização automática.
+
+As [evidências do incremento 0.3.0](docs/quality-improvements-validation.md) mapeiam
+as entregas aos testes, ao review independente e aos limites das avaliações.
 
 ## Origem e limites
 
