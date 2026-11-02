@@ -14,9 +14,8 @@ ownership. **Evidência:** fontes e validações propostas identificadas como ta
    Sem direção suficiente, delimite a decisão pendente e use
    [brainstorming](brainstorming.md) apenas para resolvê-la. Lacunas independentes
    não impedem planejar o restante.
-2. Aplique [Workflows](workflow.md) para decomposição e fonte de estado. Defina
-   contratos, invariantes, critérios de aceite e compatibilidade nas fronteiras
-   alteradas. Não crie SPEC, ADR e DAG completos para uma tarefa trivial.
+2. Aplique [Workflows](workflow.md) para decomposição e acompanhamento direto ou rastreado, independente do risco. Reuse a fonte existente; persistência nova somente se útil ou solicitada. Defina
+   contratos, invariantes, critérios de aceite e compatibilidade nas fronteiras alteradas. Execução direta pode registrar decisões no chat, sem TASK/SPEC/PLAN ou estado obrigatório; a CLI opt-in conserva seu contrato.
 3. Decomponha em incrementos verificáveis: arquivos ou componentes afetados,
    dependências, ownership, validação e condição de conclusão. Trate latência,
    throughput, concorrência e falhas conforme o comportamento; reserve recursos
@@ -32,7 +31,7 @@ estratégia de validação, riscos/recuperação e pendências. Use o
 [template de plano](../assets/templates/plan.md) se houver necessidade de arquivo,
 vinculando fontes e revisões conhecidas; não invente hashes ou aceites.
 
-Planejar não autoriza implementar. Quando o pedido incluir execução e as decisões
+Se o plano já foi aprovado e o pedido é executar, retome a próxima pendência autorizada, sem novo brainstorming/plano salvo evidência ou mudança material. Planejar isoladamente não autoriza implementar. Quando o pedido incluir execução e as decisões
 necessárias estiverem resolvidas, continue em Build dentro da autorização existente.
 Uma lacuna que altere contrato ou risco bloqueia somente a ação dependente.
 

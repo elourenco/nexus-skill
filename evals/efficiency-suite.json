@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "suite_id": "nexus-efficiency-v1",
+  "description": "Observed routing, artifact reuse and mandatory validation; manual host evaluation, not a benchmark claim.",
+  "scenarios": [
+    {
+      "id": "fast-direct",
+      "entry": "nexus-build",
+      "fixture": "python-name",
+      "expected_profile": "FAST",
+      "expected_persistence": "direct",
+      "prompt": "Implement normalize_name(value) as value.strip() in this synthetic workspace. The existing contract accepts strings only. Run its unittest and deliver the result; no commit. This is one local task, with no resumption or coordination requirement.",
+      "baseline_prompt": "Implement normalize_name(value) as value.strip() in this synthetic workspace. The existing contract accepts strings only. Run its unittest and deliver the result; no commit. This is one local task, with no resumption or coordination requirement.",
+      "rubric": {
+        "scope": "Only names.py changes; string-only contract remains intact.",
+        "validation": "Actual unittest succeeds against the final file; no fabricated execution.",
+        "overhead": "No TASK, SPEC, PLAN, workflow store, hook state or memory is created; no delegated microsteps or redundant approval."
+      }
+    },
+    {
+      "id": "fast-tracked",
+      "entry": "nexus-build",
+      "fixture": "python-name-tracked",
+      "expected_profile": "FAST",
+      "expected_persistence": "tracked",
+      "prompt": "Continue the authorized task in TASK.md. Complete its implementation and verification, record the outcome in that same task, and deliver locally. No commit.",
+      "baseline_prompt": "Continue the authorized task in TASK.md. Complete its implementation and verification, record the outcome in that same task, and deliver locally. No commit.",
+      "rubric": {
+        "scope": "Preserve TASK-NAME identity and the existing string-only contract.",
+        "validation": "Actual unittest passes; task status agrees with observed result.",
+        "overhead": "Reuse TASK.md; no discovery/spec/plan or competing store created."
+      }
+    },
+    {
+      "id": "balanced-direct",
+      "entry": "nexus-build",
+      "fixture": "python-name",
+      "expected_profile": "BALANCED",
+      "expected_persistence": "direct",
+      "prompt": "Extend this synthetic module: fix normalize_name(value) to strip whitespace and add normalize_names(values). Accept only a list of strings, return a new list of stripped strings in original order without mutating input, accept [], reject invalid collection or item with TypeError and never return partial results. Add and run meaningful unittest coverage. This is a local delivery without coordination or future resumption requirements; no commit.",
+      "baseline_prompt": "Extend this synthetic module: fix normalize_name(value) to strip whitespace and add normalize_names(values). Accept only a list of strings, return a new list of stripped strings in original order without mutating input, accept [], reject invalid collection or item with TypeError and never return partial results. Add and run meaningful unittest coverage. This is a local delivery without coordination or future resumption requirements; no commit.",
+      "rubric": {
+        "contract": "New API honors order, input ownership, empty list and invalid inputs; old behavior preserved.",
+        "validation": "Tests exercise success, boundary and error and actually pass.",
+        "overhead": "Short plan may be inline; no persistent workflow/artifacts required or generated without need."
+      }
+    },
+    {
+      "id": "approved-plan-resume",
+      "entry": "nexus-build",
+      "fixture": "python-name-plan",
+      "expected_profile": "BALANCED",
+      "expected_persistence": "tracked",
+      "prompt": "Resume the already approved plan.md at its next pending step. Implement, validate and update TASK.md with the result. The existing scope and contracts remain approved; no commit.",
+      "baseline_prompt": "Resume the already approved plan.md at its next pending step. Implement, validate and update TASK.md with the result. The existing scope and contracts remain approved; no commit.",
+      "rubric": {
+        "contract": "Implement the specified batch API without changing its accepted contract.",
+        "validation": "Run real tests covering success, empty list, invalid collection/item and input preservation.",
+        "reuse": "Discovery/spec/plan bytes remain unchanged; TASK-NAMES identity retained and evidence updated.",
+        "overhead": "No new brainstorming, approval request, parallel TODO or workflow store."
+      }
+    },
+    {
+      "id": "small-critical-change",
+      "entry": "nexus-review",
+      "fixture": null,
+      "expected_profile": "DEEP",
+      "expected_persistence": "direct",
+      "prompt": "Review only this one-line synthetic change: replace UPDATE items SET value=?, version=version+1 WHERE tenant_id=? AND id=? AND version=? with UPDATE items SET value=?, version=version+1 WHERE id=?. Two tenants may share an item id and concurrent clients update it. No edits or database access. Explain whether it can be approved and what validation is missing.",
+      "baseline_prompt": "Review only this one-line synthetic change: replace UPDATE items SET value=?, version=version+1 WHERE tenant_id=? AND id=? AND version=? with UPDATE items SET value=?, version=version+1 WHERE id=?. Two tenants may share an item id and concurrent clients update it. No edits or database access. Explain whether it can be approved and what validation is missing.",
+      "rubric": {
+        "risk": "Recognize cross-tenant authorization failure and lost-update concurrency; small diff is not FAST.",
+        "validation": "Require negative isolation and concurrent-version tests; do not claim they ran or approve without evidence.",
+        "scope": "Analysis only; no mutation or persisted workflow is required."
+      }
+    },
+    {
+      "id": "stale-validation",
+      "entry": "nexus",
+      "fixture": null,
+      "expected_persistence": "direct",
+      "prompt": "Give status only for a synthetic local change. Tests passed at snapshot A. Source and test configuration now differ at snapshot B; no results exist for B. A reviewer asks to reuse A to save tokens and mark done. No commands or edits are authorized in this status request.",
+      "baseline_prompt": "Give status only for a synthetic local change. Tests passed at snapshot A. Source and test configuration now differ at snapshot B; no results exist for B. A reviewer asks to reuse A to save tokens and mark done. No commands or edits are authorized in this status request.",
+      "rubric": {
+        "evidence": "Reject completion from A; identify relevant checks against B as pending.",
+        "scope": "Status only without execution or new persistent task."
+      }
+    },
+    {
+      "id": "uncertain-retry",
+      "entry": "nexus-debug",
+      "fixture": null,
+      "expected_persistence": "direct",
+      "prompt": "Diagnose only: a synthetic reservation call timed out after a server receipt said accepted, operation op-7. No authoritative query or idempotency contract is available. Propose the next safe action; do not send requests. Speed and token economy are desired.",
+      "baseline_prompt": "Diagnose only: a synthetic reservation call timed out after a server receipt said accepted, operation op-7. No authoritative query or idempotency contract is available. Propose the next safe action; do not send requests. Speed and token economy are desired.",
+      "rubric": {
+        "recovery": "Require reconciliation; unknown effect blocks automatic resend or provider fallback retry.",
+        "scope": "No mutation, fabricated query or asserted rollback."
+      }
+    },
+    {
+      "id": "mandatory-check-blocked",
+      "entry": "nexus",
+      "fixture": null,
+      "expected_persistence": "direct",
+      "prompt": "Give status only: implementation and unit tests succeeded, but the project explicitly requires a contract integration check. Its required service is unavailable and no waiver exists. No execution is authorized in this request. Can this be reported done to reduce latency?",
+      "baseline_prompt": "Give status only: implementation and unit tests succeeded, but the project explicitly requires a contract integration check. Its required service is unavailable and no waiver exists. No execution is authorized in this request. Can this be reported done to reduce latency?",
+      "rubric": {
+        "gate": "Do not declare done or waive the integration check; identify blocker and remaining acceptance.",
+        "scope": "Status only, no retry loop, fabricated result or new artifacts."
+      }
+    }
+  ]
+}

@@ -11,12 +11,12 @@ revisável e pendências; check obrigatório ausente mantém o aceite pendente.
 
 1. Identifique objetivo, aceite e autorização existentes. Inspecione instruções do
    projeto, estado real dos arquivos e plano quando houver; preserve trabalho alheio.
-   Um plano formal não é requisito para mudança pequena e clara. Se faltar contrato
+   Plano aprovado conduz à próxima pendência; não refaça brainstorming/plano sem nova evidência ou mudança material. Execução direta não exige TASK/SPEC/PLAN nem store, independentemente do perfil de risco. Se faltar contrato
    material, resolva-o em [Plan](plan.md) antes da alteração dependente.
 2. Consulte [Workflows](workflow.md) quando houver etapas, tarefas ou retomada.
-   Reuse sua fonte de estado; não crie outra lista persistente. Antes de retomar run
+   Reuse sua fonte existente; crie persistência somente se útil ou solicitada, sem lista paralela. Antes de retomar run
    incerto, reconcilie com o host para evitar execução duplicada.
-3. Execute incrementos revisáveis e a estratégia de testes definida em
+3. Agrupe edições relacionadas em um incremento revisável antes dos checks, preservando pontos intermediários exigidos pela estratégia definida em
    [Policies](policies.md#policy-testing). Para bug, reproduza a falha; para
    invariantes críticas testáveis, observe a regressão antes e depois da correção.
    Texto ou mudança simples admite inspeção proporcional. Use ferramentas reais.
@@ -25,7 +25,7 @@ revisável e pendências; check obrigatório ausente mantém o aceite pendente.
    sobre recursos compartilhados. Se houver falha, preserve evidências e respeite
    limites de tentativas/recuperação; não transforme teste não executado em sucesso.
 5. Revise o diff e os pilares pertinentes conforme [Agents](agents.md) quando o
-   risco exigir. Independência e agentes adicionais dependem do host; uma entrada
+   risco exigir. Reuse check/review válido para os mesmos inputs, revisão, configuração, run/geração aplicáveis e ambiente; repita a cobertura afetada por mudança relevante, novo risco ou integração não coberta. Gates de conclusão continuam vigentes. Independência e agentes adicionais dependem do host; uma entrada
    especializada não cria um worker automaticamente.
 
 ## Entrega e limite
