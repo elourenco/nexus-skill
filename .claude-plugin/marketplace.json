@@ -1,0 +1,13 @@
+{
+  "name": "nexus-local",
+  "description": "Catálogo local da skill NEXUS; helpers opcionais e explícitos.",
+  "owner": {
+    "name": "NEXUS"
+  },
+  "plugins": [
+    {
+      "name": "nexus",
+      "source": "./"
+    }
+  ]
+}
