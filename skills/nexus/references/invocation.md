@@ -12,7 +12,7 @@ e interrompa esse fluxo NEXUS. Não substitua silenciosamente por outra instala�
 não simule a leitura e não instale dependências globais. O núcleo `nexus` pode ser
 instalado sozinho e contém todos os procedimentos.
 
-Leia [Policies](policies.md#policy-authority) para autoridade, perfil e validação.
+Consulte [Policies](policies.md#policy-authority) por seção: autoridade, perfil, testes e conclusão pertinentes. Reutilize leituras válidas para a revisão e contexto atuais; não carregue o catálogo inteiro a cada entrada.
 Reaproveite instruções, decisões e autorizações existentes para o mesmo alvo e
 escopo. A entrada explicita a atividade; o pedido do usuário delimita os efeitos.
 Uma chamada a build sem objetivo suficiente não autoriza inventar alterações;
@@ -24,19 +24,21 @@ review não implica correção. Instruções do host prevalecem.
   `nexus/SKILL.md` para redescobrir o modo nem invoque outra skill como ritual.
 - No núcleo geral, selecione pela entrega pedida. Brainstorming explora problema
   e alternativas; Plan organiza uma direção definida. Pedido composto percorre
-  somente as etapas necessárias e já autorizadas, sem pedir aprovação novamente.
+  somente as etapas necessárias e já autorizadas, sem pedir aprovação novamente. Com plano aprovado e fontes atuais, retome a próxima pendência; não refaça brainstorming/plano sem nova evidência ou mudança material.
 - Se nome e pedido divergirem materialmente (por exemplo, build com “somente
   planeje”), respeite o limite do pedido e explique o modo efetivo. Pergunte apenas
   quando a ambiguidade impedir uma decisão de escopo segura.
 - FAST/BALANCED/DEEP definem profundidade. Explore/Plan/Build/Review definem
-  atividade. Os nomes das entradas não criam estados nem novos perfis.
+  atividade. Direto ou rastreado é escolha documental independente do perfil: direto usa chat/diff/evidência sem TASK/SPEC/PLAN ou estado obrigatórios. Adoção da CLI preserva seus gates. Os nomes das entradas não criam estados nem novos perfis.
 - Execute no agente atual por padrão. Delegue apenas com ganho concreto e
   capacidade/autorização do host, conforme [Agents](agents.md). Paralelismo exige
   tarefas independentes e recursos isolados; não aumente concorrência por comando.
 - Para tarefas, status ou retomada, use a fonte de estado existente conforme
   [Workflows](workflow.md). Não inicialize outro store nem acione helpers, hooks ou
-  memória automaticamente. Resultado externo incerto exige reconciliação antes
+  memória automaticamente. Crie persistência somente quando útil ou solicitada. Resultado externo incerto exige reconciliação antes
   de retry; status `running` sozinho não prova que o processo terminou.
+
+O host escolhe o workflow condutor (NEXUS, Superpowers ou outro), conforme precedência e pedido; NEXUS não desativa skills nem exige duplicar etapas já satisfeitas.
 
 ## Entrega comum
 

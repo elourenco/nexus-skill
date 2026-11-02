@@ -134,6 +134,14 @@ Consulte os [limites do executor de hooks](skills/nexus/references/hooks.md) e s
 As [evidências do incremento 0.3.0](docs/quality-improvements-validation.md) mapeiam
 as entregas aos testes, ao review independente e aos limites das avaliações.
 
+O fluxo distingue **perfil de risco** de **acompanhamento direto ou rastreado**:
+uma entrega local pode usar chat, diff e verificações sem criar TASK/SPEC/PLAN;
+retomadas reutilizam o estado e o plano aprovados. A CLI opt-in mantém seus gates.
+A [suíte de eficiência](evals/efficiency-suite.json) e o
+[comparador de versões](docs/behavioral-evaluation.md)
+avaliam artefatos desnecessários, preservação das validações e consumo observado.
+Consulte os [resultados e limites](docs/efficiency-validation.md) antes de inferir economia.
+
 ## Origem e limites
 
 O desenho parte de práticas de desenvolvimento orientado por especificação, execução persistente com limites e arquitetura proporcional ao risco. Superpowers e UB-Mode são referências conceituais citadas no planejamento, não dependências incorporadas nem integrações verificadas. O conteúdo deste repositório é próprio; nenhuma implementação de terceiros foi copiada.

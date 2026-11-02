@@ -1,6 +1,10 @@
 # Contrato executável do Todo — versão 1
 
-Leia ao operar ou integrar o [workflow](workflow.md). Requer Python 3.10+ e filesystem local POSIX com `flock`, `fsync` e rename atômico; o store não usa dependências externas, servidor ou banco. A integração opt-in de recibos lê o journal SQLite local dos hooks. Este componente não contém scheduler, SDK de provider ou adapter nativo de Todo. O executor opcional de hooks e o runtime textual de agentes são componentes separados, sem acionamento automático pelo workflow.
+Leia somente ao adotar, operar ou integrar o executor opt-in do [workflow](workflow.md); execução direta e acompanhamento nativo não exigem esta CLI. Requer Python 3.10+ e filesystem local POSIX com `flock`, `fsync` e rename atômico; o store não usa dependências externas, servidor ou banco. A integração opt-in de recibos lê o journal SQLite local dos hooks. Este componente não contém scheduler, SDK de provider ou adapter nativo de Todo. O executor opcional de hooks e o runtime textual de agentes são componentes separados, sem acionamento automático pelo workflow.
+
+## Profundidade no executor
+
+A escolha documental entre execução direta e rastreada não cria enum, campo ou estado no store. Ao adotar esta CLI, o contrato existente continua obrigatório: BALANCED exige discovery, SPEC e PLAN; DEEP acrescenta alternativas, decisão e Architecture Gate. FAST continua restrito ao baixo risco; não o selecione para evitar gates de BALANCED/DEEP. `mode` registra mudança justificada em checkpoint sem worker ativo, sem reduzir `risk=critical` nem remover review solicitado; revalide gates antes de continuar.
 
 ## Camadas
 
@@ -167,6 +171,65 @@ Operações não dependem de rede/modelo. Validação do DAG é O(tasks + aresta
 Budget interrompe novos starts quando o último total medido atinge limite; sem medição real da unidade, não inicia. Estimativas não substituem medições. Este gate **não garante teto financeiro**: consumo entre medições, chamada em andamento, cancelamento do provider e autorização de gastos dependem do host. Não repita chamadas só para descobrir consumo. Timestamps/usage exibem origem; dados desconhecidos ficam null.
 
 metrics fornece conclusão por quantidade de tasks, lead/cycle em segundos, falhas registradas, tentativas adicionais, reworks explícitos, recibos de testes/review e totais actual/estimate por unidade. Cycle inclui espera e retrabalho; não é CPU time. Evidência de teste é recibo, não contagem de assertions nem medição de cobertura.
+
+## Contratos e decomposição
+
+- **SPEC** define resultado, invariantes e critérios de aceite; nunca é executada como código.
+- **PLAN** define sequência, dependências, estratégia e recuperação, vinculadas à revisão e ao hash da SPEC.
+- **TASKS** são unidades executáveis com ID estável, objetivo, ownership, dependências e aceite observável. Complexidade é opcional; evite fragmentar mudanças triviais.
+- **REVIEW** avalia o resultado; **EVIDENCE** atribui comando/observação, resultado, fonte e data à geração atual da tarefa.
+
+Use os templates existentes: [spec](../assets/templates/spec.md), [plano](../assets/templates/plan.md), [tarefa](../assets/templates/task.md), [ADR](../assets/templates/adr.md). A CLI `template` os exporta sem modificar os originais. No consumidor, mantenha artefatos compartilháveis em `docs/nexus/specs/`, `plans/`, `tasks/` e `decisions/`, criando somente diretórios usados. Estado e recibos privados ficam em `.nexus/local/`, excluído do Git antes do uso.
+
+Registre SPEC/PLAN como `artifact` após a aceitação necessária no host. O executor detecta conteúdo alterado fora do registro. Uma mudança material invalida tarefas e provas anteriores; atualize PLAN para a nova SPEC e execute `reconcile` nas tarefas afetadas. `amend` exige motivo para alterar aceite, responsável, arquivos ou estratégia. Histórico preserva as versões; não reescreva critérios silenciosamente.
+
+## Execução, Todo e paralelismo
+
+Com executor opt-in, estados: `pending`, `ready`, `running`, `validating`, `blocked`, `done`, `cancelled`. `validating` acrescenta uma fronteira explícita para testes/review aos estados anteriores. Cada operação aceita produz snapshot e histórico na mesma transação.
+
+`ready` exige dependências `done`, contratos atuais, autorização atribuída e gates anteriores à execução. `start`/`dispatch` também verificam budget conhecido, tentativas, concorrência e recursos. Dependência inexistente ou cíclica falha sem mutação. Cancelar predecessor não satisfaz dependências.
+
+Declare arquivos/diretórios, bancos, portas e recursos compartilhados com nomes comuns entre agentes. Execute em paralelo apenas tarefas independentes e com recursos disjuntos. Reservas duram pela implementação **e validação**. Worktrees não isolam bancos, portas ou serviços externos. O executor coordena um único estado local; não detecta outros workflows, checkouts ou ferramentas que ignorem esse contrato.
+
+Ao usar o executor opt-in, a fonte de verdade é o store JSON. A alternativa documental rastreada segue o [contrato dos templates](../assets/templates/contracts.md), com seis estados e serialização manual; a validação fica dentro de `running`. Execução direta não adota esse contrato. Não há migração ou sincronização automática entre esses modos. `show` projeta o Todo em Markdown; `show --format json` permite outro adapter. Pela CLI é possível criar, atualizar, reatribuir, bloquear, adicionar dependências, vincular arquivos, solicitar review, retomar, concluir e consultar histórico. Markdown é uma projeção atualizável, sem botões ou sincronização bidirecional. Um Todo nativo, quando realmente disponível, deve traduzir ações para o mesmo contrato; não manter segundo estado independente.
+
+## Testes adaptativos e gates
+
+No executor, registre `strategy.kind` e `strategy.reason` na task, seguindo [políticas](policies.md#policy-testing).
+
+| Situação | Estratégia | Evidência |
+| --- | --- | --- |
+| Domínio, invariantes, algoritmo crítico ou regressão definida | `tdd` | Falha esperada observada antes de start; teste passando após implementação |
+| Feature convencional ou visual de baixo risco | `test-after` | Verificação proporcional após implementação |
+| Legado pouco documentado | `characterization` | Caracterização antes de mudar e comparação posterior |
+| API, persistência ou fronteira externa | `integration-contract` | Contratos, falhas relevantes e recuperação testados |
+| Texto ou ajuste reversível sem lógica | `inspection` | Inspeção/validação estrutural ou visual pertinente, registrada como verificação |
+
+Para DEEP ou task crítica, registre Architecture Gate: boundaries, contratos, alternativas, riscos, reversibilidade e ADR quando necessário. O executor exige recibo; o agente/revisor avalia seu conteúdo. Para review, selecione pilares conforme [agentes](agents.md), solicite-os com `request_review` e registre retornos com `review`. Review Council não exige um agente por pilar. Declare quando a independência não existir.
+
+`complete` exige resultado de implementação reconciliado, última verificação aprovada, todos os aceites evidenciados, reviews solicitados respondidos e nenhum achado critical/high aberto. IDs de achados são únicos na task; use prefixos por revisor. Alterar implementação após review exige `rework`, nova validação e resolução com fonte; provas de gerações antigas não fecham a nova tarefa. Evidência declarada ou recibo já válido não exige repetir o comando só por mudar de etapa: confirme mesmos inputs, revisão, configuração, run, geração e ambiente aplicáveis. Isso não muda importação, cache, validade nem revalidação dos gates. `deliver` revalida todas as tasks e contratos e registra decisão de memória. Falha nunca vira sucesso aparente.
+
+## Dispatch e execução persistente
+
+1. Identifique capacidades e consulte ferramentas/agentes realmente disponíveis no host.
+2. Registre disponibilidade e proveniência com `register`; selecione provider/modelo/esforço conforme política do usuário. Dados desconhecidos ficam null.
+3. `dispatch` prepara Context Pack mínimo e run.id, reservando recursos. Isso ainda não aciona agente.
+4. Use a ferramenta real do host para despachar. Inclua objetivo, contratos, ownership, restrições e instrução de preservar trabalho alheio. `ack` grava handle/recibo retornado.
+5. Colete resultado com `result`; execute testes, solicite review pertinente, registre evidências e conclua.
+
+Se provider falhar antes do dispatch, registre `block` e próxima ação. Se o resultado da chamada for incerto, mantenha reserva e reconcilie com o host; não redispare por timeout. Fallback exige disponibilidade verificada e roteamento autorizado, nunca simulação de troca de modelo.
+
+Em Autonomous, continue apenas enquanto houver próxima ação autorizada, insumos suficientes e progresso verificável. Pare no limite de tentativas, budget conhecido esgotado, duas falhas sem progresso, ausência de autorização, operação externa incerta ou risco que invalide o plano. Corrija ambiente/contexto antes de escalar. Continue tarefas independentes quando seguro; não faça polling infinito nem invente orçamento.
+
+## Checkpoint, cancelamento e retomada
+
+Ao retomar, leia estado, histórico, fontes atuais e status real do host. `checkpoint` registra próxima ação e fonte; não prova efeito externo concluído. Repetir **o mesmo payload com o mesmo operation_id** é idempotente no store; não torna idempotente a operação externa.
+
+`interrupt` mantém reserva de run incerto. `reconcile_run` exige fonte que confirme stopped ou completed. Só então retome a etapa pendente ou valide trabalho já feito. Recibos de runs antigos são rejeitados. Após duas falhas, `recover` exige diagnóstico, hipóteses descartadas, evidência e próxima ação; não zera o limite total de tentativas.
+
+`cancel` de run ativo é solicitação: pare-o pelas ferramentas do host e confirme via `reconcile_run`. Cancelamento não desfaz arquivos, processos ou efeitos remotos. Workflow com tasks canceladas não recebe delivered; reporte escopo incompleto e, se autorizado, inicie outro workflow com escopo revisado.
+
+Registre memória duradoura apenas quando autorizada e útil, seguindo [memória](memory.md). memory=not-needed ou not-authorized fecha essa decisão sem gravar memória global. Métricas derivam de timestamps/recibos; medido e estimado permanecem separados. Medição indisponível é null, nunca zero fictício.
 
 ## Demonstração executável
 

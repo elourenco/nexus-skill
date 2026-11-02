@@ -30,7 +30,7 @@ Registre capacidades como declaradas, verificadas ou desconhecidas. Para adapter
 
 Sem ferramenta de edição, teste ou persistência, produza uma proposta/handoff e identifique o que não foi executado. Texto gerado não equivale a arquivo alterado, teste aprovado ou memória salva.
 
-Cada delegação informa `task_id`, objetivo, papel, fontes/revisão, arquivos e recursos permitidos, dependências, restrições, aceite e limites. Use contexto específico; forneça diff e referências necessárias, sem reenviar todo o histórico. Avise que há outros participantes e preserve alterações alheias. O controlador integra resultados e resolve conflitos.
+Delegue por entrega verificável e ownership, agrupando edições da mesma responsabilidade; não crie agente para cada etapa, arquivo ou check. Cada delegação informa objetivo, papel, fontes/revisão, arquivos e recursos permitidos, dependências, restrições, aceite e limites; inclua `task_id` quando houver tarefa rastreada, sem criá-la só para delegar. Use contexto específico; forneça diff e referências necessárias, sem reenviar todo o histórico. Avise que há outros participantes e preserve alterações alheias. O controlador integra resultados e resolve conflitos.
 
 ## Roteamento por capacidades
 
@@ -63,7 +63,7 @@ Credencial inválida, quota, indisponibilidade, recusa ou resultado externo ince
 | Reliability Reviewer | Integrações, persistência ou estado concorrente | Falhas parciais, idempotência, retries, consistência e observabilidade |
 | Product Reviewer | Requisito ou comportamento perceptível | Aceite, estados de erro e experiência do usuário |
 
-Selecione pelo comportamento e contratos afetados; nomes de arquivos são sinais auxiliares. Não acione todos por padrão nem infira risco material somente de uma palavra. Entregue o mesmo artefato identificado por revisão/hash e suas fontes aos revisores, sem induzir conclusões pela narrativa do implementador. Mudanças no artefato invalidam a conclusão anterior.
+Selecione pelo comportamento e contratos afetados; nomes de arquivos são sinais auxiliares. Não acione todos por padrão nem infira risco material somente de uma palavra. Entregue o mesmo artefato identificado por revisão/hash e suas fontes aos revisores, sem induzir conclusões pela narrativa do implementador. Um reviewer pode agrupar os pilares pertinentes. Reuse a conclusão no escopo/revisão cobertos; alteração relevante, novo risco ou integração ainda não coberta exige nova revisão da cobertura afetada. Não repita review só por transitar entre etapas. No executor opt-in, preserve gerações, pedidos de review e gates de `complete`/`deliver`; provas antigas não fecham nova geração.
 
 | Modo | Execução |
 | --- | --- |
@@ -75,7 +75,7 @@ Independência de contexto não implica modelos/providers diferentes. Sem indepe
 
 ## Contrato de saída e decisão
 
-Cada review identifica `reviewer_id`, `task_id`, revisão/hash do artefato, pilares cobertos e lacunas. Cada achado contém:
+Cada review identifica revisor, alvo e revisão/hash, pilares cobertos e lacunas; no contrato rastreado, use `reviewer_id` e `task_id`. Execução direta pode registrar esses dados no relato, sem criar TASK ou arquivo REVIEW. Cada achado contém:
 
 | Campo | Contrato |
 | --- | --- |

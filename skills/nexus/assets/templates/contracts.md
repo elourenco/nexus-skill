@@ -2,7 +2,7 @@
 
 Este módulo padroniza Markdown estruturado para agentes e leitura humana. Não é
 um formato de runtime nem instala UI, parser, hooks ou sincronização. Os arquivos
-existentes continuam sendo pontos de entrada; carregue este contrato sob demanda.
+existentes continuam sendo pontos de entrada; carregue este contrato sob demanda. Seus mínimos e estados aplicam-se somente à adoção documental rastreada destes templates. Execução direta em qualquer perfil usa chat/diff/evidência, sem TASK/SPEC/PLAN obrigatórios; um plano, issue ou todo existente pode bastar sem conversão. A CLI opt-in conserva seu contrato próprio.
 
 ## Inventário e consumidores
 
@@ -10,7 +10,7 @@ existentes continuam sendo pontos de entrada; carregue este contrato sob demanda
 | --- | --- | --- |
 | [SPEC](spec.md) | Comportamento/contrato a definir; BALANCED/DEEP | Workflow Plan/Build, Planner, Implementer, Reviewer |
 | [PLAN](plan.md) | Execução em etapas; BALANCED/DEEP | Workflow, Planner, Implementer, visão de todo |
-| [TASK](task.md) | Unidade rastreável; todo/retomada; FAST | Workflow Build/Autonomous, agentes, review |
+| [TASK](task.md) | Unidade rastreável quando adotado este formato; todo/retomada | Workflow Build/Autonomous, agentes, review |
 | [REVIEW](review.md) | Quando risco ou gate requer revisão | Reviewer e responsável pela conclusão |
 | [EVIDENCE](evidence.md) | Validação executada; arquivo separado opcional | Workflow, Reviewer, gates e memória |
 | [DECISION/ADR](adr.md) | Decisão duradoura relevante, opcional | Architect, Planner, memória |
@@ -47,11 +47,11 @@ metadados da skill e links, não esquema dos artefatos. Os contratos Markdown s�
   por frente. Verifique colisões antes de integrar; não use contador concorrente
   compartilhado sem coordenação. Não existe alocador automático.
 - Na adoção, registre `Contrato de artefatos: 1` no índice do projeto ou na TASK
-  FAST isolada. Isto versiona o formato, não altera a versão da SPEC.
+  isolada neste formato. Isto versiona o formato, não altera a versão da SPEC.
 
 ## Perfis proporcionais
 
-Perfis são profundidade de documentação; não substituem modos Explore/Plan/Build.
+Perfis expressam risco e profundidade, independentemente de execução direta ou rastreada. A tabela descreve mínimos somente para quem adotar este formato documental; não torna artefatos obrigatórios em todo FAST/BALANCED/DEEP nem substitui modos Explore/Plan/Build.
 
 | Perfil | Entrega mínima | Condições |
 | --- | --- | --- |
@@ -63,13 +63,12 @@ A escolha não dispensa gates do projeto. Review pode ser necessária em qualque
 perfil. MEMORY é sempre condicional à utilidade e autorização. EVIDENCE pode ser
 inline com ID local e âncora; extraia arquivo apenas se compartilhada ou extensa.
 FAST não requer preencher seções de execução sem execução, budget sem autorização
-ou ADR sem decisão. Aceites locais da TASK substituem a SPEC ausente. Para
-promover FAST, crie SPEC/PLAN, atualize referências e preserve TASK ID e histórico.
+ou ADR sem decisão. Aceites locais da TASK substituem a SPEC ausente. Ao promover o perfil neste formato rastreado, complete os artefatos pertinentes, atualize referências e preserve TASK ID e histórico; não altere risco para evitar gates.
 Não repita contexto por artefato; o consumidor resolve os links relevantes.
 
 ## Estados e transições
 
-**Modo documental, sem executor:** o enum dos registros Markdown é:
+**Adoção documental rastreada destes templates, sem executor:** o enum dos registros Markdown é:
 `pending`, `ready`, `running`, `blocked`, `done`, `cancelled`.
 Os nomes de UI BACKLOG, READY, IN_PROGRESS, BLOCKED, DONE e CANCELLED mapeiam,
 respectivamente, para esses valores. REVIEW é etapa de `running` com link para
@@ -109,7 +108,7 @@ Interrupção ou cancelamento de run ativo mantém a reserva até `reconcile_run
 
 ## Interactive Todo Contract
 
-**Sem executor**, a fonte persistente é o conjunto de TASKS Markdown e seus artefatos ligados. **Com executor opt-in**, consulte o store por `show` e faça alterações por `apply`, conforme o contrato acima; Markdown é apenas projeção. A UI
+**Ao adotar estes templates sem executor**, a fonte persistente é o conjunto de TASKS Markdown e seus artefatos ligados. Um acompanhamento nativo existente conserva seu contrato; execução direta não exige fonte persistente. **Com executor opt-in**, consulte o store por `show` e faça alterações por `apply`, conforme o contrato acima; Markdown é apenas projeção. A UI
 ou tabela do PLAN é uma projeção. O contrato mínimo de cada linha é:
 
 | ID/link | Estado | Responsável/papel | Modelo efetivo | Dependências | Bloqueio/próxima ação | Artefatos |
