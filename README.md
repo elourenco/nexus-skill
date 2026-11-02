@@ -1,5 +1,10 @@
 # NEXUS — Engineering Intelligence
 
+[![CI](https://github.com/elourenco/nexus-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/elourenco/nexus-skill/actions/workflows/validate.yml)
+[![Versão: 0.3.0](https://img.shields.io/badge/vers%C3%A3o-0.3.0-blue)](.codex-plugin/plugin.json)
+[![Skill portátil](https://img.shields.io/badge/skill-port%C3%A1til-0F766E)](skills/nexus/SKILL.md)
+[![Helpers: Python 3.10+](https://img.shields.io/badge/helpers-Python%203.10%2B-3776AB?logo=python&logoColor=white)](#validar)
+
 ![NEXUS: núcleo conectado a módulos de exploração, planejamento, construção e revisão.](docs/assets/nexus-hero.png)
 
 **Do problema à implementação, com decisões explícitas e evidências de validação.**
