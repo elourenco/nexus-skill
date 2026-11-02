@@ -1,6 +1,14 @@
 # Instalação local como plugin
 
-O plugin `nexus`, versão inicial `0.1.0`, é exposto pelo catálogo `nexus-local`. Claude Code e Codex compartilham esta skill; não há cópias específicas de seu conteúdo por host. Os manifestos `.claude-plugin/plugin.json` e `.codex-plugin/plugin.json` ficam na raiz do pacote. No Codex foi escolhido o formato de compatibilidade, aceito pelo cliente validado; não há um terceiro manifesto portátil concorrente.
+O plugin `nexus`, versão `0.2.0`, é exposto pelo catálogo `nexus-local`. Claude Code e Codex compartilham as seis entradas em `skills/`, com procedimentos e políticas no núcleo `skills/nexus/`; não há cópias específicas de conteúdo por host. Os manifestos `.claude-plugin/plugin.json` e `.codex-plugin/plugin.json` ficam na raiz do pacote. No Codex foi escolhido o formato de compatibilidade, aceito pelo cliente validado; não há um terceiro manifesto portátil concorrente.
+
+As entradas são `nexus`, `nexus-brainstorming`, `nexus-plan`, `nexus-build`,
+`nexus-debug` e `nexus-review`. Como plugin, o namespace é `nexus:`: por exemplo,
+`/nexus:nexus-review` no Claude Code e `$nexus:nexus-review` no Codex. Confira as seis
+entradas no seletor após atualizar. A validação de instalação original abaixo foi
+feita na versão 0.1.0; a descoberta das cinco novas entradas em 0.2.0 ainda precisa
+ser confirmada no host. Por leitura direta, use o [contrato de invocação](invocation.md)
+e o procedimento correspondente.
 
 ## Instalar e verificar
 
