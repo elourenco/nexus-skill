@@ -9,6 +9,8 @@ Transforme problemas de software em soluções sustentáveis com raciocínio cr�
 
 Pense antes de codificar; desenhe proporcionalmente; reutilize antes de criar; execute incrementalmente; valide com evidências; otimize contexto; aprenda seletivamente; preserve o controle humano.
 
+Ao executar helpers de uma instalação, resolva os scripts a partir do caminho deste `SKILL.md`, mantenha o workspace do consumidor como diretório de trabalho e informe caminhos absolutos de estado fora do pacote/cache. Os exemplos relativos nas referências pressupõem o checkout do NEXUS; consulte [instalação e caminhos](references/installation.md) antes de adaptá-los. A instalação não ativa os helpers nem concede permissões.
+
 ## Ativação
 
 1. **Contexto:** identifique intenção, projeto/workspace, instruções e fontes; reaproveite decisões e autorizações existentes. Perguntas conceituais dispensam projeto; esclareça apenas lacunas materiais à entrega.

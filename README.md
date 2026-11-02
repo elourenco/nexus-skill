@@ -8,6 +8,20 @@ Fundação de uma skill portátil de engenharia: especificação, decisões arqu
 
 O ponto de entrada é [skills/nexus/SKILL.md](skills/nexus/SKILL.md). Carregue esse arquivo no agente e forneça o objetivo e o repositório de trabalho. Para runtimes com instalação de skills, copie a pasta `skills/nexus` para o diretório de skills suportado pelo host. A instalação e a descoberta precisam ser verificadas em cada host; este repositório não modifica configurações globais.
 
+Também há empacotamento local como plugin **`nexus@nexus-local`**, versão **0.1.0**, para Claude Code e Codex. Ambos usam o mesmo `skills/nexus/`; a instalação não ativa hooks, servidores MCP ou o runtime textual. Veja [instalação e uso](skills/nexus/references/installation.md) e [evidências nos hosts](docs/plugins-validation.md). A licença continua pendente; este incremento não publica uma distribuição.
+
+Na raiz deste repositório, escolha o host. Estes comandos alteram a configuração do usuário **quando você os executar**:
+
+```sh
+claude plugin marketplace add "$PWD"
+claude plugin install nexus@nexus-local
+```
+
+```sh
+codex plugin marketplace add "$PWD"
+codex plugin add nexus@nexus-local
+```
+
 Exemplo de solicitação: “Use NEXUS para planejar a sincronização offline deste projeto; preserve os contratos existentes e registre os cenários de conflito e recuperação.”
 
 ## Estrutura
@@ -36,7 +50,7 @@ python3 skills/nexus/scripts/hook_engine.py validate
 python3 -m unittest discover -s tests -v
 ```
 
-O validador cobre metadados e links Markdown locais. A suíte em `tests/` exercita memória, workflows e hooks, incluindo persistência, concorrência e recuperação. Veja as [evidências de memória](docs/memory-validation.md), a [auditoria de workflows](docs/workflow-implementation.md) e suas [evidências](docs/workflow-validation.md). Não demonstra aderência geral de agentes ou instalação entre hosts.
+O validador cobre metadados, links Markdown locais e os contratos restritos dos manifestos/catálogos deste pacote. A suíte em `tests/` exercita memória, workflows, hooks e relocação dos helpers, incluindo persistência, concorrência e recuperação. Veja as [evidências de memória](docs/memory-validation.md), a [auditoria de workflows](docs/workflow-implementation.md), suas [evidências](docs/workflow-validation.md) e a [validação de plugins](docs/plugins-validation.md). Os testes Python não demonstram aderência geral de agentes nem substituem a instalação nos hosts.
 
 Para o runtime textual opcional, execute `python3 -m unittest discover -s runtime/tests -v`. Os testes usam dados sintéticos e HTTP em loopback; não exigem credenciais nem comprovam acesso autenticado a providers. Veja [escopo e limites](runtime/README.md) e o [desenho do incremento](docs/agents-review-runtime-design.md).
 
