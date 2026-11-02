@@ -1,0 +1,5 @@
+changelog:
+  categories:
+    - title: Pull requests integrados nesta versão
+      labels:
+        - '*'

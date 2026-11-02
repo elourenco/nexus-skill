@@ -160,6 +160,10 @@ A skill não concede permissão para commit, push, merge, deploy ou outras açõ
 
 ## Validar
 
+O [CI/CD](docs/releases.md) executa essas verificações em PRs e pushes. Cada push
+na branch principal (`main`, ou `master` se renomeada) publica uma release com tag
+`vX.Y.Z` após os testes, incluindo os PRs integrados desde a versão anterior.
+
 Para adotar os componentes locais, siga o [consumidor mínimo](skills/nexus/references/consumer-guide.md).
 O exemplo executável demonstra falha, bloqueio, correção e recuperação com recibos
 reais. Os [checks de qualidade](skills/nexus/references/quality-checks.md) reutilizam
@@ -211,4 +215,5 @@ Consulte os [resultados e limites](docs/efficiency-validation.md) antes de infer
 
 O desenho parte de práticas de desenvolvimento orientado por especificação, execução persistente com limites e arquitetura proporcional ao risco. Superpowers e UB-Mode são referências conceituais citadas no planejamento, não dependências incorporadas nem integrações verificadas. O conteúdo deste repositório é próprio; nenhuma implementação de terceiros foi copiada.
 
-**Licença de distribuição pendente.** Não publicar releases nem assumir permissão de redistribuição enquanto essa decisão estiver aberta.
+**Licença de distribuição pendente.** As releases automatizadas neste repositório
+privado registram suas versões; não estabelecem uma licença de redistribuição.
