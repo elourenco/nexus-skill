@@ -1,0 +1,14 @@
+{
+  "name": "nexus",
+  "version": "0.1.0",
+  "author": { "name": "NEXUS" },
+  "description": "Engenharia orientada por especificação, arquitetura, execução incremental e validação com evidências.",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "NEXUS",
+    "shortDescription": "Especificação, arquitetura e validação de engenharia",
+    "defaultPrompt": [
+      "Use NEXUS para analisar este projeto e propor o próximo incremento com critérios de aceite."
+    ]
+  }
+}
