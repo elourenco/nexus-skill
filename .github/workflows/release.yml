@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      previous_tag:
+        description: 'Recover after failed CI: last published tag (vX.Y.Z), or initial if none'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+# Queue the entire validation/publication sequence, including rapid successive merges.
+# queue:max retains up to 100 pending runs instead of replacing the previous pending run.
+concurrency:
+  group: nexus-releases
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  validate:
+    uses: ./.github/workflows/validate.yml
+
+  release:
+    needs: validate
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Publish versioned release with all merged pull requests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/release.py
