@@ -58,7 +58,7 @@ Abra uma nova sessão no projeto consumidor, confira as seis entradas no seletor
 | Entrada | Quando usar | Entrega |
 | --- | --- | --- |
 | [nexus](skills/nexus/SKILL.md) | Coordenação geral, status ou retomada | Roteamento ou estado reconciliado |
-| [nexus-brainstorming](skills/nexus-brainstorming/SKILL.md) | Explorar problema e alternativas | Recomendação, trade-offs e questões abertas |
+| [nexus-brainstorming](skills/nexus-brainstorming/SKILL.md) | Iniciar uma feature ou explorar alternativas | Fluxo guiado por aceites; recomendação quando o pedido for só explorar |
 | [nexus-plan](skills/nexus-plan/SKILL.md) | Detalhar uma direção definida | Contratos, etapas, dependências e validação |
 | [nexus-build](skills/nexus-build/SKILL.md) | Implementar o escopo autorizado | Alterações verificadas e pendências |
 | [nexus-debug](skills/nexus-debug/SKILL.md) | Investigar bug ou comportamento inesperado | Diagnóstico; correção quando solicitada |
@@ -75,6 +75,34 @@ Os procedimentos e políticas vivem em `skills/nexus/`. As cinco entradas são
 seletores curtos com referências relativas ao núcleo; não duplicam workflow,
 estado ou regras. A [invocação](skills/nexus/references/invocation.md) carrega apenas
 o procedimento escolhido e executa no agente atual por padrão.
+
+### Criar ou alterar uma feature por aceites
+
+Comece por `nexus-brainstorming` e descreva a feature. O agente conduz entendimento,
+solução, plano, implementação, validação e review, sem exigir novas invocações.
+
+> nexus-brainstorming: quero adicionar exportação CSV ao relatório de pedidos.
+
+Leia a solução e peça ajustes ou responda “aprovado” para seguir ao plano. O agente
+explicita o efeito de cada aceite. Ao apresentar o plano, oferece **subagentes** ou
+**agente único**, recomenda uma opção conforme a tarefa e informa limitações reais.
+Por exemplo: “Aprovo o plano; implemente com subagentes” ou “Aprovo; agente único”.
+Se a escolha estiver pendente, aprovar o plano não seleciona um método implicitamente.
+Escolhas e autorizações suficientes já fornecidas são preservadas.
+
+Com subagentes, a sessão ativa orquestra contextos novos por tarefa quando o host
+suporta; os workers enviam dúvidas e resultados ao orquestrador, que integra e
+valida. Contextos separados não isolam arquivos/bancos/portas: paralelismo exige
+recursos isolados. Esses contextos não implicam chats visíveis ou persistentes.
+No modo agente único, a sessão implementa em sequência sem criar workers; gates
+de review independente continuam exigindo cobertura real e acordo sobre o revisor.
+
+Após o aceite para executar, o agente implementa, testa e revisa no escopo local,
+voltando ao usuário somente por decisão material ou bloqueio indispensável.
+“Somente explorar” e “somente planejar” encerram o fluxo na entrega solicitada.
+Commit, push, merge e deploy exigem autorização correspondente. Artefatos e helpers
+continuam opcionais; confira o [contrato do fluxo](skills/nexus/references/brainstorming.md#fluxo-guiado-por-aceites)
+e os [métodos de execução](skills/nexus/references/agents.md#metodo-de-execucao).
 
 ## Instalação e invocação por host
 
