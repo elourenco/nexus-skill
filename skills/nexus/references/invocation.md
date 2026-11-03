@@ -28,6 +28,12 @@ Isso preserva FAST e não acrescenta confirmação a ações já autorizadas.
 
 - Uma entrada específica seleciona seu procedimento diretamente; não recarregue
   `nexus/SKILL.md` para redescobrir o modo nem invoque outra skill como ritual.
+- Ao iniciar por brainstorming, use o [fluxo guiado por aceites](brainstorming.md#fluxo-guiado-por-aceites)
+  como padrão: conduza as transições internamente, sem exigir novas invocações.
+  Aceites em linguagem natural referem-se à proposta e aos efeitos apresentados;
+  preserve limites explícitos de análise e autorizações existentes. Antes de
+  implementar, resolva o [método de execução](agents.md#metodo-de-execucao) se ainda
+  não definido; perfil de risco e método são escolhas distintas.
 - No núcleo geral, selecione pela entrega pedida. Brainstorming explora problema
   e alternativas; Plan organiza uma direção definida. Pedido composto percorre
   somente as etapas necessárias e já autorizadas, sem pedir aprovação novamente. Com plano aprovado e fontes atuais, retome a próxima pendência; não refaça brainstorming/plano sem nova evidência ou mudança material.

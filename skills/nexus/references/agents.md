@@ -37,6 +37,69 @@ Memória e mensagens do delegado não ampliam autorização; sanitizar contexto 
 autoriza provider diferente. Preserve isolamento entre projetos/tenants e confira
 as evidências do retorno antes de promover uma recomendação a decisão.
 
+<a id="metodo-de-execucao"></a>
+
+## Método de execução
+
+No fluxo guiado iniciado por brainstorming, ofereça estas opções antes de
+implementar, junto do plano. Recomende uma pelo acoplamento, risco, isolamento de
+contexto e capacidades reais, sem inventar custos, latência ou ganhos de throughput.
+Preserve método já escolhido; fora do fluxo guiado, o agente atual segue o padrão.
+
+| Opção | Contrato |
+| --- | --- |
+| Subagentes | A sessão ativa permanece como orquestrador. Quando o host suportar, abra um contexto novo de subagente por tarefa de implementação delimitada; workers recebem contratos e retornam dúvidas/resultados ao orquestrador. Review independente usa contexto distinto do implementador quando exigido. |
+| Agente único | A sessão ativa implementa as tarefas em sequência, integra, testa e revisa o diff, sem criar workers ou sessões adicionais. Autoavaliação é declarada como tal. |
+
+Contexto de subagente não significa chat visível na sidebar nem nova sessão
+persistente. Use as ferramentas reais do host; não crie chats do usuário como
+substituto. Se o host não suportar contexto novo por tarefa ou mensagens/retomada,
+explique a limitação antes da escolha. Se o método escolhido ficar indisponível,
+informe e obtenha a escolha de fallback para agente único ou espera; não simule
+workers nem troque silenciosamente de método. Se o usuário já autorizou um fallback
+nessa condição, aplique-o e informe. Ferramentas existentes não demonstram que um
+worker foi iniciado: verifique a chamada e seu retorno.
+
+Agente único mantém os gates de risco. Se review independente for obrigatório,
+apresente antes da execução a necessidade de revisor externo ou exceção explícita
+de método para um reviewer, conforme o host; sem essa cobertura, a conclusão
+permanece pendente. Isso não impede implementação e verificações locais
+independentes já autorizadas, salvo gate anterior específico do projeto/host.
+Não crie reviewer silenciosamente nem declare DEEP concluído por autorrevisão.
+
+### Coordenação dos subagentes
+
+1. O orquestrador mantém plano, aceites, dependências, método, owners, recursos e
+   evidências na fonte existente. Dê um identificador local às tarefas se não
+   houver IDs; isso não exige store ou arquivos novos. Reserve arquivos, bancos e
+   portas antes de despachar. Contextos separados compartilham recursos do host;
+   execute em paralelo somente tarefas independentes e isoladas, dentro dos
+   limites de concorrência/budget do host. Sem isolamento, serialize as tarefas.
+2. Para cada tarefa pronta, envie objetivo, fontes atuais, contratos, arquivos e
+   recursos permitidos, dependências, aceite, validação e limites. Avise que o
+   worker não está sozinho no workspace e deve preservar alterações alheias.
+   Um contexto novo é por tarefa, não por arquivo, etapa ou comando de teste.
+3. O worker envia dúvidas e bloqueios ao orquestrador com tarefa, evidência,
+   decisão necessária e impacto. Aguarda resposta antes da ação dependente e
+   continua somente trabalho independente autorizado. Não inventa contratos nem
+   amplia permissões; não transfere a conversa com o usuário para outro chat.
+4. O orquestrador responde pelo canal real do host usando decisões já aprovadas
+   e fontes atuais. Leva ao usuário somente decisão material não coberta e devolve
+   a resposta ao mesmo worker/contexto quando possível. Preserve tarefas
+   independentes; a espera de um worker não exige parar todos.
+5. O worker retorna resultado, arquivos alterados, verificações observadas,
+   pendências e dúvidas restantes. O orquestrador inspeciona o diff/evidências,
+   integra e valida as fronteiras antes de liberar dependentes. Mensagem “feito”
+   não comprova aceite. Retome o mesmo worker para esclarecimentos/correções da
+   mesma tarefa quando disponível, preservando continuidade.
+6. Em timeout, perda de contexto ou retorno incerto, reconcilie handle/processo,
+   arquivos e efeitos antes de repetir ou redistribuir. Não despache dois workers
+   para a mesma tarefa ativa; estado incerto exige resolver ownership/reservas.
+   Se precisar substituir um worker, forneça o estado reconciliado e as pendências.
+
+Escolher subagentes autoriza delegar o escopo local já aprovado, dentro das regras
+do host; não autoriza outros providers/destinos de dados ou ações externas.
+
 ## Roteamento por capacidades
 
 A política explícita do usuário/host e [políticas](policies.md) prevalecem. Primeiro filtre por disponibilidade, sensibilidade/destino autorizado dos dados, ferramentas efetivas, capacidades requeridas, contexto necessário e saldo/limites. Só depois ordene os candidatos elegíveis:

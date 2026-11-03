@@ -1,12 +1,16 @@
 ---
 name: nexus-brainstorming
-description: Use when NEXUS brainstorming, discovery, problem framing or comparison of design alternatives is requested, before an approach is settled. Not for executing an already defined plan.
+description: Use when starting a feature through NEXUS brainstorming, discovery, problem framing or comparison of design alternatives, including guided continuation by user acceptance. Not for directly executing an already defined plan.
 ---
 
 # NEXUS Brainstorming
 
 Selecione Explore. Leia o [contrato compartilhado](../nexus/references/invocation.md)
 e execute o [procedimento de brainstorming](../nexus/references/brainstorming.md).
+Por padrão, conduza o fluxo guiado por aceites até a entrega, carregando cada
+procedimento na etapa pertinente, sem exigir outros comandos. Respeite pedidos
+de somente explorar/planejar e autorizações existentes. Antes da implementação,
+ofereça subagentes ou agente único conforme o contrato compartilhado.
 
 Requer a pasta irmã `nexus/` da mesma distribuição. Se alguma referência obrigatória
 estiver ausente, informe o caminho e interrompa este fluxo, sem simular seu conteúdo.
