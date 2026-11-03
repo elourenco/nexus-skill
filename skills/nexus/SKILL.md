@@ -17,7 +17,7 @@ Ao executar helpers de uma instalação, resolva os scripts a partir do caminho 
 2. **Políticas mínimas:** respeite hierarquia, escopo, autorizações, budget e [segurança e ética em IA](references/policies.md#policy-ai-safety-ethics) na atuação e nos produtos. A skill não autoriza ações externas. Verifique capacidades do host; não invente ferramentas ou resultados.
 3. **Roteamento:** selecione intenção e perfil de risco; escolha acompanhamento direto ou rastreado conforme [Workflows](references/workflow.md). Carregue somente a seção pertinente ainda não válida no contexto.
 4. **Execução:** com plano aprovado, avance na próxima pendência autorizada; reabra decisões somente por nova evidência ou mudança material. Agrupe edições relacionadas antes dos checks, acompanhando evidências, bloqueios e budget. Reavalie o perfil diante de risco/incerteza. Considere latência, throughput, concorrência e recuperação nas dimensões afetadas.
-5. **Fechamento:** aplique o contrato final. Capture aprendizado duradouro pelo módulo Memory somente quando autorizado e útil.
+5. **Apresentação e fechamento:** use o [chat guiado](references/chat.md) para acompanhamento, decisões e entregas: componentes verificados do host, texto portátil como fallback e resposta proporcional à tarefa. Aplique o contrato final. Capture aprendizado duradouro pelo módulo Memory somente quando autorizado e útil.
 
 ## Intenção → modo
 
