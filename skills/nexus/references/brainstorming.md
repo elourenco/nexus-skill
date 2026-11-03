@@ -1,9 +1,39 @@
 # Brainstorming — Explore
 
 Use para formular o problema, testar premissas e comparar alternativas antes de
-definir a direção. Se a direção já está definida e o pedido é sequenciar trabalho,
-use [Plan](plan.md). Perguntas conceituais simples podem ser respondidas diretamente.
+definir a direção. É também a entrada padrão do fluxo guiado de criação/alteração
+de features: o agente conduz as etapas e o usuário responde em linguagem natural.
+Se a direção já está definida, preserve-a e avance para o aceite pertinente antes
+de [Plan](plan.md). Perguntas conceituais simples podem ser respondidas diretamente.
 Aplica-se o [contrato de invocação](invocation.md).
+
+## Fluxo guiado por aceites
+
+Ao iniciar por brainstorming, conduza entendimento → solução → plano → execução
+com validação/review → entrega. Carregue cada procedimento somente ao entrar na
+etapa; o usuário não precisa chamar outras entradas. Explique brevemente esse
+percurso no início. Pedido explícito de somente explorar, comparar ou planejar
+limita o percurso à entrega solicitada.
+
+| Momento | Entrega e próximo efeito apresentado ao usuário |
+| --- | --- |
+| Entendimento | Consulte fontes e esclareça lacunas materiais; reapresente objetivo, escopo e restrições para correção, sem exigir um aceite por pergunta. |
+| Solução | Apresente recomendação, contratos/comportamento e trade-offs proporcionais. Termine indicando que o aceite dessa solução autoriza elaborar o plano, ainda sem implementar. |
+| Plano | Execute [Plan](plan.md), apresente incrementos, aceite, verificações e recuperação pertinentes; ofereça o [método de execução](agents.md#metodo-de-execucao). Indique que aprovar esse plano autoriza implementar, testar, corrigir achados no escopo e revisar localmente. |
+| Execução e entrega | Com plano e método aceitos, siga [Build](build.md), aplique review proporcional e entregue evidências/pendências. Continue sem aceite por tarefa ou check; volte ao usuário por decisão material, bloqueio indispensável ou mudança de escopo. |
+
+“Aprovado”, “segue” e “pode continuar” aceitam somente a proposta atual e os efeitos
+explicitados na mensagem anterior. Não trate silêncio, leitura, resposta a uma
+dúvida ou aprovação parcial como aceite global. Se faltou explicitar o efeito ou
+há alvos concorrentes, esclareça antes da ação dependente. Pedido de ajuste mantém
+a etapa: incorpore-o e reapresente a proposta afetada, sem reiniciar o fluxo.
+
+Preserve aceites e método já definidos para o mesmo alvo/escopo. Se o usuário já
+autorizou etapas seguintes, avance dentro dessa autorização sem nova confirmação.
+Aceites não autorizam commit, push, merge, deploy ou outros efeitos externos.
+Na retomada, reconcilie alvo, proposta/aceites, método, pendências e estado real na
+fonte existente; sem registro suficiente, esclareça somente a lacuna. O chat não
+é persistência garantida entre sessões e este fluxo não inicializa helpers.
 
 ## Procedimento
 
@@ -34,9 +64,9 @@ coleta de dados sensíveis nem cria auditoria extensa para uma questão simples.
 
 Entregue problema/restrições, alternativas com trade-offs, recomendação e questões
 abertas. Use [SPEC](../assets/templates/spec.md) ou [ADR](../assets/templates/adr.md)
-somente se um registro persistente for necessário. Encerre na recomendação quando
-o pedido for apenas explorar; não converta discussão em implementação. Um pedido
-que também autorize planejar ou construir pode continuar na etapa correspondente.
+somente se um registro persistente for necessário. No fluxo guiado, aguarde o
+aceite da solução para planejar e do plano para implementar, salvo autorização
+existente suficiente. Se o pedido for apenas explorar, encerre na recomendação.
 
 Exemplo: “Brainstorming do NEXUS: dois dispositivos editam offline o mesmo registro;
 compare alternativas, sem implementar.” A entrega distingue política de conflito

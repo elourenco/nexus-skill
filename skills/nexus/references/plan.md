@@ -38,6 +38,18 @@ estratégia de validação, riscos/recuperação e pendências. Use o
 [template de plano](../assets/templates/plan.md) se houver necessidade de arquivo,
 vinculando fontes e revisões conhecidas; não invente hashes ou aceites.
 
+Se o pedido for somente planejar, entregue o plano e encerre sem exigir escolha
+de execução nem apresentar seu aceite como autorização para implementar.
+No [fluxo guiado iniciado por brainstorming](brainstorming.md#fluxo-guiado-por-aceites)
+que continuará até a implementação,
+apresente o plano junto das opções **subagentes** e **agente único**, com recomendação
+justificada e capacidades/limitações verificadas conforme [Agents](agents.md#metodo-de-execucao).
+Reutilize escolha explícita existente. Quando o método ainda estiver pendente,
+peça sua escolha junto do aceite; um “aprovado” isolado aprova o plano, mas não
+seleciona uma opção não definida. Se o usuário delegar a escolha, adote a recomendação
+compatível e informe o método efetivo. Explique que o aceite para executar cobre
+implementação, testes, correções no escopo e review locais; sem nova invocação.
+
 Se o plano já foi aprovado e o pedido é executar, retome a próxima pendência autorizada, sem novo brainstorming/plano salvo evidência ou mudança material. Planejar isoladamente não autoriza implementar. Quando o pedido incluir execução e as decisões
 necessárias estiverem resolvidas, continue em Build dentro da autorização existente.
 Uma lacuna que altere contrato ou risco bloqueia somente a ação dependente.
