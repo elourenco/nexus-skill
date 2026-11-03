@@ -48,6 +48,11 @@ O host escolhe o workflow condutor (NEXUS, Superpowers ou outro), conforme prece
 
 ## Entrega comum
 
+Use o [contrato de chat guiado](chat.md) para acompanhamento, decisões e entregas
+também nas entradas especializadas. Use componentes nativos verificados e permitidos
+na sessão; preserve conteúdo e estado no fallback textual. A apresentação não
+inicia execução, cria outra fonte de estado ou concede autorização.
+
 Informe resultado, evidências e limitações, arquivos alterados (ou nenhum),
 verificações realmente executadas e próxima ação quando pendente. Uma análise pode
 terminar com hipótese ou decisão aberta; não apresente inferência como execução.

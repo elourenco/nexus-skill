@@ -23,6 +23,20 @@ NEXUS é uma skill portátil de engenharia de software para agentes de IA. Organ
 
 **Estado atual:** skill portátil com seis entradas e componentes locais opcionais. O núcleo funciona sozinho; memória, workflows, hooks e runtime textual são adotados explicitamente.
 
+### Chat guiado
+
+As seis entradas compartilham um [contrato de apresentação](skills/nexus/references/chat.md):
+situação atual, tarefas, decisões pendentes, evidências e próxima ação, conforme
+a necessidade. O agente usa listas, perguntas estruturadas, diffs e detalhes
+expansíveis quando o host os disponibiliza e permite; texto portátil mantém
+o conteúdo essencial quando algum recurso falta. Perguntas simples continuam diretas.
+
+A seleção considera as capacidades da sessão, não apenas a marca do provedor.
+O contrato não instala uma UI nem promete painel persistente, botões ou atualização
+ao vivo em todos os hosts. A apresentação usa a fonte de estado existente e
+reconcilia ações desatualizadas ou de resultado incerto antes de repetir efeitos.
+Veja os [cenários e limites de validação](docs/guided-chat-validation.md).
+
 ## Começar
 
 ### Carregamento direto
