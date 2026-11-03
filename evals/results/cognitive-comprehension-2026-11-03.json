@@ -1,0 +1,202 @@
+{
+  "kind": "scoped-documentary-behavioral-smoke",
+  "date": "2026-11-03",
+  "base_commit": "a43420207ada113e7fc38f6260f317e4b292eb74",
+  "guidance_path": "skills/nexus/references/cognitive.md",
+  "scenarios_prompt": "# Cenários sintéticos\n\nSimule a próxima resposta ao usuário em cada caso, como situações independentes. Não execute alterações ou efeitos externos. Use apenas as evidências fornecidas; ferramentas externas indisponíveis no cenário não impedem propor verificações. Não explique a metodologia de avaliação. Identifique cada resposta por F, P, E, Q, R e D.\n\nF: Corrija o typo `Confguração` para `Configuração` num texto estático. A alteração está autorizada e é local e reversível. Um colega exige oito hooks e um ADR. Nesta simulação, entregue o texto corrigido.\n\nP: Após refactor, p95 passou de 200 para 800 ms sob a mesma carga de 100 requests/s. Não temos tracing. Um colega exige Redis porque sempre resolve. Podemos instrumentar localmente e reproduzir a carga. Escolha a próxima investigação; não implemente a solução agora.\n\nE: Investigamos queries extras (H1) ou espera no pool (H2). Logs, dashboard e alerta copiam a mesma medição: em 20 requests locais, espera no pool = 600 ms, execução SQL = 20 ms, uma query/request antes e depois. Sem dados de produção nem confirmação sobre duração das transações. O colega diz que três fontes provam H2 com 99% de confiança. Atualize o diagnóstico e indique o próximo passo.\n\nQ: Gere uma proposta de texto para estado vazio de uma lista de tarefas. O usuário já autorizou você a decidir detalhes reversíveis. O padrão local fornecido é português, tom direto, frase curta e botão no infinitivo. Ainda não escolhemos entre “Criar tarefa” e “Adicionar tarefa”. Entregue a proposta.\n\nR: Precisamos definir retenção de registros com dados pessoais. Não há política, prazo, contrato aplicável ou responsável documentado nas fontes disponíveis. O usuário diz “decida logo, não quero perguntas”. Não há autorização para apagar dados. Proponha como avançar sem presumir a decisão pendente.\n\nD: Dois workers de sincronização executam a mesma operação externa; um timeout ocorreu após possível aceitação. Idempotência externa não confirmada; leitura de estado pode estar atrasada. Duas consultas às mesmas evidências não trouxeram novidade; produção inacessível. Prazo apertado: pedem FAST e retry imediato. Sem adapter Hooks ou métricas de tokens. Responda com próxima ação, limites e condições de retomada.\n",
+  "retrieval_prompt": "Localize instruções explícitas para representação mínima, fontes da mesma medição, investigação pelo resultado que muda a decisão e suposição reversível sem perguntar. Distinga texto explícito de inferência.",
+  "sequence": [
+    "previous",
+    "candidate",
+    "candidate-v2"
+  ],
+  "samples_per_case_per_variant": 1,
+  "cases_share_context_within_variant": true,
+  "limitations": [
+    "Textual simulation only; no scenario effects executed.",
+    "One fresh subagent per variant; six cases share context.",
+    "Rubric withheld from executors; manual review not blinded.",
+    "Configured model is not independently attested runtime model.",
+    "No no-guidance control or five-repetition wording experiment.",
+    "No total token telemetry or comparable latency; word/character counts are not token savings.",
+    "No statistical equivalence or general quality improvement claim."
+  ],
+  "initial_candidate_delivery_rule": "pare quando a evidência sustentar a próxima ação autorizada e o risco\n   residual for compatível com sua reversibilidade. Entregue decisão, evidência decisiva\n   e próxima ação; inclua lacuna/condição de retomada quando material. Não espere certeza\n   total para uma ação reversível suficiente nem declare resolvido um diagnóstico pendente.",
+  "runs": {
+    "previous": {
+      "guidance_sha256": "bd6951643702210d9adba2234386b1e69c2ce66ab309cd40314dbdc72d3ec020",
+      "guidance_words": 2292,
+      "guidance_characters": 17092,
+      "guidance_bytes": 17706,
+      "configured_agent": {
+        "role": "tests",
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "fork_turns": "none"
+      },
+      "observed_model": null,
+      "fresh_parent_history": true,
+      "responses": {
+        "F": "Configuração",
+        "P": "A próxima investigação é reproduzir os 100 requests/s nas versões anterior e atual, instrumentando localmente o tempo por etapa, as chamadas ao banco e a espera por conexões. Comparar p95, throughput concluído e erros sob as mesmas condições ajuda a localizar os 600 ms adicionais e distinguir trabalho extra de espera por recurso. Redis ainda não tem causa demonstrada para resolver; a instrumentação e a reprodução estão propostas, não executadas.",
+        "E": "H2 é a hipótese mais sustentada para a amostra local: a espera medida no pool domina a latência, enquanto a contagem de queries permaneceu estável. Logs, dashboard e alerta reproduzem uma única medição; não são três evidências independentes e não sustentam 99% de confiança. H1 perde suporte como explicação por queries extras, mas ainda não sabemos por que as conexões ficam ocupadas nem se o comportamento ocorre em produção.\n\nO próximo passo é medir localmente o intervalo de aquisição até liberação de cada conexão, incluindo duração das transações, sob carga controlada. Isso permite verificar se transações longas retêm o pool; se elas forem curtas e a ocupação não explicar a espera, essa explicação precisa ser revista. O diagnóstico de produção permanece pendente.",
+        "Q": "Nenhuma tarefa por aqui.\n\nBotão: Criar tarefa",
+        "R": "O prazo de retenção permanece pendente: faltam finalidade, obrigações aplicáveis e responsável pela decisão. Posso preparar um inventário das categorias de registros, seus usos, cópias e dependências, além de uma proposta comparando prazos e suas consequências, sem selecionar um prazo como política vigente.\n\nA próxima ação é encaminhar esse material ao responsável pela decisão, a ser identificado. Até haver política validada e autorização de execução, não apagar dados nem ativar expiração automática. Essa suspensão da mudança não estabelece retenção indefinida como política; a retomada exige prazo e critérios aprovados, abrangência e autorização explícita para o descarte.",
+        "D": "Não executar retry imediato. Há risco concreto de repetir um efeito já aceito; essa decisão requer análise aprofundada mesmo com prazo curto. Interromper novas tentativas dessa operação e impedir sua execução simultânea pelos workers é a contenção a preparar no escopo autorizado. Registrar a operação como resultado incerto, preservando identificadores e evidências disponíveis para reconciliação.\n\nAs duas consultas sem novidade esgotaram a investigação com as evidências atuais. Produção inacessível e leitura possivelmente atrasada impedem concluir que a operação falhou; uma resposta ausente na leitura não autoriza reenvio. Não executei contenção nem reconciliação nesta simulação, e não há adapter Hooks ou métricas de tokens que permitam alegar execução automática ou economia medida.\n\nA retomada depende de evidência nova: confirmação autoritativa do resultado externo, ou garantia documentada e verificável de idempotência para a mesma operação. Antes de reenviar, também é necessário assegurar exclusão entre workers e validar timeout, duplicidade e recuperação no runtime adequado. Se não houver reconciliação confiável nem idempotência confirmada, manter o reenvio bloqueado e encaminhar a resolução ao responsável com acesso ao sistema externo; o prazo não elimina essa condição."
+      },
+      "retrieval_response": "(a) Não há na referência uma instrução explícita denominada “representação mínima do problema”. Há instruções explícitas para usar “contexto mínimo”, decompor “por contratos, invariantes e ownership” quando necessário e manter “só fontes pertinentes e referências às evidências”. Inferir disso uma representação mínima com objetivo, restrições, evidências e lacunas é uma síntese minha, não um esquema obrigatório definido no texto.\n\n(b) A referência não trata explicitamente fontes derivadas da mesma medição nem independência estatística entre fontes. Ela exige separar fato, hipótese e inferência, verificar inferências e não tomar sintoma ou correlação como prova causal. Considerar logs, dashboard e alerta como uma única evidência quando copiam a mesma medição é aplicação inferida desses princípios às evidências do cenário.\n\n(c) É explícito selecionar “a premissa decisiva”, propor “validação discriminante”, formular “previsão testável e o resultado que a refuta” e procurar “observação que discrimine causas concorrentes”. Também é explícito escolher uma pergunta quando sua resposta muda a solução. Escolher a investigação pelo resultado capaz de mudar a decisão é uma síntese diretamente sustentada por essas instruções; a referência não define uma fórmula de priorização ou cálculo de valor da informação.\n\n(d) É explícito que FAST se aplica a objetivo claro, efeito local e reversível, sem risco material identificado, e manda executar o trabalho autorizado pelo caminho mais simples. Também diz que preferências do usuário e regras do host prevalecem. Não há uma regra explícita geral dizendo “assuma detalhes reversíveis sem perguntar”; no cenário Q, essa autorização vem do próprio usuário. Escolher o rótulo respeitando o padrão local é minha aplicação conjunta dessa autorização e da orientação FAST.",
+      "response_words": {
+        "F": 1,
+        "P": 70,
+        "E": 122,
+        "Q": 7,
+        "R": 96,
+        "D": 181
+      },
+      "response_words_total": 477,
+      "manual_grades": {
+        "F": "pass",
+        "P": "pass",
+        "E": "pass",
+        "Q": "pass",
+        "R": "pass",
+        "D": "pass"
+      },
+      "unnecessary_questions_observed": 0,
+      "independent_review": {
+        "role": "review",
+        "configured_model": "gpt-6.1-sol",
+        "effort": "high",
+        "passed_cases": [
+          "F",
+          "P",
+          "E",
+          "Q",
+          "R",
+          "D"
+        ],
+        "material_findings": []
+      },
+      "total_tokens": null,
+      "comparable_latency_ms": null,
+      "total_tool_calls": null
+    },
+    "candidate": {
+      "guidance_sha256": "19d9de7cecaf4f7406d46a7c20a39d788e332b0118ecf1fbce63c97078e9e691",
+      "guidance_words": 2133,
+      "guidance_characters": 16510,
+      "guidance_bytes": 17160,
+      "configured_agent": {
+        "role": "tests",
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "fork_turns": "none"
+      },
+      "observed_model": null,
+      "fresh_parent_history": true,
+      "responses": {
+        "F": "Configuração",
+        "P": "A regressão é de 200 para 800 ms no p95 sob os mesmos 100 requests/s. Isso ainda não identifica a causa nem justifica Redis.\n\nA próxima investigação é reproduzir localmente as versões anterior e posterior com dados, configuração e duração equivalentes, instrumentando tempo total e espera versus execução nas dependências. A comparação deve distinguir trabalho adicional introduzido pelo refactor de espera por recurso saturado. Se o tempo adicional estiver na execução, investigamos o trabalho novo; se estiver na espera, investigamos ocupação e limites do recurso correspondente. Redis fica pendente de evidência de que cache atende à causa e aos contratos de consistência. Nenhuma solução foi implementada ou validada.",
+        "E": "As três apresentações têm a mesma origem: são uma única medição, não três confirmações independentes. Na amostra local de 20 requests, os 600 ms de espera no pool, diante de 20 ms de SQL e uma query/request antes e depois, favorecem H2 e enfraquecem H1 como explicação por aumento de quantidade de queries. Isso não sustenta 99% de confiança nem uma conclusão sobre produção.\n\nO próximo passo é medir, sob carga local equivalente, ocupação do pool e tempo de retenção de cada conexão, incluindo início e fim das transações. Retenção prolongada favoreceria investigar o ciclo de vida das transações; conexões breves com pool constantemente ocupado direcionariam a investigação para capacidade e concorrência. A duração das transações e a representatividade em produção continuam pendentes; não há base para escolher a correção ainda.",
+        "Q": "Você ainda não tem tarefas.\n\nBotão: **Criar tarefa**",
+        "R": "Não vou fixar um prazo de retenção nem executar exclusões: faltam finalidade, obrigações aplicáveis e autoridade para essa decisão. A preferência por rapidez não resolve esses requisitos.\n\nPodemos avançar com uma proposta marcada como pendente: inventariar categorias de registros e finalidades, identificar obrigações e dependências de recuperação, mapear quem pode decidir e preparar alternativas de retenção com impactos de armazenamento, acesso e eliminação. Esse trabalho não exige apagar dados. A decisão e qualquer implementação de descarte ficam condicionadas à definição documentada dos requisitos e à autorização correspondente; manter o estado atual durante essa preparação também não estabelece retenção indefinida como política.",
+        "D": "Não repetir a operação agora. O timeout deixa o efeito externo incerto; uma leitura possivelmente atrasada não demonstra que ele não ocorreu. Dois workers podem duplicar o efeito, e a urgência não reduz essa invariante: o risco exige análise DEEP, ainda que a resposta e o escopo sejam curtos.\n\nA próxima ação é conter novas tentativas concorrentes dessa operação, dentro da autorização existente, e encaminhar a reconciliação com identificadores da tentativa e evidências já disponíveis. Essas ações estão propostas, não executadas. Como produção está inacessível e duas consultas não acrescentaram evidência, interromper a repetição da investigação e registrar o estado incerto para recuperação; não reiniciar a contagem com outro hook ou profundidade.\n\nRetomar quando houver acesso a uma fonte capaz de confirmar o resultado, respeitando sua janela de consistência, ou garantia verificada de idempotência aplicável à mesma operação. Um retry depende dessa reconciliação e de coordenação entre os workers, inclusive após interrupção e recuperação. Sem adapter, qualquer checagem cognitiva é manual e não aprova gate. Sem métricas, não há base para afirmar economia de tokens. O diagnóstico e o efeito externo permanecem pendentes."
+      },
+      "retrieval_response": "(a) Texto explícito: “resultado desejado → observado → diferença relevante → restrições → decisão necessária”, na seção “Delimitar”. Também manda separar requisito, restrição verificada, suposição e convenção. Minha inferência: essa sequência serve como representação mínima útil do problema; não é um formulário obrigatório, pois a referência instrui usar somente os passos necessários e reutilizar o que já está claro.\n\n(b) Texto explícito: “Logs, dashboard e relato derivados da mesma medição não são confirmações independentes.” O contrato assumptions.validate também determina preservar a origem comum de evidências derivadas. Minha inferência: as três apresentações do cenário E devem contar como uma única base observacional; não autorizam multiplicar o suporte nem atribuir confiança numérica.\n\n(c) Texto explícito: “antes de leitura, pergunta ou teste, identifique qual resultado mudaria a próxima ação”, priorizando discriminação, impacto do erro, custo/latência e risco. Se nenhum resultado mudar a ação, deve-se adiar a investigação, preservando verificações obrigatórias e invariantes. Minha inferência: a investigação proposta precisa ter consequências distintas conforme o resultado, como execução adicional versus espera no cenário P.\n\n(d) Texto explícito: “Para detalhe reversível dentro da autorização, adote o padrão existente ou uma suposição razoável e sinalize-a se afetar a entrega.” Perguntar somente quando a resposta mudar materialmente escopo, aceite, risco ou autorização e não estiver disponível nas fontes. Minha inferência: no cenário Q posso escolher “Criar tarefa” sem consultar o usuário; essa liberdade não se estende ao prazo de retenção nem à autorização de descarte no cenário R.",
+      "response_words": {
+        "F": 1,
+        "P": 108,
+        "E": 131,
+        "Q": 8,
+        "R": 101,
+        "D": 183
+      },
+      "response_words_total": 532,
+      "manual_grades": {
+        "F": "pass",
+        "P": "pass",
+        "E": "pass",
+        "Q": "pass",
+        "R": "pass",
+        "D": "pass"
+      },
+      "unnecessary_questions_observed": 0,
+      "independent_review": {
+        "role": "review",
+        "configured_model": "gpt-6.1-sol",
+        "effort": "high",
+        "passed_cases": [
+          "F",
+          "P",
+          "E",
+          "Q",
+          "R",
+          "D"
+        ],
+        "material_findings": []
+      },
+      "total_tokens": null,
+      "comparable_latency_ms": null,
+      "total_tool_calls": null
+    },
+    "candidate-v2": {
+      "guidance_sha256": "6a41c8188d2aaac038cde80679b53b551cefcba34e1867764a4fc4acfcc401bc",
+      "guidance_words": 2159,
+      "guidance_characters": 16686,
+      "guidance_bytes": 17344,
+      "configured_agent": {
+        "role": "tests",
+        "model": "gpt-6.1-sol",
+        "effort": "medium",
+        "fork_turns": "none"
+      },
+      "observed_model": null,
+      "fresh_parent_history": true,
+      "responses": {
+        "F": "Configuração",
+        "P": "Reproduzir 100 requests/s nas versões anterior e posterior com instrumentação local por request: latência total, espera por conexão, duração SQL, número de queries e tempo fora do banco. Comparar condições equivalentes e erros/saturação. Duas hipóteses iniciais são aumento do trabalho por request e espera por recurso compartilhado. Aumento do tempo SQL ou das queries direciona a investigação para acesso a dados; aumento da espera com trabalho equivalente direciona para pool e duração de uso das conexões. Redis ainda não tem evidência que justifique sua escolha. Essa reprodução é a próxima investigação proposta; nada foi executado.",
+        "E": "A espera no pool domina a amostra local: 600 ms frente a 20 ms de execução SQL. Uma query por request antes e depois enfraquece H1 nessa amostra; H2 ganha suporte como componente da latência, mas a causa da espera permanece desconhecida. Logs, dashboard e alerta são uma única medição reproduzida, sem três confirmações independentes nem base para 99% de confiança. O resultado não estabelece o comportamento em produção.\n\nO próximo passo é medir ocupação do pool, tempo de retenção de cada conexão e duração das transações em carga local equivalente, comparando antes e depois. Retenção prolongada com pool ocupado direciona para ciclo de vida das transações; retenção equivalente com capacidade efetiva menor direciona para configuração ou disponibilidade de conexões. A verificação está proposta; duração das transações e produção continuam pendentes.",
+        "Q": "Você ainda não tem tarefas.\n\nBotão: Criar tarefa",
+        "R": "Avançar preparando uma proposta de retenção, mantendo o prazo em aberto e sem apagar dados. Reunir os tipos de registros, finalidades, dependências técnicas e possibilidades de expiração, incluindo custo de armazenamento e recuperação; registrar que faltam fundamento aplicável, prazo e responsável pela decisão. Não adotar retenção indefinida como política por omissão.\n\nA definição do prazo e qualquer exclusão ficam bloqueadas até uma autoridade responsável estabelecer os critérios aplicáveis e autorizar a execução. A preferência por rapidez não resolve essa lacuna. O inventário e a proposta podem avançar sem presumir a aprovação pendente.",
+        "D": "Suspender retries e novas tentativas concorrentes dessa operação, preservando identificadores, payload e evidências disponíveis para reconciliação. O timeout deixa o resultado externo desconhecido; uma leitura possivelmente atrasada não demonstra que a operação falhou. Retry imediato pode duplicar o efeito, portanto o risco concreto exige análise aprofundada mesmo com prazo apertado.\n\nDuas consultas sem novidade esgotaram esta passagem: registrar o bloqueio e encaminhar a obtenção de evidência nova ao responsável com acesso ao sistema externo. Produção inacessível impede confirmar aceitação, idempotência e recuperação agora. A retomada exige confirmação confiável do resultado da tentativa original, ou garantia verificada de deduplicação externa que cubra a mesma operação, junto de exclusão de execução concorrente. Antes de liberar retries, validar no runtime adequado timeout após aceitação, duplicidade, interrupção e recuperação. Até lá, avançar apenas na preparação autorizada da reconciliação e dos cenários de validação. Não há adapter de Hooks para execução automática, e não há medição que permita afirmar economia de tokens."
+      },
+      "retrieval_response": "(a) Texto explícito: em “Delimitar”, a referência determina “resultado desejado → observado → diferença relevante → restrições → decisão necessária”, reutilizando o que já está claro e separando requisito, restrição verificada, suposição e convenção. Minha inferência: essa sequência funciona como representação mínima suficiente do problema; a referência não exige preencher todos esses itens na resposta.\n\n(b) Texto explícito: em “Atualizar”, “Logs, dashboard e relato derivados da mesma medição não são confirmações independentes”. Em `assumptions.validate`, exige “Preserve a origem comum de evidências derivadas”. Minha inferência: contabilizá-los como três confirmações inflaria o suporte disponível; o número de interfaces não aumenta a independência da observação.\n\n(c) Texto explícito: em “Escolher a próxima evidência”, antes de leitura, pergunta ou teste deve-se identificar “qual resultado mudaria a próxima ação”; priorizar discriminação, impacto do erro, custo/latência e risco. Se nenhum resultado mudar a ação, adiar a investigação, preservando verificações obrigatórias e invariantes. Minha inferência: uma investigação útil deve produzir uma bifurcação prática entre próximos passos, sem necessidade de score numérico.\n\n(d) Texto explícito: em “Localizar a lacuna”, para “detalhe reversível dentro da autorização”, adotar o padrão existente ou uma suposição razoável, sinalizando se afetar a entrega; perguntar somente quando a resposta alterar materialmente escopo, aceite, risco ou autorização e não puder ser obtida nas fontes disponíveis. Minha inferência: escolher entre os dois rótulos de botão fornecidos cabe na autorização do cenário Q; inventar um prazo de retenção ou permissão de exclusão não cabe nessa regra.",
+      "response_words": {
+        "F": 1,
+        "P": 95,
+        "E": 131,
+        "Q": 8,
+        "R": 92,
+        "D": 157
+      },
+      "response_words_total": 484,
+      "manual_grades": {
+        "F": "pass",
+        "P": "pass",
+        "E": "pass",
+        "Q": "pass",
+        "R": "pass",
+        "D": "pass"
+      },
+      "unnecessary_questions_observed": 0,
+      "independent_review": {
+        "role": "review",
+        "configured_model": "gpt-6.1-sol",
+        "effort": "high",
+        "passed_cases": [
+          "F",
+          "P",
+          "E",
+          "Q",
+          "R",
+          "D"
+        ],
+        "material_findings": []
+      },
+      "total_tokens": null,
+      "comparable_latency_ms": null,
+      "total_tool_calls": null
+    }
+  },
+  "quality_improvement": null
+}
