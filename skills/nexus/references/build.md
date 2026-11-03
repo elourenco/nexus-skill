@@ -13,6 +13,10 @@ revisável e pendências; check obrigatório ausente mantém o aceite pendente.
    projeto, estado real dos arquivos e plano quando houver; preserve trabalho alheio.
    Plano aprovado conduz à próxima pendência; não refaça brainstorming/plano sem nova evidência ou mudança material. Execução direta não exige TASK/SPEC/PLAN nem store, independentemente do perfil de risco. Se faltar contrato
    material, resolva-o em [Plan](plan.md) antes da alteração dependente.
+   No fluxo guiado de brainstorming, preserve os aceites e o
+   [método escolhido](agents.md#metodo-de-execucao); se somente essa escolha faltar,
+   resolva-a sem reapresentar o plano aprovado. Execute no método efetivo, sem
+   criar sessões ou workers no modo agente único.
 2. Consulte [Workflows](workflow.md) quando houver etapas, tarefas ou retomada.
    Reuse sua fonte existente; crie persistência somente se útil ou solicitada, sem lista paralela. Antes de retomar run
    incerto, reconcilie com o host para evitar execução duplicada.

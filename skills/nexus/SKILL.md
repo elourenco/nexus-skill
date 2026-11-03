@@ -26,7 +26,7 @@ Classifique pela entrega pedida; intenção não cria um novo modo de workflow. 
 | Intenção / entrada | Encaminhamento |
 | --- | --- |
 | Question | Explore; pergunta simples termina na resposta, sem procedimento ou artefatos obrigatórios |
-| Explore, Brainstorm / `nexus-brainstorming` | [Brainstorming](references/brainstorming.md) em Explore; problema, alternativas e recomendação |
+| Explore, Brainstorm / `nexus-brainstorming` | [Brainstorming](references/brainstorming.md) em Explore; fluxo guiado por aceites até a entrega, salvo pedido limitado a análise |
 | Plan, Architect / `nexus-plan` | [Planejamento](references/plan.md) em Plan; contratos e etapas de uma direção definida; alternativas em aberto podem exigir Explore antes |
 | Build, Refactor, Document / `nexus-build` | [Implementação](references/build.md) em Build para a alteração solicitada; Plan antes quando houver contrato material a definir |
 | Debug / `nexus-debug` | [Diagnóstico](references/debug.md) em Explore; Build somente para correção autorizada |
