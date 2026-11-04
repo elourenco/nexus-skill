@@ -400,7 +400,104 @@ garantias de runtime ainda não verificadas.
 
 ## Origem e distribuição
 
-O desenho parte de práticas de desenvolvimento orientado por especificação, execução persistente com limites e arquitetura proporcional ao risco. Superpowers e UB-Mode são referências conceituais citadas no planejamento, não dependências incorporadas nem integrações verificadas. O conteúdo deste repositório é próprio; nenhuma implementação de terceiros foi copiada.
+O desenho parte de práticas de desenvolvimento orientado por especificação, execução persistente com limites e arquitetura proporcional ao risco. Superpowers e UB-Mode são referências conceituais citadas no planejamento, não dependências incorporadas nem integrações verificadas. O núcleo portátil é próprio e não incorpora implementação de terceiros. Os artefatos de benchmark podem incluir snapshots isolados dos comparadores, com suas licenças originais preservadas.
 
 **Licença de distribuição pendente.** A disponibilidade pública do repositório e
 de suas releases não estabelece uma licença de redistribuição.
+
+## Eficiência e avaliação comparativa
+
+Os dois estudos abaixo têm corpora e configurações distintos; seus resultados não
+são agregados. O recorte entre coleções complementa os quadros completos com baseline.
+
+### Benchmark controlado: agente único
+
+Em 03/11/2026 foram executadas **96 sessões reais**: oito cenários, quatro condições
+e três repetições, com contextos/workspaces separados e execução sequencial.
+Modelo solicitado: `gpt-6.1-sol`, esforço `medium`; o CLI não atestou o modelo efetivo.
+Cada condição reúne nove implementações e 15 análises, usando a entrada geral por
+arquivo. NEXUS avaliado: snapshot `409b0c95`; mudanças posteriores à coleta não
+estão representadas nesta tabela.
+
+| Condição | Aceite da rubrica | Mediana: código | Mediana: análise | Tokens totais |
+| --- | ---: | ---: | ---: | ---: |
+| Baseline | 24/24 | 49,74 s | 7,62 s | 1.267.218 |
+| NEXUS | 24/24 | 61,80 s | 14,66 s | 2.659.518 |
+| Superpowers | 22/24 | 66,38 s | 14,91 s | 2.779.345 |
+| Matt Pocock | 24/24 | 58,85 s | 14,77 s | 2.663.938 |
+
+Tokens são entrada + saída acumuladas das 24 execuções; entrada em cache já está
+incluída. Latência cobre o processo CLI e suas ferramentas; preparação e julgamento
+posterior ficam fora. Não há estimativa de custo monetário.
+
+A baseline foi mais rápida e consumiu menos neste recorte. NEXUS e Matt aprovaram
+24/24 execuções; Superpowers aprovou 22/24, com dois falsos positivos de contrato no
+review, confirmados por segunda avaliação. Todas as condições aprovaram 9/9 casos
+de implementação pelos critérios observados.
+
+A suíte foi criada neste projeto, tem apenas três repetições por cenário e usa
+julgamento por agentes com cegamento limitado. Ela mede instruções em um agente,
+sem avaliar instalação nativa ou o fluxo completo com subagentes. Os resultados
+são descritivos e não estabelecem superioridade geral.
+
+[Protocolo, resultados por cenário e limites](docs/benchmark-2026-11-03.md) ·
+[Recibos e métricas](evals/results/four-arm-2026-11-03.json) ·
+[Suíte congelada](evals/benchmark-suite-v1.json)
+
+
+### Benchmark com estado persistido — 3–4/11/2026
+
+32 entregas em 48 processos reais, quatro cenários com código/estado persistido e
+duas repetições. NEXUS: `origin/main` `29ff9ac`, congelado após atualização do remoto.
+Este escopo é distinto do benchmark anterior de 96 sessões.
+
+| Condição | Aceite funcional após adjudicação | Tokens totais | Σ latência dos processos |
+| --- | ---: | ---: | ---: |
+| Baseline | 8/8 | 1.762.824 | 1.425,06 s |
+| NEXUS | 8/8 | 3.626.395 | 1.977,81 s |
+| Superpowers | 8/8 | 5.561.772 | 2.151,35 s |
+| Matt Pocock | 8/8 | 6.583.711 | 2.386,14 s |
+
+NEXUS não demonstrou ganho funcional, de descoberta ou continuidade sobre a baseline;
+consumiu 105,7% mais tokens e 38,8% mais tempo somado de processos.
+Cinco reprovações brutas de representação foram preservadas e adjudicadas como
+falsos positivos do oracle; há um desvio literal de workspace do NEXUS documentado.
+Cache já está em input. Sem inferência de preço, causalidade ou superioridade geral.
+Snapshots de comparadores são evidência isolada do estudo, fora do núcleo portátil.
+
+[Relatório, gates brutos, adjudicação e limites](docs/benchmark-stateful-2026-11-04.md) ·
+[Recibos e métricas](evals/results/stateful-four-arm-v2-2026-11-04.json) ·
+[Bundle reproduzível](evals/results/stateful-four-arm-v2-2026-11-04.tar.gz)
+
+### NEXUS, Superpowers e Matt Pocock: recorte entre coleções
+
+No benchmark com código e estado persistido de 3–4/11/2026, cada coleção teve
+oito entregas e 12 processos: quatro cenários, duas repetições, agente único e
+execução sequencial em fixtures sintéticas. As três aprovaram 8/8 entregas
+funcionais após adjudicação.
+
+| Coleção | Aceite funcional | Tokens totais (input + output) | Σ latência CLI |
+| --- | ---: | ---: | ---: |
+| NEXUS | 8/8 | **3.626.395** | **1.977,814 s** |
+| Superpowers | 8/8 | 5.561.772 | 2.151,350 s |
+| Matt Pocock | 8/8 | 6.583.711 | 2.386,138 s |
+
+Neste recorte, NEXUS usou **34,8% menos tokens que Superpowers** e **44,9% menos
+que Matt Pocock**; a **soma** de latência CLI foi **8,1%** e **17,1%** menor,
+respectivamente. Cache já está incluído no input. Tokens não representam preço
+financeiro. A tabela mostra somas de latência, não medianas.
+
+O menor consumo observado veio com o mesmo aceite funcional nos critérios
+exercitados. Cinco rejeições brutas do estudo eram falsos positivos do oracle;
+a verificação derivada foi aplicada uniformemente às oito soluções offline.
+NEXUS teve um desvio literal de workspace: sob esse critério estrito, seu aceite
+seria 7/8, contra 8/8 dos demais. O 8/8 da tabela é o endpoint funcional.
+
+Corpus pequeno e autoral, cegamento limitado, cache/carga não controlados e duas
+repetições impedem generalização ou alegação de superioridade estatística.
+Modelo/esforço solicitados: `gpt-6.1-sol/medium`; efetivos não observados.
+Este quadro compara somente as três coleções; o estudo completo preserva todas
+as condições, recibos, revisões, adjudicação e limitações.
+
+[Relatório completo e resultados por cenário](docs/benchmark-stateful-2026-11-04.md)
+· [Recibos verificáveis](evals/results/stateful-four-arm-v2-2026-11-04.json)
