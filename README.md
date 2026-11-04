@@ -90,6 +90,11 @@ existir ou as entradas não aparecerem, siga o [guia de instalação e verifica�
 ou use o carregamento direto. O plugin compartilha o mesmo núcleo entre os dois
 hosts; helpers e runtime continuam opt-in. Veja a [avaliação de descoberta nos hosts](docs/behavioral-evaluation.md).
 
+O ícone **núcleo conectado** fica em [skills/nexus/assets/nexus-icon.png](skills/nexus/assets/nexus-icon.png).
+O Codex o referencia no plugin e nos metadados da skill principal. No Claude, o
+campo `icon` atende ao catálogo da Anthropic; o Claude Code não o exibe no terminal.
+Veja a [validação do ícone](docs/plugins-validation.md#ícone-núcleo-conectado-2026-11-03).
+
 ## Experimente no seu projeto
 
 Depois de carregar o NEXUS, use um destes pedidos em linguagem natural. Adapte o

@@ -11,6 +11,8 @@
     "shortDescription": "Especificação, arquitetura e validação de engenharia",
     "defaultPrompt": [
       "Use NEXUS para analisar este projeto e propor o próximo incremento com critérios de aceite."
-    ]
+    ],
+    "composerIcon": "./skills/nexus/assets/nexus-icon.png",
+    "logo": "./skills/nexus/assets/nexus-icon.png"
   }
 }
