@@ -48,8 +48,9 @@ fonte existente; sem registro suficiente, esclareça somente a lacuna. O chat n�
    a lacuna que desbloqueia as demais e recomende uma opção com consequência.
    Não pergunte detalhes dependentes de uma escolha ainda aberta. Pare quando
    houver informação suficiente para a próxima ação, sem entrevista universal.
-   Aplique [Cognitive Principles](cognitive.md) quando houver ambiguidade ou decisão
-   material. Separe fatos, hipóteses e preferências. Reutilize padrões do projeto.
+   Quando houver ambiguidade ou decisão material, consulte a
+   [seleção adaptativa](cognitive.md#seleção-adaptativa) e somente a técnica necessária
+   ao experimento discriminante; amplie se faltar contrato. Separe fatos, hipóteses e preferências. Reutilize padrões do projeto.
 3. Compare alternativas viáveis, incluindo manter a solução atual quando fizer
    sentido. Avalie complexidade, compatibilidade, reversibilidade e impacto em
    latência, throughput, concorrência e recuperação nas dimensões afetadas. Não
@@ -61,7 +62,7 @@ fonte existente; sem registro suficiente, esclareça somente a lacuna. O chat n�
 ## Entrega e limite
 
 Quando a escolha envolver interfaces, dependências ou sistemas, use a seção
-pertinente de [design](architecture-design.md) para investigar o fluxo real e
+de [diagnóstico de design](architecture-design.md#diagnostico) para investigar o fluxo real e
 comparar abordagens. Para alternativas de refatoração, consulte os
 [padrões pelo problema](refactoring.md#padroes). Não carregue catálogo para uma
 pergunta conceitual simples nem reabra arquitetura aprovada sem evidência material.

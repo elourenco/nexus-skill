@@ -20,6 +20,9 @@ inicial identificada e comparação do antes/depois; comparar dois arquivos fina
 entre si não é diff da alteração. Não repita um comando sabidamente indisponível nem
 condicione leitura necessária ao sucesso de Git. Se a ausência for transitória,
 só retente com condição alterada e dentro dos limites. Preserve falhas relevantes.
+Mantenha backups identificados no workspace autorizado, com extensão não executável
+e fora dos padrões de descoberta de testes. Não preserve `.test.*`/`.spec.*` na
+cópia; confira o conjunto descoberto sem excluir os testes originais ou regressões.
 Consolide diff e preservação dos documentos aprovados no estado final, após a última
 edição; mantenha verificações intermediárias quando risco ou estratégia exigir.
 
@@ -46,6 +49,11 @@ revisável e pendências; check obrigatório ausente mantém o aceite pendente.
    ampliar o próximo comportamento. Agrupe edições relacionadas em um incremento revisável antes dos checks, preservando pontos intermediários exigidos pela estratégia definida em
    [Policies](policies.md#policy-testing). Para bug, reproduza a falha; para
    invariantes críticas testáveis, observe a regressão antes e depois da correção.
+   Antes de repetir um check, identifique o comportamento, edição, configuração ou
+   dúvida nova que ele cobre. Preserve reprodução crítica e validação final; teste
+   regressões novas contra a fonte inicial quando necessário. Registre comando,
+   exit e resumo de cada check separadamente: `cat`, `tail`, `diff` ou probe posterior
+   não altera seu resultado. Agrupe checks independentes necessários sem mascarar falhas.
    Texto ou mudança simples admite inspeção proporcional. Use ferramentas reais.
 4. Valide aceites e efeitos sobre contratos, latência, throughput, concorrência e
    recuperação conforme o comportamento alterado. Não paralelize escritas ou testes
@@ -70,7 +78,10 @@ ou falhar, suspenda somente o efeito dependente e mantenha o trabalho autorizado
 independente. Não apresente instrução no prompt como controle técnico verificado.
 
 Entregue resultado implementado, arquivos alterados, verificações e resultados,
-decisões materiais e pendências. Conclusão exige aceite comprovado; ferramenta
+decisões materiais e pendências. Use a fonte de estado existente como índice para
+logs, diff e recibos; não replique seus conteúdos em relatórios paralelos. Crie um
+verificador auxiliar somente quando o aceite não puder ser coberto pelo check existente.
+Conclusão exige aceite comprovado; ferramenta
 ausente ou verificação obrigatória bloqueada permanece limitação explícita.
 
 Continue o trabalho local já autorizado até seu aceite, sem solicitar novamente

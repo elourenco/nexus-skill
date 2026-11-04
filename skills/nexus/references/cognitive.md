@@ -2,7 +2,9 @@
 
 Protocolo documental, sem executor, para premissa frágil, ambiguidade ou impacto
 material. Entregue decisão, evidência e próxima ação; sem pensamento privado,
-monólogos ou agentes filosóficos. Consulte apenas os contratos pertinentes.
+monólogos ou agentes filosóficos. Comece pela [seleção adaptativa](#seleção-adaptativa); leia somente a técnica
+selecionada e seu [contrato comum](#contrato-comum-dos-hooks-cognitivos), quando usar
+um hook. Amplie se faltar contrato; o catálogo completo não é pré-requisito.
 
 ## Seleção adaptativa
 
