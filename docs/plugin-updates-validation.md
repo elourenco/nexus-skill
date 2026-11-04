@@ -1,5 +1,9 @@
 # Validação de atualizações dos plugins — 2026-11-03
 
+O contrato abaixo registra a entrega original. A correção posterior de instalação
+por `main` e de versões fixadas está em
+[consistência de versões](plugin-version-consistency-validation.md).
+
 ## Contrato entregue
 
 Uma release estável é publicada no SHA de origem validado. A branch derivada

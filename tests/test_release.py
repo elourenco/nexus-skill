@@ -1,5 +1,6 @@
 """Release ordering and recovery with real Git history and an in-memory GitHub API."""
 import base64
+import io
 import json
 import os
 import re
@@ -38,7 +39,14 @@ class FakeGitHub:
                 return self.releases.get(path.removeprefix('releases/tags/'))
             if path.startswith('git/ref/tags/'):
                 tag = path.removeprefix('git/ref/tags/')
-                sha = self.remote_tags.get(tag) or self.git('rev-parse', f'{tag}^{{commit}}')
+                sha = self.remote_tags.get(tag)
+                if not sha:
+                    try:
+                        sha = self.git('rev-parse', '--verify', f'{tag}^{{commit}}')
+                    except subprocess.CalledProcessError:
+                        if tag.startswith('plugin-v'):
+                            return None
+                        raise
                 return {'object': {'type': 'commit', 'sha': sha}}
             if path == 'git/ref/heads/plugins':
                 try:
@@ -111,6 +119,8 @@ class ReleaseTests(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.git('init', '-q')
+        self.git('config', 'gc.auto', '0')
+        self.git('config', 'maintenance.auto', 'false')
         self.git('config', 'user.name', 'Test')
         self.git('config', 'user.email', 'test@example.invalid')
         for host in ('claude', 'codex'):
@@ -170,7 +180,7 @@ class ReleaseTests(unittest.TestCase):
         self.api.fail_release = False
         self.run_release()
         self.assertEqual(list(self.api.releases), ['v0.3.0'])
-        self.assertEqual(sum(path == 'git/refs' and data['ref'].startswith('refs/tags/')
+        self.assertEqual(sum(path == 'git/refs' and data['ref'].startswith('refs/tags/v')
                              for _, path, data in self.api.calls), 1)
 
     def test_out_of_order_bootstrap_waits_for_first_push(self):
@@ -273,7 +283,8 @@ class ReleaseTests(unittest.TestCase):
         self.api.remote_only_tags = True
         self.run_release()
         self.assertEqual(self.git('tag'), '')
-        self.assertEqual(self.api.remote_tags, {'v0.3.0': self.sha})
+        self.assertEqual(self.api.remote_tags['v0.3.0'], self.sha)
+        self.assertIn('plugin-v0.3.0', self.api.remote_tags)
         self.assertEqual(self.distribution('.nexus-release.json')['source_sha'], self.sha)
 
     def test_remote_tag_with_wrong_source_blocks_promotion(self):
@@ -357,6 +368,88 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(self.distribution('.nexus-release.json')['tag'], 'v0.3.0')
 
 
+    def test_release_has_an_immutable_versioned_plugin_package(self):
+        self.run_release()
+        self.assertIn('plugin-v0.3.0', self.api.remote_tags)
+        package = self.api.remote_tags['plugin-v0.3.0']
+        next_sha = self.commit('Next release')
+        self.run_release(next_sha, self.sha)
+        self.assertEqual(self.api.remote_tags['plugin-v0.3.0'], package)
+        for tag, version in [('plugin-v0.3.0', '0.3.0'), ('plugin-v0.3.1', '0.3.1')]:
+            for host in ('claude', 'codex'):
+                manifest = json.loads(self.git('show', f'{tag}:.{host}-plugin/plugin.json'))
+                self.assertEqual(manifest['version'], version)
+        self.assertEqual(self.git('rev-parse', 'v0.3.1'), next_sha)
+
+    def test_source_marketplaces_resolve_the_published_package(self):
+        for host, path in [('claude', '.claude-plugin/marketplace.json'),
+                           ('codex', '.agents/plugins/marketplace.json')]:
+            target = self.root / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps({'name': 'nexus-local', 'plugins': [{
+                'name': 'nexus', 'source': {'source': 'url',
+                    'url': 'https://github.com/elourenco/nexus-skill.git', 'ref': 'plugins'}}]}))
+        sha = self.commit('Source catalogs follow published releases')
+        self.run_release(sha)
+        self.assertEqual(self.distribution('.claude-plugin/marketplace.json')['plugins'][0]['source'], './')
+        self.assertEqual(self.distribution('.agents/plugins/marketplace.json')['plugins'][0]['source'], {
+            'source': 'local', 'path': './'})
+
+    def test_missing_old_package_tag_is_recovered_without_rolling_back_plugins(self):
+        self.run_release()
+        package = self.api.remote_tags.pop('plugin-v0.3.0')
+        self.git('tag', '-d', 'plugin-v0.3.0')
+        next_sha = self.commit('Next release')
+        self.run_release(next_sha, self.sha)
+        # The predecessor is reconciled before releasing the next version.
+        self.assertEqual(self.git('rev-parse', f'plugin-v0.3.0^{{tree}}'),
+                         self.git('rev-parse', f'{package}^{{tree}}'))
+        tip = self.git('rev-parse', 'refs/heads/plugins')
+        self.api.remote_tags.pop('plugin-v0.3.0')
+        self.git('tag', '-d', 'plugin-v0.3.0')
+        self.run_release()
+        self.assertIn('plugin-v0.3.0', self.api.remote_tags)
+        self.assertEqual(self.git('rev-parse', 'refs/heads/plugins'), tip)
+
+    def test_conflicting_package_tag_is_never_moved_or_promoted(self):
+        self.api.remote_tags['plugin-v0.3.0'] = self.sha
+        with self.assertRaisesRegex(RuntimeError, 'Immutable plugin package'):
+            self.run_release()
+        self.assertEqual(self.api.remote_tags['plugin-v0.3.0'], self.sha)
+        self.assertFalse(any(path == 'git/refs/heads/plugins' or
+                             (path == 'git/refs' and data['ref'] == 'refs/heads/plugins')
+                             for _, path, data in self.api.calls))
+
+    def test_package_tag_response_lost_is_reconciled_on_rerun(self):
+        original = self.api.request
+
+        def lose_response(method, path, data=None):
+            result = original(method, path, data)
+            if method == 'POST' and path == 'git/refs' and data['ref'] == 'refs/tags/plugin-v0.3.0':
+                raise RuntimeError('package tag response lost')
+            return result
+
+        self.api.request = lose_response
+        with self.assertRaisesRegex(RuntimeError, 'response lost'):
+            self.run_release()
+        package = self.api.remote_tags['plugin-v0.3.0']
+        self.api.request = original
+        self.run_release()
+        self.assertEqual(self.api.remote_tags['plugin-v0.3.0'], package)
+        self.assertEqual(sum(method == 'POST' and path == 'git/refs' and
+                             data['ref'] == 'refs/tags/plugin-v0.3.0'
+                             for method, path, data in self.api.calls), 1)
+
+    def test_legacy_catalog_bytes_survive_distribution_and_later_reconciliation(self):
+        path = self.root / '.claude-plugin/marketplace.json'
+        path.write_text('{ "plugins" : [{ "name" : "nexus", "source" : "./" }] }\n')
+        sha = self.commit('Legacy catalog with noncanonical formatting')
+        self.run_release(sha)
+        self.assertEqual(self.git('show', f'plugins:.claude-plugin/marketplace.json'),
+                         path.read_text().strip())
+        self.run_release(self.commit('Next release'), sha)
+
+
 @unittest.skipUnless(os.environ.get('NEXUS_HOST_UPDATES') == '1', 'Opt-in native host lifecycle')
 class NativeHostUpdatesTests(unittest.TestCase):
     def test_remote_branch_update_replaces_both_installed_packages(self):
@@ -381,6 +474,8 @@ class NativeHostUpdatesTests(unittest.TestCase):
                 manifest_path.write_text(json.dumps({**manifest, 'version': '0.3.0'}, indent=2) + '\n')
             api = FakeGitHub(source)
             api.git('init', '-q', '-b', 'main')
+            api.git('config', 'gc.auto', '0')
+            api.git('config', 'maintenance.auto', 'false')
             api.git('config', 'user.name', 'Host lifecycle test')
             api.git('config', 'user.email', 'test@example.invalid')
             api.git('add', '.')
@@ -392,11 +487,15 @@ class NativeHostUpdatesTests(unittest.TestCase):
             api.git('add', '.')
             api.git('commit', '-qm', 'Enable releases')
             first = api.git('rev-parse', 'HEAD')
+            source_versions = {'0.3.0': first}
+            expected_packages = {}
             publish(source, api, first, before)
             # Exercise HTTPS source parsing and native Git clone/fetch without network.
             gitconfig = base / 'gitconfig'
             api.git('config', '-f', str(gitconfig), f'url.{source.as_uri()}.insteadOf',
                     'https://example.invalid/nexus.git')
+            api.git('config', '-f', str(gitconfig), '--add', f'url.{source.as_uri()}.insteadOf',
+                    'https://github.com/elourenco/nexus-skill.git')
             api.git('config', '-f', str(gitconfig), 'protocol.file.allow', 'always')
             consumer = base / 'consumer'
             consumer.mkdir()
@@ -418,7 +517,10 @@ class NativeHostUpdatesTests(unittest.TestCase):
             def installed_version(host):
                 listing = json.loads(call(host, 'plugin', 'list', '--json'))
                 if host == claude:
-                    return next(p['version'] for p in listing if p['id'] == 'nexus@nexus-local')
+                    plugin = next(p for p in listing if p['id'] == 'nexus@nexus-local')
+                    version = plugin['version']
+                    check_package(Path(plugin['installPath']), version)
+                    return version
                 # Inspect the package actually loaded, rather than any stale cache entry.
                 discovered = discover_skills(codex, consumer, env)
                 self.assertEqual(len(discovered), 6)
@@ -428,17 +530,37 @@ class NativeHostUpdatesTests(unittest.TestCase):
                                     for parent in Path(skill['path']).parents
                                     if (parent / '.codex-plugin/plugin.json').is_file())
                     versions.add(json.loads(manifest.read_text())['version'])
+                    check_package(manifest.parent.parent, json.loads(manifest.read_text())['version'])
                 self.assertEqual(len(versions), 1)
                 return versions.pop()
 
-            call(claude, 'plugin', 'marketplace', 'add', 'https://example.invalid/nexus.git#plugins')
+            def check_package(package, version):
+                provenance = json.loads((package / '.nexus-release.json').read_text())
+                self.assertEqual(provenance, {'schema_version': 1,
+                    'source_sha': source_versions[version], 'tag': 'v' + version})
+                if version not in expected_packages:
+                    snapshot = subprocess.check_output(['git', 'archive', '--format=tar',
+                                                        source_versions[version], 'skills'], cwd=source)
+                    with tarfile.open(fileobj=io.BytesIO(snapshot)) as archive:
+                        expected_packages[version] = {
+                            member.name: archive.extractfile(member).read()
+                            for member in archive.getmembers() if member.isfile()}
+                for relative, expected in expected_packages[version].items():
+                    self.assertEqual((package / relative).read_bytes(), expected)
+
+            # The default/main catalog must install the published package, not source 0.3.0.
+            call(claude, 'plugin', 'marketplace', 'add', 'https://example.invalid/nexus.git')
             call(claude, 'plugin', 'install', 'nexus@nexus-local')
-            call(codex, 'plugin', 'marketplace', 'add', 'https://example.invalid/nexus.git', '--ref', 'plugins', '--json')
+            call(codex, 'plugin', 'marketplace', 'add', 'https://example.invalid/nexus.git', '--json')
             call(codex, 'plugin', 'add', 'nexus@nexus-local', '--json')
             self.assertEqual(installed_version(claude), '0.3.0')
             self.assertEqual(installed_version(codex), '0.3.0')
-            api.git('commit', '-qm', 'Next release', '--allow-empty')
+            changed = source / 'skills/nexus/SKILL.md'
+            changed.write_text(changed.read_text() + '\n<!-- Native fixture release B payload -->\n')
+            api.git('add', 'skills/nexus/SKILL.md')
+            api.git('commit', '-qm', 'Next release with changed skill content')
             second = api.git('rev-parse', 'HEAD')
+            source_versions['0.3.1'] = second
             publish(source, api, second, first)
             call(claude, 'plugin', 'marketplace', 'update', 'nexus-local')
             call(claude, 'plugin', 'update', 'nexus@nexus-local')
@@ -454,8 +576,26 @@ class NativeHostUpdatesTests(unittest.TestCase):
             discovered = discover_skills(codex, consumer, env)
             self.assertEqual({s['name'].split(':')[-1] for s in discovered}, EXPECTED)
             self.assertTrue(all(s['enabled'] and '/0.3.1/' in s['path'] for s in discovered))
+            # A pinned package remains at A after the channel advances to B.
+            for host, remove, install in [(claude, 'uninstall', 'install'), (codex, 'remove', 'add')]:
+                call(host, 'plugin', remove, 'nexus@nexus-local')
+                call(host, 'plugin', 'marketplace', 'remove', 'nexus-local')
+                url = 'https://example.invalid/nexus.git'
+                args = (url + '#plugin-v0.3.0',) if host == claude else (url, '--ref', 'plugin-v0.3.0')
+                call(host, 'plugin', 'marketplace', 'add', *args)
+                call(host, 'plugin', install, 'nexus@nexus-local')
+                self.assertEqual(installed_version(host), '0.3.0')
+                call(host, 'plugin', 'marketplace', 'update' if host == claude else 'upgrade', 'nexus-local')
+                call(host, 'plugin', 'update' if host == claude else 'add', 'nexus@nexus-local')
+                self.assertEqual(installed_version(host), '0.3.0')
+                call(host, 'plugin', remove, 'nexus@nexus-local')
+                call(host, 'plugin', 'marketplace', 'remove', 'nexus-local')
+                args = (url + '#plugins',) if host == claude else (url, '--ref', 'plugins')
+                call(host, 'plugin', 'marketplace', 'add', *args)
+                call(host, 'plugin', install, 'nexus@nexus-local')
+                self.assertEqual(installed_version(host), '0.3.1')
             self.assertEqual(state.read_text(), '{"preserve":"consumer state"}\n')
-            print('Native updates: Claude and Codex 0.3.0 → 0.3.1; six current entries; consumer state preserved')
+            print('Native updates: main installs release in Claude/Codex, 0.3.0 → 0.3.1; pinned package stays 0.3.0; consumer state preserved')
 
 
 class DistributedPackageTests(unittest.TestCase):
@@ -478,6 +618,8 @@ class DistributedPackageTests(unittest.TestCase):
                 shutil.copy2(original, target, follow_symlinks=False)
             api = FakeGitHub(source)
             api.git('init', '-q', '-b', 'main')
+            api.git('config', 'gc.auto', '0')
+            api.git('config', 'maintenance.auto', 'false')
             api.git('config', 'user.name', 'Package test')
             api.git('config', 'user.email', 'test@example.invalid')
             api.git('add', '.')
@@ -502,6 +644,8 @@ class GitHubTransportTests(unittest.TestCase):
         api = GitHub('owner/repo', 'synthetic')
         for method, path, status, absent in [('GET', 'releases/tags/v0.3.0', 404, True),
                                              ('GET', 'git/ref/heads/plugins', 404, True),
+                                             ('GET', 'git/ref/tags/plugin-v0.3.0', 404, True),
+                                             ('GET', 'git/ref/tags/plugin-v0.3.0', 403, False),
                                              ('GET', 'git/ref/heads/plugins', 403, False),
                                              ('GET', 'git/ref/tags/v0.3.0', 404, False),
                                              ('GET', 'releases/tags/v0.3.0', 403, False),
