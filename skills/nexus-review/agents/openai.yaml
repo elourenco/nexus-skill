@@ -1,6 +1,6 @@
 interface:
-  display_name: "NEXUS Review"
-  short_description: "Revise diffs, contratos e riscos de regressão"
+  display_name: "NEXUS · Review"
+  short_description: "Avaliar um diff e seus riscos."
   icon_small: "./assets/nexus-icon.png"
   icon_large: "./assets/nexus-icon.png"
   default_prompt: "Use $nexus-review para revisar este diff e apontar regressões, riscos e verificações recomendadas."

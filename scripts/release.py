@@ -7,9 +7,16 @@ import re
 import subprocess
 import sys
 import tempfile
+import io
+import tarfile
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
+
+if __package__:
+    from .package_claude import render_claude_package
+else:
+    from package_claude import render_claude_package
 
 VERSION = re.compile(r'v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)')
 WORKFLOW = '.github/workflows/release.yml'
@@ -19,6 +26,7 @@ MANIFESTS = ('.claude-plugin/plugin.json', '.codex-plugin/plugin.json')
 CATALOGS = ('.claude-plugin/marketplace.json', '.agents/plugins/marketplace.json')
 PUBLISHED_SOURCE = {'source': 'url', 'url': 'https://github.com/elourenco/nexus-skill.git',
                     'ref': 'plugins'}
+CLAUDE_PUBLISHED_SOURCE = {**PUBLISHED_SOURCE, 'source': 'git-subdir', 'path': 'build/claude'}
 
 
 def git(root, *args):
@@ -76,7 +84,7 @@ def source_manifests(root, sha):
 
 
 def distribution_snapshot(root, sha, tag):
-    """Render only version/provenance changes; derive an independently checkable tree."""
+    """Render versions and Claude's package from the immutable source commit."""
     if not VERSION.fullmatch(tag) or not re.fullmatch(r'[0-9a-f]{40}', sha):
         raise ValueError('Distribution requires a version tag and full source SHA')
     git(root, 'rev-parse', '--verify', f'{sha}^{{commit}}')
@@ -84,14 +92,34 @@ def distribution_snapshot(root, sha, tag):
         raise ValueError('Source snapshot must not contain generated distribution provenance')
     files = {path: json.dumps({**manifest, 'version': tag[1:]}, ensure_ascii=False, indent=2) + '\n'
              for path, manifest in source_manifests(root, sha).items()}
+    # This source-file marker makes older package trees reproducible even when
+    # their catalogs already used the same remote published channel.
+    short_commands = bool(git(root, 'ls-tree', '--name-only', sha, '--', 'scripts/package_claude.py'))
+    if short_commands:
+        archive = subprocess.check_output(['git', 'archive', '--format=tar', sha, '--',
+                                          'skills', '.claude-plugin'], cwd=root, timeout=30)
+        with tarfile.open(fileobj=io.BytesIO(archive)) as snapshot:
+            sources = {entry.name: snapshot.extractfile(entry).read() for entry in snapshot if entry.isfile()}
+        sources['.claude-plugin/plugin.json'] = files['.claude-plugin/plugin.json'].encode('utf-8')
+        for path, content in render_claude_package(sources).items():
+            try:
+                files[f'build/claude/{path}'] = content.decode('utf-8')
+            except UnicodeDecodeError:
+                files[f'build/claude/{path}'] = content
     files[PROVENANCE] = json.dumps({'schema_version': 1, 'source_sha': sha, 'tag': tag}, indent=2) + '\n'
-    for path, local_source in zip(CATALOGS, ('./', {'source': 'local', 'path': './'})):
+    if short_commands:
+        files[f'build/claude/{PROVENANCE}'] = files[PROVENANCE]
+    claude_source = './build/claude' if short_commands else './'
+    for path, local_source in zip(CATALOGS, (claude_source, {'source': 'local', 'path': './'})):
         # Historical local catalogs must retain their exact bytes/tree hashes.
         if not git(root, 'ls-tree', '--name-only', sha, '--', path):
             continue
         catalog = json.loads(git(root, 'show', f'{sha}:{path}'))
         for entry in catalog.get('plugins', []):
-            if entry.get('name') == 'nexus' and entry.get('source') == PUBLISHED_SOURCE:
+            source = entry.get('source')
+            published_source = source == PUBLISHED_SOURCE or (
+                short_commands and path == CATALOGS[0] and source == CLAUDE_PUBLISHED_SOURCE)
+            if entry.get('name') == 'nexus' and published_source:
                 entry['source'] = local_source
                 files[path] = json.dumps(catalog, ensure_ascii=False, indent=2) + '\n'
     # A temporary index leaves the checkout, staging area and refs untouched.
@@ -104,7 +132,10 @@ def distribution_snapshot(root, sha, tag):
 
         indexed('read-tree', sha)
         for path, content in files.items():
-            blob = indexed('hash-object', '-w', '--stdin', input=content)
+            # Package assets can be binary; hash bytes without text decoding.
+            blob = subprocess.check_output(['git', 'hash-object', '-w', '--stdin'], cwd=root,
+                                           input=content.encode('utf-8') if isinstance(content, str) else content,
+                                           stderr=subprocess.PIPE, timeout=30).decode().strip()
             indexed('update-index', '--add', '--cacheinfo', '100644', blob, path)
         tree = indexed('write-tree')
     return files, tree
@@ -138,10 +169,18 @@ def ensure_package_tag(root, api, sha, tag, files, tree):
         if commit['tree']['sha'] != tree:
             raise RuntimeError('Immutable plugin package differs from its release snapshot')
         return
+    entries = []
+    for path, content in files.items():
+        entry = {'path': path, 'mode': '100644', 'type': 'blob'}
+        if isinstance(content, bytes):
+            # Binary assets are copied from the source; GitHub already owns the blob.
+            entry['sha'] = git(root, 'rev-parse', f'{sha}:{path.removeprefix("build/claude/")}')
+        else:
+            entry['content'] = content
+        entries.append(entry)
     created = api.request('POST', 'git/trees', {
         'base_tree': git(root, 'rev-parse', f'{sha}^{{tree}}'),
-        'tree': [{'path': path, 'mode': '100644', 'type': 'blob', 'content': content}
-                 for path, content in files.items()],
+        'tree': entries,
     })
     if created['sha'] != tree:
         raise RuntimeError('Generated distribution tree differs from the validated snapshot')

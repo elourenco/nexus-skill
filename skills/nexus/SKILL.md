@@ -1,6 +1,6 @@
 ---
 name: nexus
-description: Use when the user requests NEXUS generally, status or resumption, or a software engineering task needs coordination across multiple stages. Use a named nexus-* entry directly when the user selects one.
+description: Use when NEXUS is requested generally, to start, check status or resume work, or to coordinate engineering across multiple stages. Use a named NEXUS entry when the user selects one.
 ---
 
 # NEXUS Cognitive Engineering

@@ -103,7 +103,7 @@ entradas no seletor e invoque uma delas no chat:
 
 | Host | Primeiro pedido |
 | --- | --- |
-| Claude Code | `/nexus:nexus Analise a arquitetura deste projeto, sem alterar arquivos.` |
+| Claude Code | `/nexus:start Analise a arquitetura deste projeto, sem alterar arquivos.` |
 | Codex | `$nexus:nexus Analise a arquitetura deste projeto, sem alterar arquivos.` |
 
 A disponibilidade dos comandos depende do cliente instalado. Se `plugin` não
@@ -144,7 +144,7 @@ escopo ao seu projeto; são exemplos de uso, não resultados de benchmark.
 
 **Planejar uma feature**
 
-> Use nexus-brainstorming para desenhar a exportação CSV do relatório de pedidos.
+> Use nexus-brainstorm para desenhar a exportação CSV do relatório de pedidos.
 > Considere grandes volumes, permissões e retomada após falha. Primeiro apresente
 > a solução e os critérios de aceite para eu revisar.
 
@@ -175,7 +175,7 @@ exigem múltiplos agentes.
 | Entrada | Quando usar | Entrega |
 | --- | --- | --- |
 | [nexus](skills/nexus/SKILL.md) | Coordenação geral, status ou retomada | Roteamento ou estado reconciliado |
-| [nexus-brainstorming](skills/nexus-brainstorming/SKILL.md) | Iniciar uma feature ou explorar alternativas | Fluxo guiado por aceites; recomendação quando o pedido for só explorar |
+| [nexus-brainstorm](skills/nexus-brainstorm/SKILL.md) | Iniciar uma feature ou explorar alternativas | Fluxo guiado por aceites; recomendação quando o pedido for só explorar |
 | [nexus-plan](skills/nexus-plan/SKILL.md) | Detalhar uma direção definida | Contratos, etapas, dependências e validação |
 | [nexus-build](skills/nexus-build/SKILL.md) | Implementar o escopo autorizado | Alterações verificadas e pendências |
 | [nexus-debug](skills/nexus-debug/SKILL.md) | Investigar bug ou comportamento inesperado | Diagnóstico; correção quando solicitada |
@@ -195,6 +195,22 @@ percorrer o registry de agentes. Entradas especializadas seguem diretamente aos
 destinos, reutilizando leituras da mesma revisão. Isso reduz conteúdo obrigatório;
 ganhos de latência e tokens dependem de avaliação de execução.
 
+No plugin Claude Code, a marca já está no namespace:
+
+| Ação | Claude Code | Codex standalone |
+| --- | --- | --- |
+| Iniciar ou retomar | `/nexus:start` | `$nexus` |
+| Explorar | `/nexus:brainstorm` | `$nexus-brainstorm` |
+| Planejar | `/nexus:plan` | `$nexus-plan` |
+| Implementar | `/nexus:build` | `$nexus-build` |
+| Diagnosticar | `/nexus:debug` | `$nexus-debug` |
+| Revisar | `/nexus:review` | `$nexus-review` |
+
+No Codex, os títulos no app são **NEXUS**, **NEXUS · Brainstorm**, **NEXUS · Plan**,
+**NEXUS · Build**, **NEXUS · Debug** e **NEXUS · Review**. O cliente pode qualificar
+os nomes de skills instaladas como plugin: por exemplo, `$nexus:nexus-plan`.
+Selecione a entrada oferecida pelo host. Os nomes globais continuam `nexus-*`.
+
 Os procedimentos e políticas vivem em `skills/nexus/`. As cinco entradas são
 seletores curtos com referências relativas ao núcleo; não duplicam workflow,
 estado ou regras. A [invocação](skills/nexus/references/invocation.md) carrega apenas
@@ -202,10 +218,10 @@ o procedimento escolhido e executa no agente atual por padrão.
 
 ### Criar ou alterar uma feature por aceites
 
-Comece por `nexus-brainstorming` e descreva a feature. O agente conduz entendimento,
+Comece por `nexus-brainstorm` e descreva a feature. O agente conduz entendimento,
 solução, plano, implementação, validação e review, sem exigir novas invocações.
 
-> nexus-brainstorming: quero adicionar exportação CSV ao relatório de pedidos.
+> nexus-brainstorm: quero adicionar exportação CSV ao relatório de pedidos.
 
 Leia a solução e peça ajustes ou responda “aprovado” para seguir ao plano. O agente
 explicita o efeito de cada aceite. Ao apresentar o plano, oferece **subagentes** ou
@@ -265,10 +281,11 @@ Para acompanhar versões, consulte as [releases](https://github.com/elourenco/ne
 <details>
 <summary>Instalação manual, sintaxe por host e verificação de descoberta</summary>
 
-Como plugin, os manifestos incluem o diretório `skills/` completo. Na instalação
+O Codex usa diretamente `skills/`. O pacote Claude é gerado a partir dessas
+fontes com nomes curtos, sem manter cópias manuais dos procedimentos. Na instalação
 manual de skills standalone, copie **as seis pastas** de `skills/` para o mesmo diretório
 de skills suportado pelo host, preservando nomes e conteúdo. `nexus/` deve ficar
-ao lado de `nexus-brainstorming/`, `nexus-plan/`, `nexus-build/`, `nexus-debug/` e
+ao lado de `nexus-brainstorm/`, `nexus-plan/`, `nexus-build/`, `nexus-debug/` e
 `nexus-review/`. Atualize o conjunto a partir da mesma revisão para preservar os
 contratos. Antes de substituir uma instalação, confira alterações locais.
 
@@ -279,11 +296,11 @@ interrompe esse fluxo. Não há instalador nem atualização global automática.
 
 | Host / instalação | Exemplo após instalação e descoberta |
 | --- | --- |
-| Codex CLI / IDE — standalone | `$nexus-brainstorming Compare as alternativas de sincronização offline.` |
-| Claude Code — standalone | `/nexus-brainstorming Compare as alternativas de sincronização offline.` |
-| Codex — plugin `nexus` | `$nexus:nexus-brainstorming Compare as alternativas de sincronização offline.` |
-| Claude Code — plugin `nexus` | `/nexus:nexus-brainstorming Compare as alternativas de sincronização offline.` |
-| Outros hosts / carregamento manual | Carregue a entrada e peça “Use nexus-brainstorming para comparar as alternativas”. Verifique o mecanismo de seleção do host. |
+| Codex CLI / IDE — standalone | `$nexus-brainstorm Compare as alternativas de sincronização offline.` |
+| Claude Code — standalone | `/nexus-brainstorm Compare as alternativas de sincronização offline.` |
+| Codex — plugin `nexus` | `$nexus:nexus-brainstorm Compare as alternativas de sincronização offline.` |
+| Claude Code — plugin `nexus` | `/nexus:brainstorm Compare as alternativas de sincronização offline.` |
+| Outros hosts / carregamento manual | Carregue a entrada e peça “Use nexus-brainstorm para comparar as alternativas”. Verifique o mecanismo de seleção do host. |
 
 No Codex, skills de repositório podem ficar em `.agents/skills/`; no Claude Code,
 em `.claude/skills/`. Essas sintaxes são interfaces dos hosts, não subcomandos de

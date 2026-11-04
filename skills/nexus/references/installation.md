@@ -1,14 +1,37 @@
 # Instalação e atualização como plugin
 
-O plugin `nexus` é exposto pelo catálogo `nexus-local`. Claude Code e Codex compartilham as seis entradas em `skills/`, com procedimentos e políticas no núcleo `skills/nexus/`; não há cópias específicas de conteúdo por host. Os manifestos `.claude-plugin/plugin.json` e `.codex-plugin/plugin.json` ficam na raiz do pacote. No Codex foi escolhido o formato de compatibilidade, aceito pelo cliente validado; não há um terceiro manifesto portátil concorrente.
+O plugin `nexus` é exposto pelo catálogo `nexus-local`. A fonte de verdade é
+`skills/`, com procedimentos e políticas em `skills/nexus/`. O Codex usa essas
+skills diretamente. Para o Claude Code, `scripts/package_claude.py` gera um pacote
+em `build/claude/` com nomes curtos; o catálogo Claude distribuído aponta para esse pacote.
+O build não usa inferência nem altera os procedimentos mantidos no núcleo.
 
-As entradas são `nexus`, `nexus-brainstorming`, `nexus-plan`, `nexus-build`,
-`nexus-debug` e `nexus-review`. Como plugin, o namespace é `nexus:`: por exemplo,
-`/nexus:nexus-review` no Claude Code e `$nexus:nexus-review` no Codex. Confira as seis
-entradas no seletor após atualizar. A validação original foi feita na versão
-0.1.0; o teste nativo de atualização `0.3.0` → `0.3.1` confirmou as seis entradas
-nos dois hosts em perfis temporários. Por leitura direta, use o [contrato de invocação](invocation.md)
-e o procedimento correspondente.
+| Ação | Plugin Claude Code | Codex standalone |
+| --- | --- | --- |
+| Iniciar, consultar estado ou retomar | `/nexus:start` | `$nexus` |
+| Explorar opções e definir direção | `/nexus:brainstorm` | `$nexus-brainstorm` |
+| Planejar etapas verificáveis | `/nexus:plan` | `$nexus-plan` |
+| Executar uma mudança com validação | `/nexus:build` | `$nexus-build` |
+| Reproduzir, diagnosticar e corrigir | `/nexus:debug` | `$nexus-debug` |
+| Avaliar diff e riscos | `/nexus:review` | `$nexus-review` |
+
+O Codex pode acrescentar o namespace do plugin: `$nexus:nexus-plan`, por exemplo.
+Use o nome oferecido pelo seletor. Os metadados `agents/openai.yaml` apresentam
+**NEXUS · Plan**, **NEXUS · Build** etc. no app; o nome técnico preserva a identidade
+`nexus-*`. A entrada principal é **NEXUS**. Por leitura direta, use o
+[contrato de invocação](invocation.md) e o procedimento correspondente.
+
+### Migração dos nomes
+
+No plugin Claude, `/nexus:nexus` passa a `/nexus:start` e as ações perdem o segundo
+prefixo: `/nexus:nexus-plan` passa a `/nexus:plan`. Brainstorm usa `/nexus:brainstorm`.
+Não são expostos aliases antigos no menu. Atualize prompts e atalhos que gravaram
+os nomes anteriores. O catálogo e a identidade `nexus@nexus-local` são preservados.
+
+No conjunto standalone/Codex, `nexus-brainstorming` passa a `nexus-brainstorm`.
+Ao copiar skills manualmente, confira alterações locais, substitua o conjunto pela
+mesma revisão e remova a pasta antiga `nexus-brainstorming/` da instalação para
+não manter duas entradas. Não apague estado ou memória do consumidor.
 
 ## Instalar versões publicadas
 
@@ -109,7 +132,8 @@ python3 scripts/verify_hosts.py --prepare-local "$NEXUS_DEV_ROOT"
 ```
 
 O destino deve ser novo; o comando recusa sobrescrevê-lo. A cópia mantém os bytes
-das skills e manifestos do checkout e altera somente as origens dos catálogos.
+das skills e manifestos do checkout, gera o pacote Claude com nomes curtos e
+configura catálogos locais. O catálogo Claude aponta para `build/claude/` dessa cópia.
 Ela mostra a versão de desenvolvimento, sem afirmar que é uma release publicada.
 Os comandos abaixo registram essa cópia e habilitam o plugin no perfil escolhido.
 Não são executados automaticamente pela skill.
@@ -117,14 +141,14 @@ Não são executados automaticamente pela skill.
 Claude Code:
 
 ```sh
-claude plugin validate "$NEXUS_DEV_ROOT/.claude-plugin/plugin.json"
+claude plugin validate "$NEXUS_DEV_ROOT/build/claude/.claude-plugin/plugin.json"
 claude plugin validate "$NEXUS_DEV_ROOT/.claude-plugin/marketplace.json"
 claude plugin marketplace add "$NEXUS_DEV_ROOT"
 claude plugin install nexus@nexus-local
 claude plugin list --json
 ```
 
-Abra uma nova sessão no projeto consumidor e invoque `/nexus:nexus` com seu objetivo. Para experimentar uma pasta apenas na sessão, Claude Code também aceita `claude --plugin-dir "$PWD"`; execute na raiz do pacote ou forneça o caminho absoluto da raiz ao iniciar no consumidor. Não mantenha uma cópia standalone da mesma skill ativa junto com o plugin sem resolver a duplicação.
+Abra uma nova sessão no projeto consumidor e invoque `/nexus:start` com seu objetivo. Para experimentar uma pasta apenas na sessão, Claude Code também aceita `claude --plugin-dir "$PWD/build/claude"`; execute no checkout depois do build ou forneça o caminho absoluto do pacote gerado ao iniciar no consumidor. Não mantenha uma cópia standalone da mesma skill ativa junto com o plugin sem resolver a duplicação.
 
 Codex:
 
@@ -140,9 +164,9 @@ Validação local observada em Claude Code `2.1.308` e Codex CLI `0.166.0-alpha.
 
 ## Caminhos e estado do consumidor
 
-O caminho do `SKILL.md` descoberto pelo host é a referência para localizar `scripts/`, `references/` e `assets/`. Não assuma um cache global fixo, nem use o CWD do consumidor para procurar `skills/nexus/scripts`. O host pode mover ou substituir a instalação ao atualizar.
+Resolva os links a partir do `SKILL.md` descoberto pelo host. No Claude, as seis entradas apontam para o núcleo compartilhado na pasta irmã `nexus/`; seus helpers, referências e assets ficam nessa pasta. Não assuma um cache global fixo, nem use o CWD do consumidor para procurar `skills/nexus/scripts`. O host pode mover ou substituir a instalação ao atualizar.
 
-Para os exemplos abaixo, defina `NEXUS_PLUGIN_ROOT` com a raiz absoluta da instalação verificada no host e execute no projeto consumidor. A raiz tem `skills/nexus/SKILL.md`; não é a pasta `skills/nexus` em si. Definir essa variável não é uma configuração persistente ou um requisito de descoberta do host.
+Para os exemplos abaixo, defina `NEXUS_PLUGIN_ROOT` com a raiz absoluta da instalação verificada no host e execute no projeto consumidor. A raiz tem `.claude-plugin/plugin.json` ou `.codex-plugin/plugin.json`, além de `skills/nexus/scripts/`; não é a pasta da skill em si. No pacote Claude, a entrada principal está em `skills/start/SKILL.md`. Definir essa variável não é uma configuração persistente ou um requisito de descoberta do host.
 
 ```sh
 : "${NEXUS_PLUGIN_ROOT:?Defina a raiz absoluta do plugin instalado}"

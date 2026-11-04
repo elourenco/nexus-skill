@@ -1,0 +1,6 @@
+interface:
+  display_name: "NEXUS · Brainstorm"
+  short_description: "Explorar opções e definir uma direção."
+  icon_small: "./assets/nexus-icon.png"
+  icon_large: "./assets/nexus-icon.png"
+  default_prompt: "Use $nexus-brainstorm para explorar esta funcionalidade e definir escopo, alternativas e critérios de aceite."
