@@ -1,0 +1,5 @@
+interface:
+  display_name: "NEXUS"
+  short_description: "Especificação, arquitetura e validação de engenharia"
+  icon_small: "./assets/nexus-icon.png"
+  icon_large: "./assets/nexus-icon.png"
