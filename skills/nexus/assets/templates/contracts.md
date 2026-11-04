@@ -26,7 +26,7 @@ metadados da skill e links, não esquema dos artefatos. Os contratos Markdown s�
 Para [segurança e ética em IA](../../references/policies.md#policy-ai-safety-ethics),
 use os campos existentes: risco/impacto e afetados, controle e responsável,
 aceite, evidência e limitações. Preencha apenas dimensões pertinentes ao caso,
-referenciando `nexus.policies` revisão 2; não copie a política nem imponha um
+referenciando `nexus.policies` revisão 3; não copie a política nem imponha um
 formulário ético completo a FAST. Regras documentais novas não acrescentam campos
 ao JSON dos helpers nem alteram estados ou esta versão do contrato de artefatos.
 

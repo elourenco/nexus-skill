@@ -6,7 +6,8 @@ description: Use when NEXUS review of an existing diff, implementation, contract
 # NEXUS Review
 
 Selecione Review. Leia o [contrato compartilhado](../nexus/references/invocation.md)
-e execute o [procedimento de revisão](../nexus/references/review.md).
+e leia juntos o [procedimento](../nexus/references/review.md) e os
+[critérios de revisão](../nexus/references/review-criteria.md). Não recarregue o índice.
 
 Requer a pasta irmã `nexus/` da mesma distribuição. Se alguma referência obrigatória
 estiver ausente, informe o caminho e interrompa este fluxo, sem simular seu conteúdo.

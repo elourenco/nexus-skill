@@ -1,6 +1,6 @@
 # Workflow adaptativo e retomável
 
-Escolha profundidade pelo risco e incerteza conforme [Policies](policies.md#policy-execution). FAST, BALANCED e DEEP não determinam se haverá arquivos ou estado persistido. Explore, Plan, Build e Review são atividades; Autonomous é continuidade na autorização existente, sem permissão adicional ou scheduler.
+Escolha profundidade pelo contrato mínimo; consulte [Policies](policies.md#policy-execution) quando a classificação precisar de detalhe. Links do executor só são necessários quando a CLI for adotada, não por aparecerem nesta referência. FAST, BALANCED e DEEP não determinam se haverá arquivos ou estado persistido. Explore, Plan, Build e Review são atividades; Autonomous é continuidade na autorização existente, sem permissão adicional ou scheduler.
 
 ## Modos de profundidade
 
@@ -29,7 +29,7 @@ Uma única fonte é autoridade; sem persistência, o relato no chat não é esta
 
 ## Testes adaptativos e gates
 
-Aplique [testes proporcionais](policies.md#policy-testing) e [review pertinente](agents.md#review-council-adaptativo). Reutilize evidência somente quando inputs, revisão, configuração, run/geração aplicáveis e ambiente permanecerem válidos; não execute duas vezes o mesmo check válido só por atravessar uma etapa. Mudança relevante invalida a cobertura afetada; check obrigatório ausente impede conclusão. O executor preserva recibos, gerações e revalidação de `complete`/`deliver`: [gates executáveis](workflow-state.md#testes-adaptativos-e-gates).
+Aplique [testes proporcionais](policies.md#policy-testing) e [review pertinente](review-criteria.md#review-council-adaptativo). Reutilize evidência somente quando inputs, revisão, configuração, run/geração aplicáveis e ambiente permanecerem válidos; não execute duas vezes o mesmo check válido só por atravessar uma etapa. Mudança relevante invalida a cobertura afetada; check obrigatório ausente impede conclusão. O executor preserva recibos, gerações e revalidação de `complete`/`deliver`: [gates executáveis](workflow-state.md#testes-adaptativos-e-gates).
 
 Critérios pertinentes de [segurança e ética](policies.md#policy-ai-safety-ethics)
 entram no aceite/risco/evidência existentes. A aplicação é responsabilidade do
