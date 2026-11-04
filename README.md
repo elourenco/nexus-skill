@@ -91,9 +91,30 @@ ou use o carregamento direto. O plugin compartilha o mesmo núcleo entre os dois
 hosts; helpers e runtime continuam opt-in. Veja a [avaliação de descoberta nos hosts](docs/behavioral-evaluation.md).
 
 O ícone **núcleo conectado** fica em [skills/nexus/assets/nexus-icon.png](skills/nexus/assets/nexus-icon.png).
-O Codex o referencia no plugin e nos metadados da skill principal. No Claude, o
+O Codex o referencia no plugin e nos metadados das seis skills. No Claude, o
 campo `icon` atende ao catálogo da Anthropic; o Claude Code não o exibe no terminal.
 Veja a [validação do ícone](docs/plugins-validation.md#ícone-núcleo-conectado-2026-11-03).
+
+No Codex, o plugin usa o subtítulo **Da ideia à entrega validada**, com três
+pedidos iniciais: especificar uma funcionalidade, investigar uma falha e revisar
+um diff. As seis skills têm nomes consistentes, descrições curtas em português
+e o mesmo ícone, com uma cópia idêntica em cada skill para manter caminhos locais.
+
+| Entrada | Descrição no seletor do Codex |
+| --- | --- |
+| NEXUS | Da ideia à entrega validada |
+| NEXUS Brainstorming | Explore ideias e defina critérios de aceite |
+| NEXUS Plan | Planeje etapas, contratos e dependências |
+| NEXUS Build | Implemente incrementos com validação e evidências |
+| NEXUS Debug | Investigue falhas e confirme a causa raiz |
+| NEXUS Review | Revise diffs, contratos e riscos de regressão |
+
+Os dois manifestos apontam para o [repositório](https://github.com/elourenco/nexus-skill)
+e identificam o publicador como NEXUS. O Website do Codex usa
+`interface.websiteURL`; documentação e suporte no diretório Anthropic usam
+`documentationUrl` e `supportUrl`. O suporte aponta para as
+[issues](https://github.com/elourenco/nexus-skill/issues).
+Veja os [resultados e limites da validação](docs/plugins-validation.md#metadados-de-apresentação-2026-11-03).
 
 ## Experimente no seu projeto
 
