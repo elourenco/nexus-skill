@@ -64,6 +64,13 @@ gerada pelo CI após cada release, com a mesma versão nos dois manifestos. Ela
 precisa existir no remoto antes da primeira instalação. O catálogo mantém o nome
 **`nexus-local`** por compatibilidade, mesmo quando sua origem é remota.
 
+Os catálogos de `main` também encaminham para `plugins`, evitando instalar a
+versão de desenvolvimento por engano. Para fixar uma versão, use a tag de
+pacote **`plugin-vX.Y.Z`** no lugar de `plugins` nos comandos abaixo. As tags
+`vX.Y.Z` identificam o código-fonte e não são referências de instalação fixada.
+As tags de pacote são criadas pelo novo fluxo; use somente referências existentes.
+Versões antigas não recebem essas tags em massa.
+
 **Claude Code**
 
 ```sh
@@ -83,8 +90,12 @@ No Claude, habilite `/plugin` → **Marketplaces** → **nexus-local** →
 `codex plugin marketplace upgrade nexus-local` e `codex plugin add nexus@nexus-local`;
 não há garantia documentada de polling automático para esse canal.
 
-Para desenvolvimento local, continue usando `plugin marketplace add "$PWD"` na
-raiz do checkout. Instalações locais existentes precisam migrar a origem uma vez;
+Para testar alterações locais, gere um pacote com
+`python3 scripts/verify_hosts.py --prepare-local /tmp/nexus-dev-candidate` e
+registre esse diretório como marketplace. Ele precisa ser novo a cada geração.
+Registrar a raiz de `main` instala a release publicada. Instalações existentes
+que apontem para `main` precisam atualizar o catálogo e o plugin; checkouts locais
+precisam migrar a origem uma vez;
 o [guia de instalação](skills/nexus/references/installation.md) descreve o procedimento.
 
 Abra uma nova sessão **no projeto em que você quer trabalhar**, confira as seis

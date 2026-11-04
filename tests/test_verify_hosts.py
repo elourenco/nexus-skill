@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import patch
 
 from scripts.verify_hosts import EXPECTED, discover_skills, main, verify
+import scripts.verify_hosts as host_verifier
 
 
 class HostDiscoveryTests(unittest.TestCase):
@@ -72,6 +73,18 @@ class HostDiscoveryTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 main(['--output', str(output)])
         self.assertFalse(output.exists())
+
+    def test_checkout_package_installs_candidate_bytes_without_remote_catalog_redirects(self):
+        destination = self.root / 'candidate'
+        host_verifier.prepare_local_package(destination)
+        for path, expected in [('.claude-plugin/marketplace.json', './'),
+                               ('.agents/plugins/marketplace.json', {'source': 'local', 'path': './'})]:
+            catalog = json.loads((destination / path).read_text())
+            self.assertEqual(catalog['plugins'][0]['source'], expected)
+        candidate = host_verifier.ROOT / 'skills/nexus/SKILL.md'
+        self.assertEqual((destination / 'skills/nexus/SKILL.md').read_bytes(), candidate.read_bytes())
+        with self.assertRaises(FileExistsError):
+            host_verifier.prepare_local_package(destination)
 
     def test_valid_fragmented_protocol_and_bad_skill_schema(self):
         for skills in ([{'name': 'nexus:nexus', 'pluginId': 'nexus@nexus-local', 'enabled': True}], [None]):

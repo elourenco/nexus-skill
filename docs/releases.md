@@ -39,10 +39,28 @@ de serviço nem submissão aos diretórios públicos dos hosts neste fluxo.
 ## Distribuição para os hosts
 
 Depois de publicar a release estável, `scripts/release.py` gera um snapshot para
-`refs/heads/plugins`. Apenas os dois `manifest.version` e `.nexus-release.json`
-diferem da árvore de origem. O arquivo de proveniência registra a versão da tag e
+`refs/heads/plugins`. Os dois `manifest.version`, os catálogos de marketplace e
+`.nexus-release.json` diferem da árvore de origem. O arquivo de proveniência registra a versão da tag e
 o SHA validado. O CI calcula a árvore Git esperada localmente e confere o hash
 retornado pela API antes de promover o pacote.
+
+Na origem, os dois catálogos apontam para o pacote deste repositório em `plugins`.
+Assim, registrar `main` não instala os manifestos de desenvolvimento. No snapshot
+distribuído, as origens dos catálogos viram caminhos locais `./`: instalar uma
+versão fixada usa somente seu próprio conteúdo. Catálogos locais históricos não
+são reserializados, preservando os hashes usados para reconciliar releases antigas.
+
+Cada release também recebe uma tag imutável `plugin-vX.Y.Z`, apontando para um
+commit derivado cuja árvore é exatamente a distribuição validada. A tag-fonte
+`vX.Y.Z` continua no SHA validado de `main`. A tag de pacote é criada antes da
+promoção do canal; uma tag existente deve corresponder à árvore esperada e nunca
+é movida. A reexecução reconcilia uma resposta perdida ou tag ausente, inclusive
+em releases anteriores ao canal atual, sem retroceder `plugins`. Um conflito ou
+erro de escrita interrompe a execução; não há retry automático de resultado incerto.
+Tags antigas não são criadas em massa. A predecessora reconciliada pelo novo fluxo
+recebe sua tag de pacote; workflows antigos reexecutam o script antigo e não
+ganham esse comportamento retroativamente. Regras de tags devem permitir a
+criação de `plugin-v*` pelo CI.
 
 Cada promoção acrescenta um commit cujo pai é o tip anterior da branch de
 distribuição. A atualização usa `force: false`: uma alteração concorrente fora
@@ -70,6 +88,7 @@ marketplaces Git no Codex é explícito; não prometemos polling automático.
 Os arquivos-fonte da tag representam o commit de origem e podem ter uma versão
 inicial nos manifestos. Para instalar a versão com manifests atualizados, use a
 branch `plugins`; não confunda a versão de origem com o pacote distribuído.
+Para uma instalação fixada, use `plugin-vX.Y.Z`, não a tag-fonte `vX.Y.Z`.
 Não se instala scheduler, hook ou processo no projeto consumidor. O caminho
 crítico acrescenta leitura de proveniência, criação de objetos Git e uma promoção
 serial por release; não há benchmark de latência ou throughput desse fluxo.

@@ -18,6 +18,18 @@ identifica a tag e o SHA de origem. A tag continua apontando para o commit de
 origem validado. O nome `nexus-local` é uma identidade histórica do catálogo,
 não uma restrição de origem.
 
+Os catálogos de `main` encaminham o plugin para `plugins`, mesmo se o marketplace
+for adicionado sem escolher uma branch. Isso evita usar a versão inicial dos
+manifestos de desenvolvimento. O pacote distribuído contém catálogos locais,
+sem redirecionamento, e não consulta outra versão durante sua instalação.
+
+Para fixar uma versão, substitua `plugins` por `plugin-vX.Y.Z` nos comandos de
+instalação. Essa tag de pacote tem manifestos corretos e permanece na mesma
+árvore após novas releases. As tags `vX.Y.Z` continuam identificando o código-fonte;
+não use essas tags para fixar uma instalação. Tags de pacote são produzidas pelo
+novo fluxo; use somente referências existentes. Não há criação em massa de tags
+de pacote para versões antigas.
+
 Os comandos abaixo exigem a primeira publicação da branch `plugins`. Se ela ainda
 não existir, use a instalação local da próxima seção. Uma tag/release sem essa
 branch não conclui a distribuição. O repositório de desenvolvimento descreve o
@@ -67,6 +79,16 @@ Não há garantia documentada de polling automático para marketplaces Git/locai
 do Codex. O canal remoto remove a dependência de atualizar um checkout pessoal;
 o agendamento do refresh continua sendo responsabilidade do host.
 
+### Corrigir uma instalação registrada em main
+
+Após a publicação desta correção, atualize o catálogo e reinstale/atualize o
+plugin com a sequência do seu host acima. Antes dessa publicação, ou se o
+marketplace continuar em uma revisão antiga, remova o plugin e o catálogo com os
+comandos em **Atualizar e remover** e registre novamente usando `#plugins` no
+Claude ou `--ref plugins` no Codex. Confira `plugin list --json`; no Codex,
+confira também a versão do manifesto na origem das skills efetivamente carregadas.
+Não edite o cache nem apague o estado do consumidor.
+
 ### Migrar uma instalação local existente
 
 Inspecione `plugin marketplace list` e `plugin list --json` no host escolhido.
@@ -78,14 +100,26 @@ Não remova o checkout de desenvolvimento nem `.nexus/local/` do consumidor.
 
 ## Instalar e verificar um checkout local
 
-Execute os comandos abaixo na raiz do checkout completo do NEXUS, que contém os manifestos. Eles registram o catálogo e habilitam o plugin no perfil do usuário. Não são executados automaticamente pela skill.
+O catálogo da raiz de desenvolvimento segue a release publicada. Para testar
+o conteúdo de um checkout, gere uma cópia explícita com catálogos locais:
+
+```sh
+NEXUS_DEV_ROOT="$(mktemp -d)/nexus"
+python3 scripts/verify_hosts.py --prepare-local "$NEXUS_DEV_ROOT"
+```
+
+O destino deve ser novo; o comando recusa sobrescrevê-lo. A cópia mantém os bytes
+das skills e manifestos do checkout e altera somente as origens dos catálogos.
+Ela mostra a versão de desenvolvimento, sem afirmar que é uma release publicada.
+Os comandos abaixo registram essa cópia e habilitam o plugin no perfil escolhido.
+Não são executados automaticamente pela skill.
 
 Claude Code:
 
 ```sh
-claude plugin validate .claude-plugin/plugin.json
-claude plugin validate .claude-plugin/marketplace.json
-claude plugin marketplace add "$PWD"
+claude plugin validate "$NEXUS_DEV_ROOT/.claude-plugin/plugin.json"
+claude plugin validate "$NEXUS_DEV_ROOT/.claude-plugin/marketplace.json"
+claude plugin marketplace add "$NEXUS_DEV_ROOT"
 claude plugin install nexus@nexus-local
 claude plugin list --json
 ```
@@ -95,7 +129,7 @@ Abra uma nova sessão no projeto consumidor e invoque `/nexus:nexus` com seu obj
 Codex:
 
 ```sh
-codex plugin marketplace add "$PWD"
+codex plugin marketplace add "$NEXUS_DEV_ROOT"
 codex plugin add nexus@nexus-local
 codex plugin list --json
 ```
@@ -133,12 +167,15 @@ O plugin não inicia processos residentes, não chama modelos adicionais, não r
 
 ## Atualizar e remover
 
-Para instalações locais, atualize o checkout do catálogo para uma revisão
-conferida e mantenha a versão igual nos dois manifestos. Para instalações remotas,
+Para pacotes locais de desenvolvimento, gere uma nova cópia após alterar o
+checkout e registre sua origem novamente; mantenha a versão igual nos dois
+manifestos. Para instalações remotas,
 o CI atribui a versão da release aos dois manifestos na branch `plugins`;
 não é necessário um bump manual em cada merge. Os manifestos da branch de
 desenvolvimento definem a versão inicial da primeira release. Não edite arquivos
 dentro do cache instalado.
+
+`plugins` acompanha releases; `plugin-vX.Y.Z` permanece fixada mesmo após refresh.
 
 No Claude Code, após atualizar o catálogo local:
 
