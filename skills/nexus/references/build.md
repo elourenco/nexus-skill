@@ -34,6 +34,12 @@ revisável e pendências; check obrigatório ausente mantém o aceite pendente.
 
 ## Entrega e limite
 
+Para refatoração que afete responsabilidades, contratos ou efeitos, siga
+[Refactoring](refactoring.md), preservando decisões do plano e verificando a versão
+final. Estados/invariantes alterados usam [Modelagem](domain-design.md). Consulte
+[Design](architecture-design.md) somente se houver decisão estrutural ainda aberta;
+mudança mecânica local com equivalência clara mantém este fluxo curto.
+
 Quando pertinente, implemente os controles de [segurança e ética](policies.md#policy-ai-safety-ethics)
 definidos no aceite: valide saídas de IA no ponto de uso e autorização no executor,
 preservando isolamento e minimização. Se um controle indispensável estiver ausente

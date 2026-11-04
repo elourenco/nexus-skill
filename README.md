@@ -313,6 +313,9 @@ A skill não concede permissão para commit, push, merge, deploy ou outras açõ
 | [Helper de memória](skills/nexus/scripts/memory.py) | CLI Python sem dependências; filesystem local POSIX |
 | [Decisões e hipóteses](skills/nexus/references/cognitive.md) | Premissas, alternativas e evidências |
 | [Modelagem](skills/nexus/references/domain-design.md) | Estados, fronteiras e ownership proporcionais à mudança |
+| [Design arquitetural](skills/nexus/references/architecture-design.md) | Interfaces, diagnóstico de dependências, decisões de sistema/solução e padrões condicionais |
+| [Refatoração](skills/nexus/references/refactoring.md) | Transformações incrementais, caracterização e preservação de contratos/efeitos |
+| [Fontes de design](skills/nexus/references/design-sources.md) | Proveniência e adaptações das quatro skills e dos padrões de refatoração; sem dependência externa |
 | [Pacote de review](skills/nexus/references/review-package.md) | Coleta Git com hashes, anexos e limites explícitos |
 | [Templates](skills/nexus/assets/templates/spec.md) | Spec, plano, tarefa, ADR e memória |
 | [Escopo](docs/phase-1.md) | Entrega atual e próximos refinamentos |
@@ -369,6 +372,12 @@ A [suíte de eficiência](evals/efficiency-suite.json) e o
 [comparador de versões](docs/behavioral-evaluation.md)
 avaliam artefatos desnecessários, preservação das validações e consumo observado.
 Consulte os [resultados e limites](docs/efficiency-validation.md) antes de inferir economia.
+
+A [integração de design e refatoração](docs/design-refactoring-validation.md)
+registra fontes, roteamento sob demanda e aplicação em nove cenários sintéticos.
+A [suíte específica](evals/design-refactoring-suite.json) usa o mesmo harness;
+seus resultados distinguem recuperação de orientação, avaliação de respostas e
+garantias de runtime ainda não verificadas.
 
 </details>
 
