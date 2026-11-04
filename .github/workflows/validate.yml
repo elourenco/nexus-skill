@@ -2,7 +2,7 @@ name: Validate foundation
 
 on:
   push:
-    branches-ignore: [main, master]
+    branches-ignore: [main, master, plugins]
     tags-ignore: ['**']
   pull_request:
   workflow_call:

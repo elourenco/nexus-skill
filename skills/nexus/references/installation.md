@@ -1,16 +1,82 @@
-# Instalação local como plugin
+# Instalação e atualização como plugin
 
-O plugin `nexus`, versão `0.2.0`, é exposto pelo catálogo `nexus-local`. Claude Code e Codex compartilham as seis entradas em `skills/`, com procedimentos e políticas no núcleo `skills/nexus/`; não há cópias específicas de conteúdo por host. Os manifestos `.claude-plugin/plugin.json` e `.codex-plugin/plugin.json` ficam na raiz do pacote. No Codex foi escolhido o formato de compatibilidade, aceito pelo cliente validado; não há um terceiro manifesto portátil concorrente.
+O plugin `nexus` é exposto pelo catálogo `nexus-local`. Claude Code e Codex compartilham as seis entradas em `skills/`, com procedimentos e políticas no núcleo `skills/nexus/`; não há cópias específicas de conteúdo por host. Os manifestos `.claude-plugin/plugin.json` e `.codex-plugin/plugin.json` ficam na raiz do pacote. No Codex foi escolhido o formato de compatibilidade, aceito pelo cliente validado; não há um terceiro manifesto portátil concorrente.
 
 As entradas são `nexus`, `nexus-brainstorming`, `nexus-plan`, `nexus-build`,
 `nexus-debug` e `nexus-review`. Como plugin, o namespace é `nexus:`: por exemplo,
 `/nexus:nexus-review` no Claude Code e `$nexus:nexus-review` no Codex. Confira as seis
-entradas no seletor após atualizar. A validação de instalação original abaixo foi
-feita na versão 0.1.0; a descoberta das cinco novas entradas em 0.2.0 ainda precisa
-ser confirmada no host. Por leitura direta, use o [contrato de invocação](invocation.md)
+entradas no seletor após atualizar. A validação original foi feita na versão
+0.1.0; o teste nativo de atualização `0.3.0` → `0.3.1` confirmou as seis entradas
+nos dois hosts em perfis temporários. Por leitura direta, use o [contrato de invocação](invocation.md)
 e o procedimento correspondente.
 
-## Instalar e verificar
+## Instalar versões publicadas
+
+A branch remota `plugins` recebe o snapshot de cada release aprovada pelo CI.
+Os dois manifestos distribuídos recebem a versão da tag; `.nexus-release.json`
+identifica a tag e o SHA de origem. A tag continua apontando para o commit de
+origem validado. O nome `nexus-local` é uma identidade histórica do catálogo,
+não uma restrição de origem.
+
+Os comandos abaixo exigem a primeira publicação da branch `plugins`. Se ela ainda
+não existir, use a instalação local da próxima seção. Uma tag/release sem essa
+branch não conclui a distribuição. O repositório de desenvolvimento descreve o
+pipeline em `docs/releases.md`; esse documento não é uma dependência da skill.
+
+Claude Code:
+
+```sh
+claude plugin marketplace add https://github.com/elourenco/nexus-skill.git#plugins
+claude plugin install nexus@nexus-local
+claude plugin list --json
+```
+
+Habilite `/plugin` → **Marketplaces** → **nexus-local** → **Enable auto-update**.
+Marketplaces de terceiros não habilitam essa opção por padrão. O host verifica
+atualizações em segundo plano depois de iniciar a sessão; aplique-as com
+`/reload-plugins` ou abra uma nova sessão. Esse opt-in pertence ao usuário, não
+ao pacote. Para atualizar imediatamente:
+
+```sh
+claude plugin marketplace update nexus-local
+claude plugin update nexus@nexus-local
+```
+
+O refresh explícito do catálogo evita usar sua cópia ainda antiga: no cliente
+validado, apenas `plugin update` imediatamente após uma release manteve a versão
+anterior quando o catálogo ainda não havia sido atualizado.
+
+Codex:
+
+```sh
+codex plugin marketplace add https://github.com/elourenco/nexus-skill.git --ref plugins
+codex plugin add nexus@nexus-local
+codex plugin list --json
+```
+
+Para receber uma nova versão explicitamente:
+
+```sh
+codex plugin marketplace upgrade nexus-local
+codex plugin add nexus@nexus-local
+codex plugin list --json
+```
+
+Reabra a sessão e confira a versão efetivamente instalada e a origem das skills.
+Não há garantia documentada de polling automático para marketplaces Git/locais
+do Codex. O canal remoto remove a dependência de atualizar um checkout pessoal;
+o agendamento do refresh continua sendo responsabilidade do host.
+
+### Migrar uma instalação local existente
+
+Inspecione `plugin marketplace list` e `plugin list --json` no host escolhido.
+Se `nexus-local` aponta para um diretório local e você quer acompanhar releases,
+remova essa instalação e catálogo usando os comandos em **Atualizar e remover**,
+depois execute os comandos remotos acima. A identidade do plugin é preservada,
+mas habilitação, escopo e opt-in de auto-update precisam ser conferidos novamente.
+Não remova o checkout de desenvolvimento nem `.nexus/local/` do consumidor.
+
+## Instalar e verificar um checkout local
 
 Execute os comandos abaixo na raiz do checkout completo do NEXUS, que contém os manifestos. Eles registram o catálogo e habilitam o plugin no perfil do usuário. Não são executados automaticamente pela skill.
 
@@ -67,7 +133,12 @@ O plugin não inicia processos residentes, não chama modelos adicionais, não r
 
 ## Atualizar e remover
 
-Atualize o checkout do catálogo para uma revisão conferida e mantenha a versão igual nos dois manifestos. Alterações distribuídas devem receber uma nova versão para evitar caches antigos. Não edite arquivos dentro do cache instalado.
+Para instalações locais, atualize o checkout do catálogo para uma revisão
+conferida e mantenha a versão igual nos dois manifestos. Para instalações remotas,
+o CI atribui a versão da release aos dois manifestos na branch `plugins`;
+não é necessário um bump manual em cada merge. Os manifestos da branch de
+desenvolvimento definem a versão inicial da primeira release. Não edite arquivos
+dentro do cache instalado.
 
 No Claude Code, após atualizar o catálogo local:
 
@@ -98,4 +169,4 @@ A remoção do pacote não é uma instrução para apagar memória, workflow ou 
 
 ## Fontes dos formatos
 
-Consultadas em 2026-11-02: [empacotamento OpenAI](https://developers.openai.com/plugins/build/plugins), [manifesto Claude Code](https://code.claude.com/docs/en/plugins-reference) e [catálogos Claude Code](https://code.claude.com/docs/en/plugin-marketplaces). A disponibilidade de hooks varia entre hosts e superfícies; adapters nativos não fazem parte deste incremento.
+Consultadas em 2026-11-03: [empacotamento OpenAI](https://developers.openai.com/plugins/build/plugins), [atualizações Claude Code](https://code.claude.com/docs/en/discover-plugins#keep-plugins-updated) e [hospedagem e refs de marketplaces Claude](https://code.claude.com/docs/en/plugins/host-marketplace). A disponibilidade de hooks varia entre hosts e superfícies; adapters nativos não fazem parte deste incremento.
