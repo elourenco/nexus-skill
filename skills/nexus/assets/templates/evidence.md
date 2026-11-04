@@ -5,6 +5,7 @@ um arquivo separado é opcional. Este registro relata execução, não o teste p
 
 - Tipo de verificação:
 - Task/spec e aceites relacionados (IDs/links):
+- Critério/invariante → cenário → resultado observado (no registro existente):
 - Comando ou procedimento reproduzível:
 - Contexto da execução (workspace, revisão de código/diff, ambiente e entradas pertinentes):
 - Resultado real (saída resumida, código de saída quando aplicável):

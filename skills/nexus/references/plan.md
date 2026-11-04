@@ -16,7 +16,11 @@ ownership. **Evidência:** fontes e validações propostas identificadas como ta
    não impedem planejar o restante.
 2. Aplique [Workflows](workflow.md) para decomposição e acompanhamento direto ou rastreado, independente do risco. Reuse a fonte existente; persistência nova somente se útil ou solicitada. Defina
    contratos, invariantes, critérios de aceite e compatibilidade nas fronteiras alteradas. Execução direta pode registrar decisões no chat, sem TASK/SPEC/PLAN ou estado obrigatório; a CLI opt-in conserva seu contrato.
-3. Decomponha em incrementos verificáveis: arquivos ou componentes afetados,
+3. Prefira slices verticais demonstráveis, com critério/invariante → cenário →
+   evidência. Para migração incompatível, explicite expandir contrato, migrar em
+   lotes e remover legado somente após compatibilidade comprovada; etapas que
+   não ficam verdes isoladamente precisam de integração final identificada.
+   Decomponha em incrementos verificáveis: arquivos ou componentes afetados,
    dependências, ownership, validação e condição de conclusão. Trate latência,
    throughput, concorrência e falhas conforme o comportamento; reserve recursos
    compartilhados antes de propor execução paralela.
@@ -52,8 +56,11 @@ que continuará até a implementação,
 apresente o plano junto das opções **subagentes** e **agente único**, com recomendação
 justificada e capacidades/limitações verificadas conforme [Agents](agents.md#metodo-de-execucao).
 Reutilize escolha explícita existente. Quando o método ainda estiver pendente,
-peça sua escolha junto do aceite; um “aprovado” isolado aprova o plano, mas não
-seleciona uma opção não definida. Se o usuário delegar a escolha, adote a recomendação
+apresente método recomendado e efeito do aceite na mesma proposta: “Recomendo
+agente único; aprovar este plano autoriza implementar, testar e revisar localmente
+com esse método; você pode escolher subagentes”. Nesse caso, aprovação sem ressalva
+aceita o método apresentado. Se a proposta deixou ambas as opções abertas sem
+vincular método ao aceite, esclareça só essa lacuna. Silêncio não seleciona método. Se o usuário delegar a escolha, adote a recomendação
 compatível e informe o método efetivo. Explique que o aceite para executar cobre
 implementação, testes, correções no escopo e review locais; sem nova invocação.
 

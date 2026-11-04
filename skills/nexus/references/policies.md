@@ -44,7 +44,7 @@ Perfil define profundidade de análise e validação; o modo de [workflow](workf
 | --- | --- | --- |
 | FAST | Todos: escopo pequeno e conhecido, baixo impacto, reversão simples, sem alteração de contrato/fronteira ou invariante crítica | Execução direta, revisão do diff e verificação pertinente; sem planejamento ou testes artificiais |
 | BALANCED | Não satisfaz FAST e não há gatilho DEEP: funcionalidade/refatoração moderada, dependências delimitadas, recuperação conhecida | Plano curto, cenários afetados e review de contratos/falhas; delegar apenas com benefício concreto |
-| DEEP | Qualquer: decisão arquitetural difícil de reverter, migração de dados persistidos, impacto material em autorização/integridade/pagamentos, coordenação distribuída ou concorrência sutil, incerteza que comprometa recuperação | Contratos e invariantes explícitos, compatibilidade/recuperação, testes dirigidos ao risco e review independente quando disponível |
+| DEEP | Qualquer: decisão arquitetural difícil de reverter, migração de dados persistidos, impacto material em autorização/integridade/pagamentos, coordenação distribuída ou concorrência sutil, incerteza que comprometa recuperação | Contratos e invariantes explícitos, compatibilidade/recuperação, testes dirigidos ao risco e review independente exigido antes da conclusão |
 
 Informação insuficiente impede assumir FAST: investigue em BALANCED e classifique antes da alteração. Ao descobrir risco maior, eleve o perfil, registre o motivo e revise aceite, testes, budget e permissões antes da ação afetada. Rebaixar exige evidência de que o gatilho deixou de existir. Perfil não fixa modelo, provider, preço ou esforço.
 
@@ -76,7 +76,7 @@ use [checks de qualidade seletivos](quality-checks.md): mutation testing no esco
 afetado, com timeout e limiar do consumidor. Complexidade e duplicação são sinais
 para investigação, sem thresholds universais nem instalação automática de ferramentas.
 
-Selecione os pilares de [review](agents.md) pelo risco. Para risco material, use independência real quando disponível; ausência dessa capacidade deve ser declarada. Autoavaliação não equivale a review independente e não satisfaz um gate que o exija.
+Selecione os pilares de [review](review-criteria.md) pelo risco. Para DEEP, independência real é requisito de conclusão; ausência dessa capacidade mantém o gate pendente. Trabalho local independente já autorizado pode continuar. Para outros perfis, selecione independência pelo risco e contrato do projeto. Autoavaliação não equivale a review independente e não satisfaz um gate que o exija.
 
 Para comportamento de produtos com IA, derive cenários da finalidade e dos danos
 pertinentes conforme [avaliação](ai-safety-ethics.md#evaluation). Separe avaliação
@@ -110,6 +110,23 @@ Escalar não resolve credencial inválida, ambiente quebrado ou contexto ausente
 - Prefira incrementos pequenos. Delegue objetivo, fontes, ownership, restrições e aceite, evitando reenviar histórico completo. Mantenha um responsável por recurso; paralelize apenas trabalho independente com isolamento e limite de concorrência conhecido. Sem isso, execute sequencialmente.
 - Preserve em resumo estruturado: objetivo/escopo, decisões e fontes, revisão dos artefatos, pendências, hipóteses descartadas, tentativas, consumo conhecido, limites e próxima ação. Quando adotar registro documental rastreado, use os campos da [tarefa](../assets/templates/task.md); na execução direta, o relato pode bastar. Persistência segue [memória](memory.md) e a política do host.
 - Reutilize evidências e cache disponíveis somente com origem, escopo, versão e condição de validade compatíveis. Revalide estado mutável antes de ações relevantes; cache não é prova de autorização atual. Não compartilhe cache privado entre projetos/providers sem autorização, nem afirme cache hit ou economia sem medição.
+
+### Medição por entrega aprovada
+
+Otimize o custo total por entrega aceita: some tentativas, falhas, revisões,
+workers e fallbacks no numerador; use entregas aprovadas no denominador. Zero
+entregas ou cobertura parcial produz resultado desconhecido, nunca custo zero.
+Reporte qualidade, latência e consumo separadamente. Preserve entrada total,
+entrada em cache e saída conforme a semântica do provider; cache já incluído na
+entrada não deve ser somado novamente. Preço/moeda e modelo efetivo exigem fonte.
+Palavras, caracteres, duração e contador parcial não são tokens faturados.
+
+Prefixos estáveis e resumos de ferramentas podem ajudar quando suportados;
+registre hits/leituras e consumo observado antes de alegar ganho. Compare cargas,
+ambiente, concorrência e estados de cache equivalentes. Latência de agente não
+mede performance do código: para esta, registre workload, baseline, contenção,
+recursos e recuperação pertinentes. Faça microavaliação de uma hipótese por vez
+antes da matriz ampla. Não remova teste/review obrigatório para melhorar métrica.
 
 ### Limites suaves e rígidos
 
@@ -226,9 +243,12 @@ Execução direta relata resultado e evidências sem criar estados. Quando houve
 
 ## Contrato de consumo
 
-Identificador documental: `nexus.policies`; revisão: `2`. Os anchors `policy-*` e os títulos existentes “Testes adaptativos”, “Roteamento” e “Economia de contexto” são pontos de consulta preservados. Mudanças incompatíveis nesse contrato exigem revisar consumidores e incrementar a revisão. Não há schema executável ou enforcement automático.
+Identificador documental: `nexus.policies`; revisão: `3`. Os anchors `policy-*` e os títulos existentes “Testes adaptativos”, “Roteamento” e “Economia de contexto” são pontos de consulta preservados. Mudanças incompatíveis nesse contrato exigem revisar consumidores e incrementar a revisão. Não há schema executável ou enforcement automático.
 
-A revisão 2 acrescenta critérios normativos de impacto humano e segurança de IA.
+A revisão 3 unifica o gate independente de DEEP e admite o mínimo operacional de
+[invocação](invocation.md#mínimo-operacional) no FAST conhecido, mantendo este
+documento como fonte dos detalhes. Não migra stores nem invalida automaticamente
+evidências; reavalie somente contratos afetados. A revisão 2 acrescentou critérios normativos de impacto humano e segurança de IA.
 Campos, enums e schemas executáveis permanecem compatíveis; não há migração de
 stores nem alteração da versão do plugin. Ao retomar trabalho afetado, reavalie
 aceite/evidências pelos critérios pertinentes; não reescreva registros históricos.
@@ -237,7 +257,7 @@ Entrada mínima da decisão: objetivo/aceite, fontes de autoridade, escopo/owner
 
 | Consumidor existente | Consulta canônica e aplicação |
 | --- | --- |
-| [Entrada](../SKILL.md) | [Autoridade](#policy-authority), [perfis](#policy-execution) e [segurança](#policy-security): determinar alcance antes de executar |
+| [Entrada](../SKILL.md) | FAST conhecido usa o [mínimo operacional](invocation.md#mínimo-operacional); demais decisões consultam [autoridade](#policy-authority), [perfis](#policy-execution) e [segurança](#policy-security) por seção |
 | [Workflow](workflow.md) | [Perfis](#policy-execution), [testes](#policy-testing), [limites/recuperação](#policy-context) e [conclusão](#policy-completion): aplicar sem renomear modos ou estados |
 | [Hooks](hooks.md) | `architecture.guard` → [princípios](#policy-engineering); `model.route` → [roteamento](#policy-routing); `context.load`, `budget.check`, `failure.recover`, `memory.capture` → [contexto](#policy-context); `validation.run`, `review.dispatch` → [testes](#policy-testing); `completion.verify` → [conclusão](#policy-completion) |
 | [Agentes](agents.md) | [Roteamento](#policy-routing), [testes/review](#policy-testing) e [contexto](#policy-context): repartir ownership e limites sem multiplicar budget ou permissões |

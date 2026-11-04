@@ -11,11 +11,14 @@ arquitetural ainda em aberto pertence a Explore/Plan; revisão avalia um objeto 
 decisão; nunca autorização implícita para corrigir ou publicar. Para handoff por
 arquivo, use a [coleta opcional](review-package.md).
 
-1. Identifique alvo, revisão/base do diff, requisitos e critérios. Leia artefato e
+1. Identifique alvo, revisão/base do diff, requisitos e critérios. Para WIP, inclua
+   staged/unstaged e identifique untracked incluídos/omitidos; diff até HEAD não
+   cobre alterações locais. Fixe SHAs para commits, ou identidade do snapshot/diff
+   para worktree; revalide se houver escrita concorrente. Leia artefato e
    fontes pertinentes diretamente, sem depender da narrativa do implementador.
    Se faltar o objeto revisável, obtenha-o nas fontes disponíveis ou peça o insumo;
    não invente achados a partir de uma descrição genérica.
-2. Selecione os pilares de [Agents & Review](agents.md) pelo comportamento alterado.
+2. Selecione os pilares de [critérios de review](review-criteria.md#review-council-adaptativo) pelo comportamento alterado.
    Avalie contratos, falhas parciais, latência, throughput e concorrência quando
    pertinentes. Preserve achados existentes e diferencie defeito demonstrável,
    hipótese e preferência de estilo.
@@ -24,9 +27,9 @@ arquivo, use a [coleta opcional](review-package.md).
    registre testes não executados e lacunas de cobertura. Se o alvo mudar durante
    a avaliação, reconcilie a revisão e invalide conclusões afetadas.
 4. Para cada achado acionável, informe severidade, arquivo/linha quando aplicável,
-   condição de reprodução, impacto, evidência, confiança e recomendação. Não use
+   condição de reprodução, impacto, evidência, confiança e recomendação. Demonstre um caso que distinguiria o defeito de um falso positivo. Não use
    quantidade de achados nem aprovação por votação como prova de qualidade.
-5. Consolide a decisão conforme [Agents](agents.md#contrato-de-saída-e-decisão):
+5. Consolide a decisão conforme [critérios](review-criteria.md#contrato-de-saída-e-decisão):
    APPROVED, CHANGES_REQUESTED, BLOCKED ou INCONCLUSIVE, respeitando cobertura e
    critérios efetivamente verificados. Independência só pode ser declarada quando
    real; revisão pelo próprio implementador não satisfaz gate independente.
@@ -47,7 +50,9 @@ implementado e verificado; amostra insuficiente mantém a conclusão limitada.
 Avaliação de mesa não comprova resistência a ataques nem equidade em produção.
 
 Entregue primeiro achados priorizados ou a ausência de achados demonstrados,
-seguida de cobertura, verificações, limitações e decisão. Use o
+seguida de cobertura, verificações, limitações e decisão. Declare proveniência,
+confiança e limitações comuns uma vez quando forem iguais; preserve diferenças
+por achado e todos os campos do contrato rastreado quando adotado. Use o
 [template de review](../assets/templates/review.md) quando um registro for necessário.
 Não confunda relatório concluído com aprovação do objeto; achados podem permanecer
 abertos ao concluir uma tarefa exclusivamente de análise.
