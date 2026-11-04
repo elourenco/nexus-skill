@@ -59,23 +59,33 @@ ação verificável. Essa é uma primeira forma de avaliar a skill no seu contex
 
 ### Instale como plugin
 
-Para ter as seis entradas no seletor, escolha seu host e execute na raiz do
-checkout clonado. Os comandos registram o catálogo local **`nexus-local`** e
-instalam o plugin **`nexus`** no perfil do usuário.
+Para acompanhar versões publicadas, escolha seu host. A branch **`plugins`** é
+gerada pelo CI após cada release, com a mesma versão nos dois manifestos. Ela
+precisa existir no remoto antes da primeira instalação. O catálogo mantém o nome
+**`nexus-local`** por compatibilidade, mesmo quando sua origem é remota.
 
 **Claude Code**
 
 ```sh
-claude plugin marketplace add "$PWD"
+claude plugin marketplace add https://github.com/elourenco/nexus-skill.git#plugins
 claude plugin install nexus@nexus-local
 ```
 
 **Codex**
 
 ```sh
-codex plugin marketplace add "$PWD"
+codex plugin marketplace add https://github.com/elourenco/nexus-skill.git --ref plugins
 codex plugin add nexus@nexus-local
 ```
+
+No Claude, habilite `/plugin` → **Marketplaces** → **nexus-local** →
+**Enable auto-update**. No Codex, atualize explicitamente com
+`codex plugin marketplace upgrade nexus-local` e `codex plugin add nexus@nexus-local`;
+não há garantia documentada de polling automático para esse canal.
+
+Para desenvolvimento local, continue usando `plugin marketplace add "$PWD"` na
+raiz do checkout. Instalações locais existentes precisam migrar a origem uma vez;
+o [guia de instalação](skills/nexus/references/installation.md) descreve o procedimento.
 
 Abra uma nova sessão **no projeto em que você quer trabalhar**, confira as seis
 entradas no seletor e invoque uma delas no chat:
