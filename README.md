@@ -1,55 +1,67 @@
 # NEXUS — Engineering Intelligence
 
 [![CI](https://github.com/elourenco/nexus-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/elourenco/nexus-skill/actions/workflows/validate.yml)
-[![Versão: 0.3.0](https://img.shields.io/badge/vers%C3%A3o-0.3.0-blue)](.codex-plugin/plugin.json)
+[![Release](https://img.shields.io/github/v/release/elourenco/nexus-skill)](https://github.com/elourenco/nexus-skill/releases)
 [![Skill portátil](https://img.shields.io/badge/skill-port%C3%A1til-0F766E)](skills/nexus/SKILL.md)
-[![Helpers: Python 3.10+](https://img.shields.io/badge/helpers-Python%203.10%2B-3776AB?logo=python&logoColor=white)](#validar)
+[![Claude Code · Codex](https://img.shields.io/badge/Claude_Code_%C2%B7_Codex-plugins-2563EB)](#começar)
+
+**Dê ao seu agente de IA um workflow de engenharia: entender, planejar, implementar e validar.**
+
+Portable AI engineering skills for Claude Code and OpenAI Codex.
+
+[Começar](#começar) · [Exemplos](#experimente-no-seu-projeto) · [Skills](#entradas-disponíveis) · [Como funciona](#criar-ou-alterar-uma-feature-por-aceites) · [Apoiar](#ajude-a-evoluir-o-nexus)
 
 ![NEXUS: núcleo conectado a módulos de exploração, planejamento, construção e revisão.](docs/assets/nexus-hero.png)
 
-**Do problema à implementação, com decisões explícitas e evidências de validação.**
+## Da ideia ao código, com decisões que você consegue revisar
 
-NEXUS é uma skill portátil de engenharia de software para agentes de IA. Organiza exploração, planejamento, implementação, diagnóstico e revisão, ajustando a profundidade ao risco da mudança. O núcleo é textual: usa as ferramentas do host e carrega referências conforme a tarefa.
+Seu agente começa a implementar antes de entender o problema? Uma alteração pequena
+vira uma refatoração enorme? A resposta diz “pronto”, mas você ainda precisa descobrir
+o que foi testado?
 
-[Começar](#começar) · [Entradas](#entradas-disponíveis) · [Componentes](#componentes-e-fronteiras) · [Validação](#validar) · [Referências](#referências)
+**NEXUS organiza esse trabalho em seis skills**, da exploração ao code review.
+Você descreve o objetivo; o agente é orientado a explicitar decisões, executar o
+escopo autorizado e apresentar evidências de validação. Use o fluxo completo para
+uma feature ou entre diretamente em planejamento, implementação, diagnóstico e revisão.
 
-## O que o NEXUS orienta
+| Quando você precisa… | O NEXUS orienta o agente a… |
+| --- | --- |
+| Transformar uma ideia em uma feature | Entender o problema, comparar alternativas e definir critérios de aceite antes da implementação |
+| Fazer uma alteração pontual | Ajustar a profundidade ao risco, com referências e artefatos somente quando úteis |
+| Tomar uma decisão de arquitetura | Examinar contratos, latência, throughput, concorrência e recuperação de falhas |
+| Investigar um bug | Reunir evidências, testar hipóteses e distinguir diagnóstico de correção validada |
+| Revisar uma entrega | Apresentar achados, verificações executadas, limitações e pendências |
 
-- **Decisões antes de alterações:** explicitar premissas, alternativas, contratos e critérios de aceite.
-- **Execução proporcional:** usar FAST, BALANCED ou DEEP conforme risco e incerteza.
-- **Engenharia de sistemas:** considerar latência, throughput, concorrência, falhas e recuperação nas dimensões afetadas.
-- **Conclusão verificável:** distinguir implementação, verificações executadas, evidências e pendências.
-- **Controle humano:** respeitar instruções do host, escopo e autorizações existentes.
-
-**Estado atual:** skill portátil com seis entradas e componentes locais opcionais. O núcleo funciona sozinho; memória, workflows, hooks e runtime textual são adotados explicitamente.
-
-### Chat guiado
-
-As seis entradas compartilham um [contrato de apresentação](skills/nexus/references/chat.md):
-situação atual, tarefas, decisões pendentes, evidências e próxima ação, conforme
-a necessidade. O agente usa listas, perguntas estruturadas, diffs e detalhes
-expansíveis quando o host os disponibiliza e permite; texto portátil mantém
-o conteúdo essencial quando algum recurso falta. Perguntas simples continuam diretas.
-
-A seleção considera as capacidades da sessão, não apenas a marca do provedor.
-O contrato não instala uma UI nem promete painel persistente, botões ou atualização
-ao vivo em todos os hosts. A apresentação usa a fonte de estado existente e
-reconcilia ações desatualizadas ou de resultado incerto antes de repetir efeitos.
-Veja os [cenários e limites de validação](docs/guided-chat-validation.md).
+O núcleo é textual, usa as ferramentas do seu agente e carrega referências sob
+demanda. **Para começar, você não precisa de Python, servidor ou banco de dados.**
+Memória, workflows, hooks e runtime textual são componentes locais opcionais.
 
 ## Começar
 
-### Carregamento direto
+### Experimente por leitura direta
 
-Abra [skills/nexus/SKILL.md](skills/nexus/SKILL.md) no agente e informe o objetivo e o repositório de trabalho. O uso textual não exige Python, helpers ou runtime adicional.
+Clone o repositório:
 
-> Use NEXUS para planejar a sincronização offline deste projeto. Preserve os contratos existentes e registre os cenários de conflito e recuperação.
+```sh
+git clone https://github.com/elourenco/nexus-skill.git
+cd nexus-skill
+```
 
-### Plugin local
+No seu agente, carregue [skills/nexus/SKILL.md](skills/nexus/SKILL.md) a partir do
+checkout e indique o projeto que quer analisar. Se estiver em outro diretório,
+informe o caminho absoluto para esse arquivo. Faça um primeiro pedido:
 
-O pacote está disponível como plugin local **`nexus@nexus-local`**, versão **0.3.0**, para Claude Code e Codex. Ambos usam o mesmo diretório `skills/`, com seis entradas; a instalação não ativa hooks, servidores MCP ou o runtime textual. Veja [instalação e uso](skills/nexus/references/installation.md) e [avaliação e descoberta nos hosts](docs/behavioral-evaluation.md). O [histórico de empacotamento](docs/plugins-validation.md) registra a versão inicial 0.1.0. A licença continua pendente; este incremento não publica uma distribuição.
+> Use NEXUS para analisar a arquitetura deste projeto. Identifique um risco relevante,
+> explique as evidências e recomende o próximo passo. Somente análise, sem alterar arquivos.
 
-Na raiz deste checkout, escolha o host. Os comandos registram o catálogo e alteram a configuração do seu usuário ao serem executados.
+Confira se a resposta aponta fontes do projeto, explicita incertezas e propõe uma
+ação verificável. Essa é uma primeira forma de avaliar a skill no seu contexto.
+
+### Instale como plugin
+
+Para ter as seis entradas no seletor, escolha seu host e execute na raiz do
+checkout clonado. Os comandos registram o catálogo local **`nexus-local`** e
+instalam o plugin **`nexus`** no perfil do usuário.
 
 **Claude Code**
 
@@ -65,7 +77,51 @@ codex plugin marketplace add "$PWD"
 codex plugin add nexus@nexus-local
 ```
 
-Abra uma nova sessão no projeto consumidor, confira as seis entradas no seletor e faça uma primeira chamada apenas de análise. A disponibilidade dos comandos depende do cliente instalado; consulte o guia de instalação se o comando `plugin` não existir.
+Abra uma nova sessão **no projeto em que você quer trabalhar**, confira as seis
+entradas no seletor e invoque uma delas no chat:
+
+| Host | Primeiro pedido |
+| --- | --- |
+| Claude Code | `/nexus:nexus Analise a arquitetura deste projeto, sem alterar arquivos.` |
+| Codex | `$nexus:nexus Analise a arquitetura deste projeto, sem alterar arquivos.` |
+
+A disponibilidade dos comandos depende do cliente instalado. Se `plugin` não
+existir ou as entradas não aparecerem, siga o [guia de instalação e verificação](skills/nexus/references/installation.md)
+ou use o carregamento direto. O plugin compartilha o mesmo núcleo entre os dois
+hosts; helpers e runtime continuam opt-in. Veja a [avaliação de descoberta nos hosts](docs/behavioral-evaluation.md).
+
+## Experimente no seu projeto
+
+Depois de carregar o NEXUS, use um destes pedidos em linguagem natural. Adapte o
+escopo ao seu projeto; são exemplos de uso, não resultados de benchmark.
+
+**Planejar uma feature**
+
+> Use nexus-brainstorming para desenhar a exportação CSV do relatório de pedidos.
+> Considere grandes volumes, permissões e retomada após falha. Primeiro apresente
+> a solução e os critérios de aceite para eu revisar.
+
+**Decidir uma arquitetura**
+
+> Use nexus-plan para planejar a sincronização offline do aplicativo. Preserve os
+> contratos atuais e detalhe conflitos, idempotência, retries e observabilidade.
+> Ainda não implemente.
+
+**Investigar um bug**
+
+> Use nexus-debug para investigar por que este job processa o mesmo evento duas
+> vezes. Busque uma reprodução, avalie a concorrência e apresente as evidências
+> da causa antes de propor a correção.
+
+**Revisar antes de integrar**
+
+> Use nexus-review para revisar este diff. Priorize regressões de contrato,
+> autorização, concorrência e recuperação. Aponte arquivo, impacto e verificação
+> recomendada para cada achado.
+
+Você pode usar somente a etapa de que precisa. Os perfis **FAST**, **BALANCED** e
+**DEEP** ajustam a profundidade ao risco e à incerteza; não fixam um modelo nem
+exigem múltiplos agentes.
 
 ## Entradas disponíveis
 
@@ -117,6 +173,38 @@ voltando ao usuário somente por decisão material ou bloqueio indispensável.
 Commit, push, merge e deploy exigem autorização correspondente. Artefatos e helpers
 continuam opcionais; confira o [contrato do fluxo](skills/nexus/references/brainstorming.md#fluxo-guiado-por-aceites)
 e os [métodos de execução](skills/nexus/references/agents.md#metodo-de-execucao).
+
+<details>
+<summary>Como o NEXUS apresenta progresso, decisões e evidências</summary>
+
+As seis entradas compartilham um [contrato de apresentação](skills/nexus/references/chat.md):
+situação atual, tarefas, decisões pendentes, evidências e próxima ação, conforme
+a necessidade. O agente usa listas, perguntas estruturadas, diffs e detalhes
+expansíveis quando o host os disponibiliza e permite; texto portátil mantém
+o conteúdo essencial quando algum recurso falta. Perguntas simples continuam diretas.
+
+A seleção considera as capacidades da sessão, não apenas a marca do provedor.
+O contrato não instala uma UI nem promete painel persistente, botões ou atualização
+ao vivo em todos os hosts. A apresentação usa a fonte de estado existente e
+reconcilia ações desatualizadas ou de resultado incerto antes de repetir efeitos.
+Veja os [cenários e limites de validação](docs/guided-chat-validation.md).
+
+</details>
+
+## Ajude a evoluir o NEXUS
+
+**O NEXUS foi útil no seu projeto? Deixe uma estrela no [repositório](https://github.com/elourenco/nexus-skill)**
+para apoiar o projeto e encontrá-lo novamente.
+
+- **Conte o que funcionou:** compartilhe um caso de uso, o host utilizado e o que
+  você precisou ajustar em uma [issue](https://github.com/elourenco/nexus-skill/issues).
+- **Encontrou uma falha?** Inclua a entrada utilizada, o comportamento esperado
+  e uma reprodução mínima, sem segredos ou dados privados do seu projeto.
+- **Tem uma melhoria?** Proponha um exemplo, correção de documentação ou mudança
+  de workflow com um problema concreto e um critério de aceite.
+
+Relatos reproduzíveis ajudam a avaliar onde a skill funciona e onde precisa melhorar.
+Para acompanhar versões, consulte as [releases](https://github.com/elourenco/nexus-skill/releases).
 
 ## Instalação e invocação por host
 
@@ -183,6 +271,9 @@ A skill não concede permissão para commit, push, merge, deploy ou outras açõ
 
 ## Referências
 
+<details>
+<summary>Mapa dos módulos e documentação avançada</summary>
+
 | Caminho | Responsabilidade |
 | --- | --- |
 | [Skill](skills/nexus/SKILL.md) | Entrada curta e seleção de referências |
@@ -199,6 +290,8 @@ A skill não concede permissão para commit, push, merge, deploy ou outras açõ
 | [Pacote de review](skills/nexus/references/review-package.md) | Coleta Git com hashes, anexos e limites explícitos |
 | [Templates](skills/nexus/assets/templates/spec.md) | Spec, plano, tarefa, ADR e memória |
 | [Escopo](docs/phase-1.md) | Entrega atual e próximos refinamentos |
+
+</details>
 
 ## Validar
 
@@ -257,5 +350,5 @@ Consulte os [resultados e limites](docs/efficiency-validation.md) antes de infer
 
 O desenho parte de práticas de desenvolvimento orientado por especificação, execução persistente com limites e arquitetura proporcional ao risco. Superpowers e UB-Mode são referências conceituais citadas no planejamento, não dependências incorporadas nem integrações verificadas. O conteúdo deste repositório é próprio; nenhuma implementação de terceiros foi copiada.
 
-**Licença de distribuição pendente.** As releases automatizadas neste repositório
-privado registram suas versões; não estabelecem uma licença de redistribuição.
+**Licença de distribuição pendente.** A disponibilidade pública do repositório e
+de suas releases não estabelece uma licença de redistribuição.
