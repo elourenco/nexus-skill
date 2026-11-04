@@ -27,7 +27,10 @@ def validate_plugins(root: Path) -> list[str]:
                "repository", "license", "keywords", "interface"}
     for host, manifest in zip(("claude", "codex"), manifests):
         label = f".{host}-plugin/plugin.json"
-        host_allowed = allowed | ({"icon"} if host == "claude" else set())
+        host_allowed = allowed | (
+            {"icon", "displayName", "documentationUrl", "supportUrl"}
+            if host == "claude" else set()
+        )
         if set(manifest) - host_allowed:
             errors.append(f"{label}: unsupported fields for this skills-only package")
         if manifest.get("name") != "nexus":

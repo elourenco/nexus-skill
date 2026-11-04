@@ -74,3 +74,51 @@ copiado sem alteração de pixels: 1254 × 1254, sRGB, 1.153.168 bytes.
 A validação não instala o plugin no perfil do usuário nem modifica caches.
 Instalações já existentes precisam receber o pacote atualizado antes de exibir
 o novo ícone.
+
+## Metadados de apresentação (2026-11-03)
+
+A listagem passa a explicar o resultado entregue pelo NEXUS, com subtítulo
+curto, descrição detalhada, capacidades e três pedidos iniciais no Codex.
+Ambos os manifestos incluem `homepage`, `repository`, URL do publicador e termos
+de descoberta. O Website do Codex aponta para o repositório; suporte aponta
+para as issues. O manifesto Claude inclui nome de exibição e links de
+documentação e suporte próprios do diretório Anthropic. Ambos os manifestos
+avançam para `0.3.1`, permitindo que instalações versionadas recebam a atualização.
+
+Cada uma das seis skills tem `agents/openai.yaml` com nome, descrição curta em
+português, ícones e pedido inicial. Cada skill aponta para sua cópia idêntica
+de `./assets/nexus-icon.png`: o contrato de assets recusa segmentos `..`, mesmo
+quando o caminho resolve dentro do pacote. Os seis PNGs têm o mesmo SHA-256;
+o Git reutiliza o blob da imagem original. Esses arquivos configuram a
+apresentação no Codex; a descrição e
+as regras de descoberta portáteis de `SKILL.md` continuam com seu contrato
+original. O Claude Code usa seu próprio esquema e ignora os campos específicos
+do diretório Anthropic durante a execução.
+
+Fontes dos contratos: [listagem do Codex](https://developers.openai.com/plugins/deploy/submission#listing-metadata),
+[interfaces das skills](https://developers.openai.com/plugins/deploy/submission-errors#skill-agent-metadata-errors),
+[caminhos dos assets](https://developers.openai.com/plugins/deploy/submission-errors#asset-path-errors)
+e [manifesto Claude](https://code.claude.com/docs/en/plugins/manifest-reference#fields).
+
+Validação sobre cópia limpa de `main` (`76e63313a748b641019536516700a6d1bf396bac`):
+
+- `python3 scripts/validate.py`: aprovado.
+- `python3 -B -m unittest discover -s tests -q`: 203 testes aprovados. O novo
+  cenário rejeitou os campos de listagem Claude antes da alteração do validador
+  e passou depois; a inserção desses campos no manifesto Codex continua recusada.
+- Seis YAMLs lidos com o parser Ruby; as 12 referências de ícone resolveram
+  para o mesmo SHA-256 após copiar `skills/` para um diretório temporário.
+  Caminhos com prefixo `./`, sem segmentos `..`, apontando para arquivos
+  regulares dentro da própria skill. Descrições entre 25 e 64 caracteres e
+  prompts com a referência à skill.
+- Links HTTPS, limites de texto da listagem e três prompts distintos de até
+  128 caracteres: aprovados.
+- `claude plugin validate .claude-plugin/plugin.json --strict --json`: aprovado,
+  sem erros ou avisos de manifesto. A avaliação separada para submissão pública
+  continua indicando licença ausente.
+- Exibição visual e discovery no Codex ainda não verificados: o CLI no PATH
+  falha com `ENOENT` para seu binário nativo. Verificação de caminhos locais
+  não substitui esse aceite no host.
+
+Escopo estático de apresentação, sem mudança nos caminhos de execução de
+helpers ou runtime. Não foram realizadas medições de latência ou throughput.

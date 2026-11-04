@@ -41,6 +41,23 @@ class PackageValidationTests(unittest.TestCase):
     def test_valid_shared_package(self):
         self.assertEqual(validate(self.root), [])
 
+    def test_claude_listing_fields_are_host_specific(self):
+        listing = {
+            'displayName': 'NEXUS',
+            'documentationUrl': 'https://github.com/elourenco/nexus-skill#readme',
+            'supportUrl': 'https://github.com/elourenco/nexus-skill/issues',
+        }
+        for path in MANIFESTS:
+            with self.subTest(path=path):
+                original = json.loads((self.root / path).read_text())
+                self.write(path, {**original, **listing})
+                errors = validate(self.root)
+                if path.startswith('.claude-plugin/'):
+                    self.assertEqual(errors, [])
+                else:
+                    self.assertTrue(any('unsupported fields' in e for e in errors), errors)
+                self.write(path, original)
+
     def test_missing_manifest_or_catalog_fails(self):
         for path in MANIFESTS + CATALOGS:
             with self.subTest(path=path):

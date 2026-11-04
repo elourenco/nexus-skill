@@ -1,18 +1,43 @@
 {
   "name": "nexus",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": {
-    "name": "NEXUS"
+    "name": "NEXUS",
+    "url": "https://github.com/elourenco/nexus-skill"
   },
-  "description": "Engenharia orientada por especificação, arquitetura, execução incremental e validação com evidências.",
+  "description": "Transforme problemas em especificações, decisões arquiteturais e entregas incrementais. Planeje, implemente, depure e revise com critérios de aceite e evidências.",
   "skills": "./skills/",
   "interface": {
     "displayName": "NEXUS",
-    "shortDescription": "Especificação, arquitetura e validação de engenharia",
+    "shortDescription": "Da ideia à entrega validada",
     "defaultPrompt": [
-      "Use NEXUS para analisar este projeto e propor o próximo incremento com critérios de aceite."
+      "Use NEXUS para especificar esta funcionalidade e definir critérios de aceite antes de implementar.",
+      "Use NEXUS Debug para investigar esta falha e confirmar a causa raiz com evidências.",
+      "Use NEXUS Review para revisar este diff e apontar riscos de contrato, concorrência e recuperação."
     ],
     "composerIcon": "./skills/nexus/assets/nexus-icon.png",
-    "logo": "./skills/nexus/assets/nexus-icon.png"
-  }
+    "logo": "./skills/nexus/assets/nexus-icon.png",
+    "longDescription": "Transforme problemas em especificações, decisões arquiteturais e entregas incrementais. Planeje, implemente, depure e revise com critérios de aceite e evidências.\n\nSeis entradas: NEXUS, Brainstorming, Plan, Build, Debug e Review. Para equipes de engenharia que precisam definir escopo, comparar alternativas e validar mudanças.\n\nO núcleo é uma skill portátil. Helpers locais de memória, workflows e hooks são opcionais; o runtime de agentes tem instalação separada. Execução e integrações dependem das ferramentas e permissões do host.",
+    "developerName": "NEXUS",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Especificação e arquitetura",
+      "Planejamento incremental",
+      "Implementação com evidências",
+      "Diagnóstico de falhas",
+      "Revisão de código e contratos"
+    ],
+    "websiteURL": "https://github.com/elourenco/nexus-skill",
+    "supportURL": "https://github.com/elourenco/nexus-skill/issues"
+  },
+  "homepage": "https://github.com/elourenco/nexus-skill",
+  "repository": "https://github.com/elourenco/nexus-skill",
+  "keywords": [
+    "engineering",
+    "architecture",
+    "specification",
+    "planning",
+    "debugging",
+    "code-review"
+  ]
 }
