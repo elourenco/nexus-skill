@@ -68,7 +68,7 @@ class FakeGitHub:
                 env = {**os.environ, 'GIT_INDEX_FILE': str(Path(tmp) / 'index')}
                 self.git('read-tree', data['base_tree'], env=env)
                 for item in data['tree']:
-                    blob = self.git('hash-object', '-w', '--stdin', input=item['content'])
+                    blob = item.get('sha') or self.git('hash-object', '-w', '--stdin', input=item['content'])
                     self.git('update-index', '--add', '--cacheinfo', item['mode'], blob,
                              item['path'], env=env)
                 return {'sha': self.git('write-tree', env=env)}
@@ -127,6 +127,15 @@ class ReleaseTests(unittest.TestCase):
             path = self.root / f'.{host}-plugin/plugin.json'
             path.parent.mkdir()
             path.write_text(json.dumps({'name': 'nexus', 'version': '0.3.0', 'skills': './skills/'}))
+        for name in ('nexus', 'nexus-brainstorm', 'nexus-plan', 'nexus-build', 'nexus-debug', 'nexus-review'):
+            entry = self.root / f'skills/{name}/SKILL.md'
+            entry.parent.mkdir(parents=True)
+            entry.write_text(f'---\nname: {name}\ndescription: Test workflow\n---\n')
+        (self.root / '.claude-plugin/marketplace.json').write_text(json.dumps({
+            'plugins': [{'name': 'nexus', 'source': './build/claude'}]}))
+        marker = self.root / 'scripts/package_claude.py'
+        marker.parent.mkdir()
+        marker.write_text('# Source package format marker\n')
         self.before = self.commit('Foundation')
         workflow = self.root / '.github/workflows/release.yml'
         workflow.parent.mkdir(parents=True)
@@ -277,7 +286,11 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(self.distribution('.nexus-release.json'), {
             'schema_version': 1, 'source_sha': next_sha, 'tag': 'v0.3.1'})
         paths = self.git('diff', '--name-only', next_sha, 'refs/heads/plugins').splitlines()
-        self.assertEqual(paths, ['.claude-plugin/plugin.json', '.codex-plugin/plugin.json', '.nexus-release.json'])
+        self.assertEqual([p for p in paths if not p.startswith('build/claude/')],
+                         ['.claude-plugin/plugin.json', '.codex-plugin/plugin.json', '.nexus-release.json'])
+        self.assertEqual(self.distribution('build/claude/.claude-plugin/plugin.json')['version'], '0.3.1')
+        self.assertEqual({p.split('/')[3] for p in paths if p.endswith('/SKILL.md')},
+                         {'start', 'brainstorm', 'plan', 'build', 'debug', 'review'})
 
     def test_new_remote_tag_need_not_exist_in_the_local_checkout(self):
         self.api.remote_only_tags = True
@@ -286,6 +299,29 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(self.api.remote_tags['v0.3.0'], self.sha)
         self.assertIn('plugin-v0.3.0', self.api.remote_tags)
         self.assertEqual(self.distribution('.nexus-release.json')['source_sha'], self.sha)
+
+    def test_legacy_distribution_upgrades_without_rewriting_its_provenance(self):
+        catalog = self.root / '.claude-plugin/marketplace.json'
+        catalog.write_text(json.dumps({'plugins': [{'name': 'nexus', 'source': './'}]}))
+        marker = self.root / 'scripts/package_claude.py'
+        marker.unlink()
+        legacy = self.commit('Previous root package format')
+        publish(self.root, self.api, legacy, legacy, recover_from='initial')
+        self.assertEqual(self.git('ls-tree', '--name-only', 'refs/heads/plugins', '--', 'build'), '')
+        catalog.write_text(json.dumps({'plugins': [{'name': 'nexus', 'source': './build/claude'}]}))
+        marker.write_text('# Source package format marker\n')
+        current = self.commit('Short Claude names')
+        publish(self.root, self.api, current, legacy)
+        self.assertEqual(self.distribution('.nexus-release.json')['tag'], 'v0.3.1')
+        self.assertEqual(self.distribution('build/claude/.claude-plugin/plugin.json')['version'], '0.3.1')
+
+    def test_generated_commands_use_source_commit_instead_of_dirty_checkout(self):
+        entry = self.root / 'skills/nexus-plan/SKILL.md'
+        entry.write_text('Dirty checkout must not leak into release')
+        self.run_release()
+        generated = self.git('show', 'refs/heads/plugins:build/claude/skills/plan/SKILL.md')
+        self.assertIn('name: plan', generated)
+        self.assertNotIn('Dirty checkout', generated)
 
     def test_remote_tag_with_wrong_source_blocks_promotion(self):
         self.run_release()
@@ -382,16 +418,16 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(self.git('rev-parse', 'v0.3.1'), next_sha)
 
     def test_source_marketplaces_resolve_the_published_package(self):
+        from scripts.release import PUBLISHED_SOURCE, CLAUDE_PUBLISHED_SOURCE
         for host, path in [('claude', '.claude-plugin/marketplace.json'),
                            ('codex', '.agents/plugins/marketplace.json')]:
             target = self.root / path
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(json.dumps({'name': 'nexus-local', 'plugins': [{
-                'name': 'nexus', 'source': {'source': 'url',
-                    'url': 'https://github.com/elourenco/nexus-skill.git', 'ref': 'plugins'}}]}))
+                'name': 'nexus', 'source': CLAUDE_PUBLISHED_SOURCE if host == 'claude' else PUBLISHED_SOURCE}]}))
         sha = self.commit('Source catalogs follow published releases')
         self.run_release(sha)
-        self.assertEqual(self.distribution('.claude-plugin/marketplace.json')['plugins'][0]['source'], './')
+        self.assertEqual(self.distribution('.claude-plugin/marketplace.json')['plugins'][0]['source'], './build/claude')
         self.assertEqual(self.distribution('.agents/plugins/marketplace.json')['plugins'][0]['source'], {
             'source': 'local', 'path': './'})
 
@@ -441,6 +477,7 @@ class ReleaseTests(unittest.TestCase):
                              for method, path, data in self.api.calls), 1)
 
     def test_legacy_catalog_bytes_survive_distribution_and_later_reconciliation(self):
+        (self.root / 'scripts/package_claude.py').unlink()
         path = self.root / '.claude-plugin/marketplace.json'
         path.write_text('{ "plugins" : [{ "name" : "nexus", "source" : "./" }] }\n')
         sha = self.commit('Legacy catalog with noncanonical formatting')
@@ -453,7 +490,7 @@ class ReleaseTests(unittest.TestCase):
 @unittest.skipUnless(os.environ.get('NEXUS_HOST_UPDATES') == '1', 'Opt-in native host lifecycle')
 class NativeHostUpdatesTests(unittest.TestCase):
     def test_remote_branch_update_replaces_both_installed_packages(self):
-        from scripts.verify_hosts import discover_skills, EXPECTED
+        from scripts.verify_hosts import discover_skills, EXPECTED, EXPECTED_CLAUDE
 
         codex = os.environ.get('NEXUS_CODEX', '/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex')
         claude = shutil.which('claude')
@@ -467,6 +504,17 @@ class NativeHostUpdatesTests(unittest.TestCase):
             for directory in ('skills', '.claude-plugin', '.codex-plugin', '.agents/plugins'):
                 shutil.copytree(project / directory, source / directory,
                                 ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+            from scripts.release import PUBLISHED_SOURCE
+            catalog_path = source / '.claude-plugin/marketplace.json'
+            current_catalog = catalog_path.read_bytes()
+            legacy_catalog = json.loads(current_catalog)
+            legacy_catalog['plugins'][0]['source'] = PUBLISHED_SOURCE
+            catalog_path.write_text(json.dumps(legacy_catalog))
+            current_entry = source / 'skills/nexus-brainstorm'
+            legacy_entry = source / 'skills/nexus-brainstorming'
+            current_entry.rename(legacy_entry)
+            skill = legacy_entry / 'SKILL.md'
+            skill.write_text(skill.read_text().replace('name: nexus-brainstorm\n', 'name: nexus-brainstorming\n'))
             # Pin fixture versions independently of the development manifest version.
             for host in ('claude', 'codex'):
                 manifest_path = source / f'.{host}-plugin/plugin.json'
@@ -489,6 +537,7 @@ class NativeHostUpdatesTests(unittest.TestCase):
             first = api.git('rev-parse', 'HEAD')
             source_versions = {'0.3.0': first}
             expected_packages = {}
+            expected_claude = {}
             publish(source, api, first, before)
             # Exercise HTTPS source parsing and native Git clone/fetch without network.
             gitconfig = base / 'gitconfig'
@@ -545,7 +594,18 @@ class NativeHostUpdatesTests(unittest.TestCase):
                         expected_packages[version] = {
                             member.name: archive.extractfile(member).read()
                             for member in archive.getmembers() if member.isfile()}
-                for relative, expected in expected_packages[version].items():
+                generated_claude = version == '0.3.1' and not (package / '.codex-plugin/plugin.json').exists()
+                if generated_claude:
+                    from scripts.package_claude import render_claude_package
+                    if version not in expected_claude:
+                        manifest = json.loads(api.git('show', f'{source_versions[version]}:.claude-plugin/plugin.json'))
+                        expected_claude[version] = render_claude_package({
+                            **expected_packages[version], '.claude-plugin/plugin.json':
+                            (json.dumps({**manifest, 'version': version}, ensure_ascii=False, indent=2) + '\n').encode()})
+                    expected_files = expected_claude[version]
+                else:
+                    expected_files = expected_packages[version]
+                for relative, expected in expected_files.items():
                     self.assertEqual((package / relative).read_bytes(), expected)
 
             # The default/main catalog must install the published package, not source 0.3.0.
@@ -555,9 +615,18 @@ class NativeHostUpdatesTests(unittest.TestCase):
             call(codex, 'plugin', 'add', 'nexus@nexus-local', '--json')
             self.assertEqual(installed_version(claude), '0.3.0')
             self.assertEqual(installed_version(codex), '0.3.0')
+            previous_names = (EXPECTED - {'nexus-brainstorm'}) | {'nexus-brainstorming'}
+            self.assertEqual({s['name'].split(':')[-1] for s in discover_skills(codex, consumer, env)}, previous_names)
+            legacy_entry.rename(current_entry)
+            catalog_path.write_bytes(current_catalog)
+            skill = current_entry / 'SKILL.md'
+            skill.write_text(skill.read_text().replace('name: nexus-brainstorming\n', 'name: nexus-brainstorm\n'))
+            marker = source / 'scripts/package_claude.py'
+            marker.parent.mkdir()
+            shutil.copyfile(project / 'scripts/package_claude.py', marker)
             changed = source / 'skills/nexus/SKILL.md'
             changed.write_text(changed.read_text() + '\n<!-- Native fixture release B payload -->\n')
-            api.git('add', 'skills/nexus/SKILL.md')
+            api.git('add', '.')
             api.git('commit', '-qm', 'Next release with changed skill content')
             second = api.git('rev-parse', 'HEAD')
             source_versions['0.3.1'] = second
@@ -572,7 +641,7 @@ class NativeHostUpdatesTests(unittest.TestCase):
             match = re.search(r'^\s*Skills \((\d+)\)\s+(.+)$', inventory, re.MULTILINE)
             self.assertIsNotNone(match, inventory)
             self.assertEqual(int(match[1]), 6)
-            self.assertEqual({n.strip() for n in match[2].split(',')}, EXPECTED)
+            self.assertEqual({n.strip() for n in match[2].split(',')}, EXPECTED_CLAUDE)
             discovered = discover_skills(codex, consumer, env)
             self.assertEqual({s['name'].split(':')[-1] for s in discovered}, EXPECTED)
             self.assertTrue(all(s['enabled'] and '/0.3.1/' in s['path'] for s in discovered))

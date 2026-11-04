@@ -1,6 +1,6 @@
 ---
 name: nexus-build
-description: Use when NEXUS implementation, refactoring, documentation changes or test creation is requested within an authorized scope or existing plan. Not for analysis-only requests.
+description: Use when implementing an authorized change through NEXUS with validation. Not for reviewing a diff or planning an undefined direction.
 ---
 
 # NEXUS Build

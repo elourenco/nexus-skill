@@ -1,6 +1,6 @@
 ---
 name: nexus-debug
-description: Use when NEXUS investigation or correction of a bug, failing test, timeout or unexpected behavior is requested. Not for reviewing a diff without a diagnostic request.
+description: Use when reproducing, diagnosing or fixing failures through NEXUS. Correct only within the authorized scope.
 ---
 
 # NEXUS Debug

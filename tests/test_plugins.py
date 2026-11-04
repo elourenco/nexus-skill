@@ -27,7 +27,7 @@ class PackageValidationTests(unittest.TestCase):
             self.write(path, {'name': 'nexus', 'version': '0.1.0',
                              'description': 'Engineering workflow', 'skills': './skills/'})
         self.write(CATALOGS[0], {'name': 'nexus-local', 'owner': {'name': 'NEXUS'},
-                                'plugins': [{'name': 'nexus', 'source': './'}]})
+                                'plugins': [{'name': 'nexus', 'source': './build/claude'}]})
         self.write(CATALOGS[1], {'name': 'nexus-local', 'plugins': [{
             'name': 'nexus', 'source': {'source': 'local', 'path': './'},
             'policy': {'installation': 'AVAILABLE', 'authentication': 'ON_INSTALL'},
@@ -46,6 +46,8 @@ class PackageValidationTests(unittest.TestCase):
             catalog = json.loads((self.root / path).read_text())
             catalog['plugins'][0]['source'] = {'source': 'url',
                 'url': 'https://github.com/elourenco/nexus-skill.git', 'ref': 'plugins'}
+            if path == CATALOGS[0]:
+                catalog['plugins'][0]['source'].update(source='git-subdir', path='build/claude')
             self.write(path, catalog)
         self.assertEqual(validate(self.root), [])
         for path in CATALOGS:

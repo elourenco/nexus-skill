@@ -40,13 +40,16 @@ de serviço nem submissão aos diretórios públicos dos hosts neste fluxo.
 
 Depois de publicar a release estável, `scripts/release.py` gera um snapshot para
 `refs/heads/plugins`. Os dois `manifest.version`, os catálogos de marketplace e
-`.nexus-release.json` diferem da árvore de origem. O arquivo de proveniência registra a versão da tag e
+`.nexus-release.json` e o pacote Claude em `build/claude/` diferem da árvore de origem.
+O pacote é gerado diretamente do SHA validado com os seis nomes curtos; o manifesto
+e a proveniência da subpasta recebem a mesma versão. Assets binários reutilizam
+os blobs de origem. O arquivo de proveniência registra a versão da tag e
 o SHA validado. O CI calcula a árvore Git esperada localmente e confere o hash
 retornado pela API antes de promover o pacote.
 
 Na origem, os dois catálogos apontam para o pacote deste repositório em `plugins`.
 Assim, registrar `main` não instala os manifestos de desenvolvimento. No snapshot
-distribuído, as origens dos catálogos viram caminhos locais `./`: instalar uma
+distribuído, o catálogo Codex usa `./` e o Claude usa `./build/claude`: instalar uma
 versão fixada usa somente seu próprio conteúdo. Catálogos locais históricos não
 são reserializados, preservando os hashes usados para reconciliar releases antigas.
 
@@ -78,8 +81,9 @@ proveniência, com conteúdo divergente ou histórico incompatível exige resolu
 explícita; o workflow não a sobrescreve.
 
 O catálogo continua `nexus-local` para preservar a identidade instalada, mas
-agora pode ser registrado pela URL Git remota na branch `plugins`. Fontes
-relativas nos catálogos apontam para a raiz do clone dessa branch. Não registre
+agora pode ser registrado pela URL Git remota na branch `plugins`. A fonte relativa
+do catálogo Codex aponta para a raiz do clone; a do Claude
+aponta para `build/claude/`, já materializado nessa branch. Não registre
 uma URL avulsa do JSON: ela não inclui o pacote. O
 [guia de instalação](../skills/nexus/references/installation.md) contém comandos,
 migração de checkouts locais e opt-in de auto-update no Claude. O refresh de

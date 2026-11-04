@@ -1,6 +1,6 @@
 ---
-name: nexus-brainstorming
-description: Use when starting a feature through NEXUS brainstorming, discovery, problem framing or comparison of design alternatives, including guided continuation by user acceptance. Not for directly executing an already defined plan.
+name: nexus-brainstorm
+description: Use when exploring options, defining a direction or starting a feature through NEXUS brainstorming. Respect exploration-only requests and existing approvals.
 ---
 
 # NEXUS Brainstorming

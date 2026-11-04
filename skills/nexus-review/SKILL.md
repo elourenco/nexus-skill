@@ -1,6 +1,6 @@
 ---
 name: nexus-review
-description: Use when NEXUS review of an existing diff, implementation, contract or design is requested. Not for implementing fixes unless the user also requests them, or for open-ended design exploration.
+description: Use when evaluating a diff, contracts or engineering risks through NEXUS. Review does not authorize implementing fixes.
 ---
 
 # NEXUS Review

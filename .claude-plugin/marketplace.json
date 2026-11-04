@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "nexus",
-      "source": "./"
+      "source": "./build/claude"
     }
   ]
 }

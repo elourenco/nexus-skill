@@ -38,7 +38,7 @@ def validate_suite(suite):
         if not isinstance(identifier, str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', identifier) or identifier in identifiers:
             raise ValueError('scenario IDs must be unique safe identifiers')
         identifiers.add(identifier)
-        if scenario.get('entry') not in {'nexus', 'nexus-brainstorming', 'nexus-plan', 'nexus-build', 'nexus-debug', 'nexus-review'}:
+        if scenario.get('entry') not in {'nexus', 'nexus-brainstorm', 'nexus-brainstorming', 'nexus-plan', 'nexus-build', 'nexus-debug', 'nexus-review'}:
             raise ValueError('unknown entry')
         for field in ('prompt', 'baseline_prompt'):
             if not isinstance(scenario.get(field), str) or not scenario[field].strip():

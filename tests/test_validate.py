@@ -154,7 +154,7 @@ class SkillValidationTests(unittest.TestCase):
         shutil.copytree(REPO / "skills", self.root / "skills")
         self.assertEqual(
             {path.parent.name for path in (self.root / "skills").glob("*/SKILL.md")},
-            {"nexus", "nexus-brainstorming", "nexus-plan", "nexus-build", "nexus-debug", "nexus-review"},
+            {"nexus", "nexus-brainstorm", "nexus-plan", "nexus-build", "nexus-debug", "nexus-review"},
         )
         self.assertEqual(validator.validate_skills(self.root), [])
 

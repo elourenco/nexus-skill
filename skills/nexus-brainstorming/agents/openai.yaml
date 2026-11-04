@@ -1,6 +1,0 @@
-interface:
-  display_name: "NEXUS Brainstorming"
-  short_description: "Explore ideias e defina critérios de aceite"
-  icon_small: "./assets/nexus-icon.png"
-  icon_large: "./assets/nexus-icon.png"
-  default_prompt: "Use $nexus-brainstorming para explorar esta funcionalidade e definir escopo, alternativas e critérios de aceite."

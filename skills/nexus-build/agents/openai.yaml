@@ -1,6 +1,6 @@
 interface:
-  display_name: "NEXUS Build"
-  short_description: "Implemente incrementos com validação e evidências"
+  display_name: "NEXUS · Build"
+  short_description: "Executar uma mudança com validação."
   icon_small: "./assets/nexus-icon.png"
   icon_large: "./assets/nexus-icon.png"
   default_prompt: "Use $nexus-build para implementar o próximo incremento autorizado e registrar as validações."
