@@ -14,7 +14,10 @@ ownership. **Evidência:** fontes e validações propostas identificadas como ta
    Sem direção suficiente, delimite a decisão pendente e use
    [brainstorming](brainstorming.md) apenas para resolvê-la. Lacunas independentes
    não impedem planejar o restante.
-2. Aplique [Workflows](workflow.md) para decomposição e acompanhamento direto ou rastreado, independente do risco. Reuse a fonte existente; persistência nova somente se útil ou solicitada. Defina
+2. Decomponha no plano ou fonte existente. Consulte [Workflows](workflow.md) somente
+   para resolver ownership, acompanhamento, retomada ou estado ainda indefinidos;
+   a mera existência de passos não exige outro procedimento. Persistência nova
+   somente se útil ou solicitada. Defina
    contratos, invariantes, critérios de aceite e compatibilidade nas fronteiras alteradas. Execução direta pode registrar decisões no chat, sem TASK/SPEC/PLAN ou estado obrigatório; a CLI opt-in conserva seu contrato.
 3. Prefira slices verticais demonstráveis, com critério/invariante → cenário →
    evidência. Para migração incompatível, explicite expandir contrato, migrar em

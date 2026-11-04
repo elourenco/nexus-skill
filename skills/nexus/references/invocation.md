@@ -14,6 +14,9 @@ caminho, sem simular leitura ou instalar outra cópia. O núcleo funciona sozinh
   de contrato/fronteira ou invariante crítica. Na dúvida, investigue em BALANCED.
   Migração persistente, difícil reversão ou risco material exige DEEP e review
   independente antes da conclusão; indisponibilidade mantém esse gate pendente.
+  Verifique essa capacidade uma vez no contexto; registre o gate e reavalie somente
+  se a condição mudar. Continue apenas o trabalho independente autorizado;
+  autorrevisão não substitui independência.
 - Teste proporcionalmente: texto reversível admite revisão/check pertinente; bug
   exige reprodução/regressão; invariante crítica testável exige falha e sucesso
   observados; fronteira e concorrência exigem cenários de contrato/falha afetados.
@@ -37,6 +40,8 @@ Leia o destino obrigatório da rota; links condicionais exigem um gatilho concre
 e links informativos não geram trabalho. Não percorra referências transitivamente.
 Reutilize leitura da mesma revisão e contexto; mudança da fonte exige revalidação.
 Agrupe consultas independentes já selecionadas, sem antecipar módulos opcionais.
+Nos links condicionais, carregue a seção da decisão atual e somente a técnica
+selecionada; amplie se faltar contrato, preservando os invariantes do mínimo operacional.
 
 Para um fragmento, localize o heading ou ID HTML exato e leia a seção até o próximo
 heading de nível igual ou superior, incluindo subseções necessárias. Um anchor HTML
