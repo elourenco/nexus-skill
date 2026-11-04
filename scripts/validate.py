@@ -4,8 +4,80 @@
 import json
 import re
 import sys
+import unicodedata
+from html import unescape
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
+
+
+def markdown_prose(content: str) -> str:
+    """Exclude frontmatter and code blocks from this package's Markdown checks.
+
+    This is a bounded Markdown check, not a renderer. Preserve blank lines so a
+    setext underline cannot accidentally attach to text across a code block.
+    """
+    content = re.sub(r"\A---\n.*?\n---(?:\n|$)", "\n", content, count=1, flags=re.DOTALL)
+    lines = []
+    fence = None
+    for line in content.splitlines():
+        if fence:
+            if re.fullmatch(r" {0,3}" + re.escape(fence[0]) + "{" + str(fence[1]) + r",}\s*", line):
+                fence = None
+            lines.append("")
+            continue
+        opening = re.match(r" {0,3}(`{3,}|~{3,})(.*)$", line)
+        if opening and not (opening[1][0] == "`" and "`" in opening[2]):
+            fence = (opening[1][0], len(opening[1]))
+            lines.append("")
+        elif line.startswith(("    ", "\t")):
+            lines.append("")
+        else:
+            lines.append(line)
+    return "\n".join(lines)
+
+
+def markdown_anchors(content: str) -> set[str]:
+    """Collect common GitHub heading slugs and explicit HTML IDs in prose."""
+    # Inline code contributes text to headings, but cannot define an HTML ID.
+    without_code = re.sub(r"(`+).*?\1", "", content)
+    anchors = {
+        unescape(match[1] or match[2] or match[3])
+        for match in re.finditer(
+            r"<[^>]+\sid\s*=\s*(?:\"([^\"]+)\"|'([^']+)'|([^\s>]+))[^>]*>",
+            without_code, re.IGNORECASE,
+        )
+    }
+    slugs = set()
+    previous = ""
+    for line in content.splitlines():
+        atx = re.match(r" {0,3}#{1,6}(?:[ \t]+(.*?)|[ \t]*)$", line)
+        heading = None
+        if atx:
+            heading = re.sub(r"[ \t]+#+[ \t]*$", "", atx[1] or "").strip()
+        elif previous.strip() and re.fullmatch(r" {0,3}(?:=+|-+)[ \t]*", line):
+            heading = previous.strip()
+        if heading is not None:
+            # Formatting markers/tags disappear; code and link labels remain.
+            heading = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", heading)
+            heading = "".join(
+                part if index % 2 else re.sub(
+                    r"(?<!\w)(_+)(?=\S)(.+?)(?<=\S)\1(?!\w)", r"\2", part
+                )
+                for index, part in enumerate(re.split(r"(`+.*?`+)", heading))
+            )
+            heading = unescape(re.sub(r"<[^>]*>", "", heading)).lower()
+            slug = "".join(
+                char for char in heading
+                if char in "-_ " or not unicodedata.category(char).startswith(("P", "S", "C"))
+            ).replace(" ", "-")
+            candidate = slug
+            suffix = 0
+            while candidate in slugs:
+                suffix += 1
+                candidate = f"{slug}-{suffix}"
+            slugs.add(candidate)
+        previous = line
+    return anchors | slugs
 
 
 def validate_plugins(root: Path) -> list[str]:
@@ -109,17 +181,29 @@ def validate_skills(root: Path) -> list[str]:
         if not 1 <= len(description) <= 1024:
             errors.append(f"{label}: description must contain 1–1024 characters")
 
+    documents = {}
+
+    def read_document(path):
+        if path not in documents:
+            prose = markdown_prose(path.read_text(encoding="utf-8"))
+            documents[path] = (prose, markdown_anchors(prose))
+        return documents[path]
+
     for path in sorted(root.rglob("*.md")):
         if any(part.startswith(".") for part in path.relative_to(root).parts):
             continue
-        content = path.read_text(encoding="utf-8")
+        content, _ = read_document(path)
+        content = re.sub(r"(`+).*?\1", "", content)
         for target in re.findall(r"\[[^\]\n]*\]\(([^)\n]+)\)", content):
             parsed = urlsplit(target)
-            if parsed.scheme or parsed.netloc or not parsed.path:
+            if parsed.scheme or parsed.netloc:
                 continue
-            destination = (path.parent / unquote(parsed.path)).resolve()
+            destination = (path.parent / unquote(parsed.path)).resolve() if parsed.path else path
             if not destination.is_relative_to(root) or not destination.exists():
                 errors.append(f"{path.relative_to(root)}: invalid local link: {target}")
+            elif parsed.fragment and destination.suffix.lower() == ".md":
+                if unquote(parsed.fragment) not in read_document(destination)[1]:
+                    errors.append(f"{path.relative_to(root)}: invalid local anchor: {target}")
     return errors
 
 

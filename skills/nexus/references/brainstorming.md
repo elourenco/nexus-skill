@@ -44,7 +44,11 @@ fonte existente; sem registro suficiente, esclareça somente a lacuna. O chat n�
 1. Identifique resultado desejado, contexto existente, restrições e decisões já
    tomadas. Consulte as fontes disponíveis antes de perguntar; esclareça somente
    lacunas que possam mudar a recomendação.
-2. Aplique [Cognitive Principles](cognitive.md) quando houver ambiguidade ou decisão
+2. Organize decisões dependentes: investigue fatos nas fontes, esclareça primeiro
+   a lacuna que desbloqueia as demais e recomende uma opção com consequência.
+   Não pergunte detalhes dependentes de uma escolha ainda aberta. Pare quando
+   houver informação suficiente para a próxima ação, sem entrevista universal.
+   Aplique [Cognitive Principles](cognitive.md) quando houver ambiguidade ou decisão
    material. Separe fatos, hipóteses e preferências. Reutilize padrões do projeto.
 3. Compare alternativas viáveis, incluindo manter a solução atual quando fizer
    sentido. Avalie complexidade, compatibilidade, reversibilidade e impacto em

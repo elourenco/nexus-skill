@@ -177,6 +177,13 @@ percorrer Review e Build dentro do escopo já autorizado. FAST/BALANCED/DEEP con
 sendo perfis de profundidade, sem criar variações de comandos. Status e retomada
 continuam em `nexus`, sem entradas adicionais.
 
+O [índice de rotas](skills/nexus/references/routes.md) distingue destinos obrigatórios,
+expansões por gatilho e referências informativas. Status com fontes suficientes
+encerra no estado e nos gates; review carrega um contrato curto de critérios, sem
+percorrer o registry de agentes. Entradas especializadas seguem diretamente aos
+destinos, reutilizando leituras da mesma revisão. Isso reduz conteúdo obrigatório;
+ganhos de latência e tokens dependem de avaliação de execução.
+
 Os procedimentos e políticas vivem em `skills/nexus/`. As cinco entradas são
 seletores curtos com referências relativas ao núcleo; não duplicam workflow,
 estado ou regras. A [invocação](skills/nexus/references/invocation.md) carrega apenas
