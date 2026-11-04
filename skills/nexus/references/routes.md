@@ -29,11 +29,11 @@ na seção carregada não torna todas as suas dependências obrigatórias.
 | Estratégia de teste não resolvida pelo mínimo | [Testes](policies.md#policy-testing) |
 | Regra de conclusão ou exceção ambígua | [Conclusão](policies.md#policy-completion), [autoridade](policies.md#policy-authority) |
 | Budget, retry ou efeito externo incerto exigem detalhe | [Limites](policies.md#limites-suaves-e-rígidos), [recuperação](policies.md#tentativas-e-recuperação) |
-| Hipótese fraca ou decisão material em aberto | [Ciclo cognitivo](cognitive.md#seleção-adaptativa) |
+| Hipótese fraca ou decisão material em aberto | [Seleção cognitiva](cognitive.md#seleção-adaptativa) e somente a técnica selecionada |
 | Delegação efetiva ou definição de método | [Agents](agents.md) |
 | Etapas/estado a reconciliar | [Workflow](workflow.md); [executor](workflow-state.md) somente se adotado |
 | Estados, ownership ou invariantes alterados | [Modelagem](domain-design.md) |
-| Decisão estrutural aberta / refatoração com efeitos | [Design](architecture-design.md) / [Refatoração](refactoring.md) |
+| Decisão estrutural aberta / refatoração com efeitos | [Diagnóstico de design](architecture-design.md#diagnostico) / [contrato de refatoração](refactoring.md#contrato) |
 | Confiança, dados sensíveis, autonomia, produto com IA ou impacto humano material | [Segurança e ética](ai-safety-ethics.md#risk-triggers) |
 | Escolhas interativas ou acompanhamento complexo | [Chat](chat.md) |
 

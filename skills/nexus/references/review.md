@@ -51,8 +51,10 @@ Avaliação de mesa não comprova resistência a ataques nem equidade em produç
 
 Entregue primeiro achados priorizados ou a ausência de achados demonstrados,
 seguida de cobertura, verificações, limitações e decisão. Declare proveniência,
-confiança e limitações comuns uma vez quando forem iguais; preserve diferenças
-por achado e todos os campos do contrato rastreado quando adotado. Use o
+confiança e limitações comuns uma vez quando forem iguais. Cada achado preserva
+severidade, localização, trigger, impacto, evidência e correção; explicite confiança,
+proveniência e status quando diferirem. Preserve todos os campos do contrato
+rastreado quando adotado. Use o
 [template de review](../assets/templates/review.md) quando um registro for necessário.
 Não confunda relatório concluído com aprovação do objeto; achados podem permanecer
 abertos ao concluir uma tarefa exclusivamente de análise.

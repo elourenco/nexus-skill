@@ -43,4 +43,13 @@ O agente atual é padrão; delegação depende de benefício, capacidades e auto
 
 ## Checkpoint, cancelamento e retomada
 
+Na fonte de estado existente, registre decisão duradoura, pendência autorizada,
+identidade/status dos efeitos realizados e evidência/configuração validada. Atualize
+esse registro e referencie logs, diff e recibos, sem replicar plano, TASK ou memória.
+Arquivos distintos podem ter papéis distintos; mantenha explícita a autoridade de cada um.
+Na retomada, leia esse índice e as fontes atuais afetadas; abra evidência bruta se
+houver conflito, lacuna ou auditoria requerida. Relato salvo não substitui autoridade
+remota: reconcilie efeito incerto por identidade antes de qualquer retry ou ack local.
+Revalide a cobertura afetada quando revisão, inputs, configuração, run/geração ou
+ambiente mudarem; evidência da configuração A não comprova a B em contexto novo.
 Consulte fonte existente, revisão, evidências e estado real; retome a próxima pendência autorizada. Após duas tentativas sem progresso, pare a repetição e reúna diagnóstico antes de escalar conforme o host. Cancelamento não reverte efeitos. Runs incertos mantêm reservas até reconciliação; [checkpoint e recuperação](workflow-state.md#checkpoint-cancelamento-e-retomada) detalham o executor. Memória permanece útil e autorizada, sem captura automática.
