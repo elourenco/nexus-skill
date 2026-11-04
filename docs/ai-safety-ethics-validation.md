@@ -1,7 +1,7 @@
 # Validação de segurança e ética em IA
 
-Data: 2026-11-02. Plano: [PLAN-AI-SAFETY-001](superpowers/plans/2026-11-02-ai-safety-ethics.md).
-Spec: [SPEC-AI-SAFETY-001 @3](superpowers/specs/2026-11-02-ai-safety-ethics-design.md)
+Data: 2026-11-02. Plano: `PLAN-AI-SAFETY-001` (artefato local não versionado).
+Spec: `SPEC-AI-SAFETY-001 @3` (artefato local não versionado)
 (requisitos aprovados na revisão 2; revisão 3 registra fechamento, sem mudança de desenho).
 Base: `2e19b6f94ff6e09a5b7a0b5b78a64430adc46bb0`.
 Alvo: alterações locais deste plano sobre essa base, incluindo arquivos novos.
