@@ -16,6 +16,9 @@ WORKFLOW = '.github/workflows/release.yml'
 DISTRIBUTION_REF = 'refs/heads/plugins'
 PROVENANCE = '.nexus-release.json'
 MANIFESTS = ('.claude-plugin/plugin.json', '.codex-plugin/plugin.json')
+CATALOGS = ('.claude-plugin/marketplace.json', '.agents/plugins/marketplace.json')
+PUBLISHED_SOURCE = {'source': 'url', 'url': 'https://github.com/elourenco/nexus-skill.git',
+                    'ref': 'plugins'}
 
 
 def git(root, *args):
@@ -51,7 +54,8 @@ class GitHub:
         except HTTPError as exc:
             exc.close()
             if (method == 'GET' and exc.code == 404
-                    and (path.startswith('releases/tags/') or path == 'git/ref/heads/plugins')):
+                    and (path.startswith('releases/tags/') or path == 'git/ref/heads/plugins'
+                         or path.startswith('git/ref/tags/plugin-v'))):
                 return None
             # Never retry a write whose outcome might be unknown. Rerun reconciles tags/releases.
             raise RuntimeError(f'GitHub {method} {path} failed: HTTP {exc.code}') from None
@@ -81,6 +85,15 @@ def distribution_snapshot(root, sha, tag):
     files = {path: json.dumps({**manifest, 'version': tag[1:]}, ensure_ascii=False, indent=2) + '\n'
              for path, manifest in source_manifests(root, sha).items()}
     files[PROVENANCE] = json.dumps({'schema_version': 1, 'source_sha': sha, 'tag': tag}, indent=2) + '\n'
+    for path, local_source in zip(CATALOGS, ('./', {'source': 'local', 'path': './'})):
+        # Historical local catalogs must retain their exact bytes/tree hashes.
+        if not git(root, 'ls-tree', '--name-only', sha, '--', path):
+            continue
+        catalog = json.loads(git(root, 'show', f'{sha}:{path}'))
+        for entry in catalog.get('plugins', []):
+            if entry.get('name') == 'nexus' and entry.get('source') == PUBLISHED_SOURCE:
+                entry['source'] = local_source
+                files[path] = json.dumps(catalog, ensure_ascii=False, indent=2) + '\n'
     # A temporary index leaves the checkout, staging area and refs untouched.
     with tempfile.TemporaryDirectory(prefix='nexus-distribution-') as temporary:
         env = {**os.environ, 'GIT_INDEX_FILE': str(Path(temporary) / 'index')}
@@ -107,6 +120,35 @@ def verify_remote_tag(api, tag, sha):
             break
         obj = api.request('GET', f'git/tags/{obj["sha"]}')['object']
     raise RuntimeError('Remote distribution tag does not identify the source commit')
+
+
+def ensure_package_tag(root, api, sha, tag, files, tree):
+    """Reconcile a versioned package without ever moving an existing tag."""
+    package_tag = f'plugin-{tag}'
+    ref = api.request('GET', f'git/ref/tags/{package_tag}')
+    if ref:
+        obj = ref['object']
+        for _ in range(5):
+            if obj.get('type') != 'tag':
+                break
+            obj = api.request('GET', f'git/tags/{obj["sha"]}')['object']
+        if obj.get('type') != 'commit' or not re.fullmatch(r'[0-9a-f]{40}', obj.get('sha', '')):
+            raise RuntimeError('Invalid immutable plugin package tag')
+        commit = api.request('GET', f'git/commits/{obj["sha"]}')
+        if commit['tree']['sha'] != tree:
+            raise RuntimeError('Immutable plugin package differs from its release snapshot')
+        return
+    created = api.request('POST', 'git/trees', {
+        'base_tree': git(root, 'rev-parse', f'{sha}^{{tree}}'),
+        'tree': [{'path': path, 'mode': '100644', 'type': 'blob', 'content': content}
+                 for path, content in files.items()],
+    })
+    if created['sha'] != tree:
+        raise RuntimeError('Generated distribution tree differs from the validated snapshot')
+    commit = api.request('POST', 'git/commits', {
+        'message': f'Package NEXUS {tag}\n\nSource: {sha}', 'tree': tree, 'parents': [sha],
+    })
+    api.request('POST', 'git/refs', {'ref': f'refs/tags/{package_tag}', 'sha': commit['sha']})
 
 
 def promote_distribution(root, api, sha, tag):
@@ -142,18 +184,13 @@ def promote_distribution(root, api, sha, tag):
                 raise RuntimeError('Distribution version or source history conflicts')
             if not published(api.request('GET', f'releases/tags/{previous_tag}')):
                 raise RuntimeError('Distribution provenance has no published release')
+            ensure_package_tag(root, api, sha, tag, files, tree)
             print(f'Distribution already at {previous_tag}')
             return
         if not git_succeeds(root, 'merge-base', '--is-ancestor', previous_sha, sha):
             raise RuntimeError('Distribution source must advance its previous source')
 
-    created = api.request('POST', 'git/trees', {
-        'base_tree': git(root, 'rev-parse', f'{sha}^{{tree}}'),
-        'tree': [{'path': path, 'mode': '100644', 'type': 'blob', 'content': content}
-                 for path, content in files.items()],
-    })
-    if created['sha'] != tree:
-        raise RuntimeError('Generated distribution tree differs from the validated snapshot')
+    ensure_package_tag(root, api, sha, tag, files, tree)
     commit = api.request('POST', 'git/commits', {
         'message': f'Distribute NEXUS {tag}\n\nSource: {sha}', 'tree': tree,
         'parents': [tip] if tip else [sha],

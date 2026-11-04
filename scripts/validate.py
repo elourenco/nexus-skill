@@ -134,8 +134,10 @@ def validate_plugins(root: Path) -> list[str]:
             expected.update(source={"source": "local", "path": "./"},
                             policy={"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
                             category="Developer Tools")
-        if catalog.get("plugins") != [expected]:
-            errors.append(f"{relative}: expected one local nexus entry at ./ with no component overrides")
+        remote = {**expected, "source": {"source": "url",
+                  "url": "https://github.com/elourenco/nexus-skill.git", "ref": "plugins"}}
+        if catalog.get("plugins") not in ([expected], [remote]):
+            errors.append(f"{relative}: expected one nexus entry at ./ or the published plugins ref with no component overrides")
 
     # Hosts also auto-discover components that are not declared in a manifest.
     for relative in ("hooks", "agents", "commands", ".mcp.json", "mcp.json", ".app.json", ".lsp.json", "plugin.json"):

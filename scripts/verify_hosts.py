@@ -98,10 +98,28 @@ def discover_skills(executable, cwd, env, response_timeout=30, cleanup_timeout=2
             process.stdout.close()
 
 
+def prepare_local_package(destination):
+    """Copy the candidate into a new directory with explicitly local catalogs."""
+    destination = Path(destination)
+    destination.mkdir(parents=True, exist_ok=False)
+    for directory in ('skills', '.claude-plugin', '.codex-plugin', '.agents/plugins'):
+        shutil.copytree(ROOT / directory, destination / directory,
+                        ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+    for path, source in [('.claude-plugin/marketplace.json', './'),
+                         ('.agents/plugins/marketplace.json', {'source': 'local', 'path': './'})]:
+        target = destination / path
+        catalog = json.loads(target.read_text())
+        for entry in catalog['plugins']:
+            entry['source'] = source
+        target.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + '\n')
+
+
 def verify(codex, claude):
     receipts = []
     with tempfile.TemporaryDirectory(prefix='nexus-host-discovery-') as tmp:
         base = Path(tmp)
+        package = base / 'candidate'
+        prepare_local_package(package)
         consumer = base / 'consumer'
         consumer.mkdir()
         # Profiles are empty. Do not copy authentication or global configuration.
@@ -128,7 +146,7 @@ def verify(codex, claude):
             try:
                 call(executable, ['--version'])
                 if name == 'codex':
-                    call(executable, ['plugin', 'marketplace', 'add', str(ROOT), '--json'])
+                    call(executable, ['plugin', 'marketplace', 'add', str(package), '--json'])
                     call(executable, ['plugin', 'add', 'nexus@nexus-local', '--json'])
                     call(executable, ['plugin', 'list', '--json'])
                     skills = discover_skills(executable, consumer, env)
@@ -136,8 +154,8 @@ def verify(codex, claude):
                     result[name] = {'status': 'pass' if names == EXPECTED and all(s['enabled'] for s in skills) else 'fail',
                                     'entries': sorted(names), 'skills': skills}
                 else:
-                    call(executable, ['plugin', 'validate', str(ROOT / '.claude-plugin/plugin.json'), '--strict', '--json'])
-                    call(executable, ['plugin', 'marketplace', 'add', str(ROOT), '--json'])
+                    call(executable, ['plugin', 'validate', str(package / '.claude-plugin/plugin.json'), '--strict', '--json'])
+                    call(executable, ['plugin', 'marketplace', 'add', str(package), '--json'])
                     call(executable, ['plugin', 'install', 'nexus@nexus-local', '--json'])
                     installed = json.loads(call(executable, ['plugin', 'list', '--json']))
                     if not isinstance(installed, list) or any(not isinstance(plugin, dict) for plugin in installed):
@@ -160,8 +178,15 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--codex', default=shutil.which('codex'))
     parser.add_argument('--claude', default=shutil.which('claude'))
-    parser.add_argument('--output', type=Path, required=True)
+    output = parser.add_mutually_exclusive_group(required=True)
+    output.add_argument('--output', type=Path)
+    output.add_argument('--prepare-local', type=Path,
+                        help='Copy this checkout to a new local development package directory')
     args = parser.parse_args(argv)
+    if args.prepare_local:
+        prepare_local_package(args.prepare_local)
+        print(args.prepare_local.resolve())
+        return
     result = verify(args.codex, args.claude)
     with args.output.open('x') as output:
         json.dump(result, output, indent=2)

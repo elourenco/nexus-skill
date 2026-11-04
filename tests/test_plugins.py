@@ -41,6 +41,19 @@ class PackageValidationTests(unittest.TestCase):
     def test_valid_shared_package(self):
         self.assertEqual(validate(self.root), [])
 
+    def test_published_source_is_accepted_only_for_the_official_release_channel(self):
+        for path in CATALOGS:
+            catalog = json.loads((self.root / path).read_text())
+            catalog['plugins'][0]['source'] = {'source': 'url',
+                'url': 'https://github.com/elourenco/nexus-skill.git', 'ref': 'plugins'}
+            self.write(path, catalog)
+        self.assertEqual(validate(self.root), [])
+        for path in CATALOGS:
+            catalog = json.loads((self.root / path).read_text())
+            catalog['plugins'][0]['source']['ref'] = 'main'
+            self.write(path, catalog)
+            self.assertTrue(validate(self.root))
+
     def test_claude_listing_fields_are_host_specific(self):
         listing = {
             'displayName': 'NEXUS',

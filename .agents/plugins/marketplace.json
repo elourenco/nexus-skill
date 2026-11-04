@@ -7,8 +7,9 @@
     {
       "name": "nexus",
       "source": {
-        "source": "local",
-        "path": "./"
+        "source": "url",
+        "url": "https://github.com/elourenco/nexus-skill.git",
+        "ref": "plugins"
       },
       "policy": {
         "installation": "AVAILABLE",
