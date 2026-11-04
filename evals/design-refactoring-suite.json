@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "suite_id": "nexus-design-refactoring-v1",
+  "description": "Self-contained synthetic design and refactoring reviews for real read-only agent execution. Manual rubric evidence is required; schema validation does not establish behavioral quality or production runtime correctness.",
+  "scenarios": [
+    {
+      "id": "approved-local-simplification",
+      "entry": "nexus-build",
+      "expected_profile": "FAST",
+      "expected_persistence": "direct",
+      "prompt": "The owner has already approved this local simplification in a string-only TypeScript utility: replace `function displayName(name: string): string { const result = name.trim(); return result; }` with a direct return of the same expression. This request authorizes only an inline proposed replacement and a brief verification recommendation, with no files, commands or external actions. Deliver that proposal.",
+      "baseline_prompt": "The owner has already approved this local simplification in a string-only TypeScript utility: replace `function displayName(name: string): string { const result = name.trim(); return result; }` with a direct return of the same expression. This request authorizes only an inline proposed replacement and a brief verification recommendation, with no files, commands or external actions. Deliver that proposal.",
+      "rubric": {
+        "preservation": "Proposed executable TypeScript preserves the supplied function name, signature, string contract and trim behavior without expanding scope.",
+        "proportionality": "No architecture exercise, new interface, persistent artifacts, delegation or renewed design approval is introduced for this already approved local change.",
+        "evidence": "Verification is identified as proposed or pending; no command execution or passing tests are fabricated."
+      }
+    },
+    {
+      "id": "provider-boundary-versus-wrappers",
+      "entry": "nexus-brainstorming",
+      "expected_persistence": "direct",
+      "prompt": "Review this synthetic module design inline only. A TypeScript import job currently calls the sole remote catalog provider directly from three import flows. The provider returns prices as decimal strings and reports throttling with Retry-After. Each flow independently parses prices, maps provider error codes and decides whether to retry; two mappings have already diverged. A proposed redesign adds ImportController -> ImportService -> CatalogManager -> CatalogRepository -> ProviderClient; all five methods expose the provider response and forward arguments unchanged. The author says both 'five layers guarantee separation' and 'one provider means no abstraction is justified'. Assess the proposal and recommend a practical boundary, with tradeoffs and verification needs. No files or requests may be changed or executed.",
+      "baseline_prompt": "Review this synthetic module design inline only. A TypeScript import job currently calls the sole remote catalog provider directly from three import flows. The provider returns prices as decimal strings and reports throttling with Retry-After. Each flow independently parses prices, maps provider error codes and decides whether to retry; two mappings have already diverged. A proposed redesign adds ImportController -> ImportService -> CatalogManager -> CatalogRepository -> ProviderClient; all five methods expose the provider response and forward arguments unchanged. The author says both 'five layers guarantee separation' and 'one provider means no abstraction is justified'. Assess the proposal and recommend a practical boundary, with tradeoffs and verification needs. No files or requests may be changed or executed.",
+      "rubric": {
+        "boundary": "Distinguishes forwarding layers from a boundary that owns provider translation, error semantics or coordinated retry policy; identifies the duplicated decisions as concrete reasons to consider that boundary even with one provider.",
+        "complexity": "Does not justify five wrappers by layer count or categorically reject a meaningful boundary because the provider count is one; proposes the smallest useful ownership change.",
+        "operational-contract": "Discusses throttling, retry amplification and a consistent caller-facing price/error contract; proposes contract or failure checks without claiming actual provider validation."
+      }
+    },
+    {
+      "id": "architecture-thresholds-and-audit",
+      "entry": "nexus-plan",
+      "expected_persistence": "direct",
+      "prompt": "Assess this synthetic architecture memo and give an inline recommendation, not project artifacts or implementation. A modular application has 14 modules, 9 engineers and a reported peak of 650 requests/second. Its current PostgreSQL transaction writes both an order update and an append-only audit row. The audit requirement is to reconstruct who changed an order field and when; full state replay is not a stated requirement. The memo says: 'More than ten modules, eight engineers or 500 QPS mandates microservices. The audit requirement mandates event sourcing. Therefore replace the current model next sprint.' No latency distribution, bottleneck measurements, deployment ownership constraints or recovery objectives are supplied. Review the decision and outline what evidence and next steps would make a choice defensible. Do not run tools or change files.",
+      "baseline_prompt": "Assess this synthetic architecture memo and give an inline recommendation, not project artifacts or implementation. A modular application has 14 modules, 9 engineers and a reported peak of 650 requests/second. Its current PostgreSQL transaction writes both an order update and an append-only audit row. The audit requirement is to reconstruct who changed an order field and when; full state replay is not a stated requirement. The memo says: 'More than ten modules, eight engineers or 500 QPS mandates microservices. The audit requirement mandates event sourcing. Therefore replace the current model next sprint.' No latency distribution, bottleneck measurements, deployment ownership constraints or recovery objectives are supplied. Review the decision and outline what evidence and next steps would make a choice defensible. Do not run tools or change files.",
+      "rubric": {
+        "decision-basis": "Treats module count, team size and QPS as context rather than universal cutoffs; requests or proposes evidence about bottlenecks, change coupling, ownership and operational needs before selecting distribution.",
+        "audit-semantics": "Distinguishes audit history from event sourcing and state replay; evaluates whether the current transactional audit satisfies the stated requirement without inventing a replay requirement.",
+        "tradeoffs": "Addresses network latency, partial failures, consistency and recovery cost of distribution and event sourcing; offers a proportionate next step without asserting measured capacity or approving an unsupported migration."
+      }
+    },
+    {
+      "id": "transaction-to-service-partial-failure",
+      "entry": "nexus-review",
+      "expected_profile": "DEEP",
+      "expected_persistence": "direct",
+      "prompt": "Review this synthetic service extraction inline only. Today one PostgreSQL transaction checks available stock, decrements it, creates a reservation and inserts an order; a unique tenant_id/request_id key makes repeating the request return the same order. The proposed replacement calls Inventory.reserve(request_id, sku), then Orders.create(request_id, reservation_id). These are separate services and databases. Both calls can time out after committing. The proposal removes the shared transaction, retries the whole handler twice on any error and reports that the old unit tests passing proves equivalent behavior. The product still requires no overselling and no untracked reservations after recovery. Identify approval blockers and propose a bounded migration and validation approach. No database, network requests or files may be touched.",
+      "baseline_prompt": "Review this synthetic service extraction inline only. Today one PostgreSQL transaction checks available stock, decrements it, creates a reservation and inserts an order; a unique tenant_id/request_id key makes repeating the request return the same order. The proposed replacement calls Inventory.reserve(request_id, sku), then Orders.create(request_id, reservation_id). These are separate services and databases. Both calls can time out after committing. The proposal removes the shared transaction, retries the whole handler twice on any error and reports that the old unit tests passing proves equivalent behavior. The product still requires no overselling and no untracked reservations after recovery. Identify approval blockers and propose a bounded migration and validation approach. No database, network requests or files may be touched.",
+      "rubric": {
+        "invariants": "Names the lost atomicity, ambiguous committed outcomes and cross-service reservation/order recovery gap; does not call this behavior-preserving solely because API shapes or unit tests match.",
+        "recovery": "Requires explicit idempotency scope, durable correlation and reconciliation or compensation semantics; rejects blind whole-handler retry as sufficient and accounts for failed or delayed compensation.",
+        "validation": "Requires evidence from the relevant real database/service runtime for racing stock claims, duplicate delivery, timeout-after-commit and crash/restart recovery; treats proposed tests as pending.",
+        "migration": "Provides a bounded rollout and rollback/reconciliation gate tied to the invariants rather than authorizing immediate extraction."
+      }
+    },
+    {
+      "id": "async-concurrency-is-behavior-change",
+      "entry": "nexus-review",
+      "expected_persistence": "direct",
+      "prompt": "Review a proposed TypeScript refactor inline only. Current code: `async function sendAll(ids: string[], signal: AbortSignal): Promise<string[]> { const sent: string[] = []; for (const id of ids) { signal.throwIfAborted(); sent.push(await send(id, { signal })); } return sent; }`. Proposed code: `async function sendAll(ids: string[], signal: AbortSignal): Promise<string[]> { return Promise.all(ids.map(id => send(id, { signal }))); }`. send performs an externally visible append and can fail after that append; it observes AbortSignal while waiting but cannot undo a completed append. Existing callers rely on stopping before later ids start when an earlier send fails. The author calls the proposal a behavior-preserving latency optimization. Assess it and recommend validation and an appropriate next step. No sends, commands or edits are authorized.",
+      "baseline_prompt": "Review a proposed TypeScript refactor inline only. Current code: `async function sendAll(ids: string[], signal: AbortSignal): Promise<string[]> { const sent: string[] = []; for (const id of ids) { signal.throwIfAborted(); sent.push(await send(id, { signal })); } return sent; }`. Proposed code: `async function sendAll(ids: string[], signal: AbortSignal): Promise<string[]> { return Promise.all(ids.map(id => send(id, { signal }))); }`. send performs an externally visible append and can fail after that append; it observes AbortSignal while waiting but cannot undo a completed append. Existing callers rely on stopping before later ids start when an earlier send fails. The author calls the proposal a behavior-preserving latency optimization. Assess it and recommend validation and an appropriate next step. No sends, commands or edits are authorized.",
+      "rubric": {
+        "ordering": "Distinguishes Promise.all result-array ordering from initiation/completion and externally visible append ordering; identifies violation of the stated stop-before-later-start contract.",
+        "failure-cancellation": "Explains that rejection does not undo completed appends or automatically stop all in-flight work and that cancellation timing/pre-aborted handling may differ; does not claim AbortSignal ensures rollback.",
+        "decision": "Rejects equivalence under the existing contract; requires explicit approval of any concurrency behavior change and bounded concurrency/provider limits if that change is pursued.",
+        "evidence": "Proposes observable scheduling, error, pre-abort and in-flight cancellation scenarios and real runtime evidence for any concurrency claims; reports no execution or measured latency improvement."
+      }
+    },
+    {
+      "id": "legacy-characterization-versus-bugfix",
+      "entry": "nexus-plan",
+      "expected_persistence": "direct",
+      "prompt": "Propose an inline plan for this synthetic legacy refactor; no files or commands. There are no tests. The existing JavaScript function is `function eligibleAge(value) { const age = Number(value); if (Number.isNaN(age)) return false; return age >= 18; }`. Existing consumers pass numbers and strings; the API documentation does not specify whitespace or null inputs. An already approved refactor scope is to extract the numeric conversion into a helper while preserving externally visible behavior. A reviewer additionally asks that null and blank strings now throw TypeError because the current behavior looks wrong. Explain how you would proceed and what checks and scope decisions are required before implementation.",
+      "baseline_prompt": "Propose an inline plan for this synthetic legacy refactor; no files or commands. There are no tests. The existing JavaScript function is `function eligibleAge(value) { const age = Number(value); if (Number.isNaN(age)) return false; return age >= 18; }`. Existing consumers pass numbers and strings; the API documentation does not specify whitespace or null inputs. An already approved refactor scope is to extract the numeric conversion into a helper while preserving externally visible behavior. A reviewer additionally asks that null and blank strings now throw TypeError because the current behavior looks wrong. Explain how you would proceed and what checks and scope decisions are required before implementation.",
+      "rubric": {
+        "characterization": "Derives characterization cases from the existing observable contract and coercion boundaries, including threshold values, numeric strings, invalid strings, whitespace and null; does not invent passing test execution.",
+        "scope": "Keeps the approved extraction behavior-preserving and identifies throwing for null/blanks as a separately authorized behavior change with explicit acceptance criteria.",
+        "evidence-limits": "Treats characterization as evidence of current behavior rather than proof that current behavior is desirable or complete; proposes incremental verification around the extraction."
+      }
+    },
+    {
+      "id": "dependency-cycle-minimal-cut",
+      "entry": "nexus-plan",
+      "expected_persistence": "direct",
+      "prompt": "Analyze this complete synthetic TypeScript import graph and propose the smallest practical cycle-breaking change inline, without editing or running anything. Each arrow is a runtime import: `src/orders/checkout.ts -> src/pricing/quote.ts`, `src/pricing/quote.ts -> src/customers/tier.ts`, `src/customers/tier.ts -> src/orders/checkout.ts`. Additionally, `src/orders/checkout.ts -> src/shared/money.ts` and `src/pricing/quote.ts -> src/shared/money.ts`; money.ts has no imports. checkout.ts calls quote(cart); quote.ts calls tierDiscount(customerId); tier.ts imports only the pure exported `normalizeCustomerId(value: string): string { return value.trim().toLowerCase(); }` from checkout.ts and uses it before looking up the tier. Other checkout exports have no callers in tier.ts. Name the actual cycle, choose a minimal cut, explain the resulting dependency direction, and identify verification needs. Do not assume other files or dependencies exist.",
+      "baseline_prompt": "Analyze this complete synthetic TypeScript import graph and propose the smallest practical cycle-breaking change inline, without editing or running anything. Each arrow is a runtime import: `src/orders/checkout.ts -> src/pricing/quote.ts`, `src/pricing/quote.ts -> src/customers/tier.ts`, `src/customers/tier.ts -> src/orders/checkout.ts`. Additionally, `src/orders/checkout.ts -> src/shared/money.ts` and `src/pricing/quote.ts -> src/shared/money.ts`; money.ts has no imports. checkout.ts calls quote(cart); quote.ts calls tierDiscount(customerId); tier.ts imports only the pure exported `normalizeCustomerId(value: string): string { return value.trim().toLowerCase(); }` from checkout.ts and uses it before looking up the tier. Other checkout exports have no callers in tier.ts. Name the actual cycle, choose a minimal cut, explain the resulting dependency direction, and identify verification needs. Do not assume other files or dependencies exist.",
+      "rubric": {
+        "exact-path": "Identifies src/orders/checkout.ts -> src/pricing/quote.ts -> src/customers/tier.ts -> src/orders/checkout.ts as the cycle; does not include the acyclic money.ts leaf or fabricate graph edges.",
+        "minimal-cut": "Provides a concrete minimal change removing tier.ts's dependency on checkout.ts, such as extracting the pure normalization responsibility to a dependency-free customer identity module and preserving any required checkout export compatibility; does not prescribe a full rewrite or container merely to break this cycle.",
+        "verification": "Explains resulting acyclic dependency direction and proposes import-graph plus normalization/tier/checkout contract checks; does not assert that a proposed graph or unexecuted checks prove runtime behavior."
+      }
+    },
+    {
+      "id": "memory-adapter-production-evidence",
+      "entry": "nexus-review",
+      "expected_persistence": "direct",
+      "prompt": "Review this synthetic refactoring acceptance report inline only: 'We introduced JobStore so production Redis and a Map-backed test adapter implement claim(jobId, workerId), complete(jobId) and recoverExpired(now). The Map adapter runs in a single process. Its tests sequentially call claim twice and verify the second call is rejected, then advance a fake clock and call recoverExpired. Every test passed. The Redis implementation uses separate GET and SET commands for claiming, with a 30-second lease. Two worker processes run in production; a worker may pause beyond its lease or crash after an external side effect but before complete. Therefore this refactor proves production mutual exclusion and exactly-once side effects and is ready to release.' Assess what the evidence establishes, the approval decision, and the remaining validation. No Redis access, worker execution, files or release actions are authorized.",
+      "baseline_prompt": "Review this synthetic refactoring acceptance report inline only: 'We introduced JobStore so production Redis and a Map-backed test adapter implement claim(jobId, workerId), complete(jobId) and recoverExpired(now). The Map adapter runs in a single process. Its tests sequentially call claim twice and verify the second call is rejected, then advance a fake clock and call recoverExpired. Every test passed. The Redis implementation uses separate GET and SET commands for claiming, with a 30-second lease. Two worker processes run in production; a worker may pause beyond its lease or crash after an external side effect but before complete. Therefore this refactor proves production mutual exclusion and exactly-once side effects and is ready to release.' Assess what the evidence establishes, the approval decision, and the remaining validation. No Redis access, worker execution, files or release actions are authorized.",
+      "rubric": {
+        "evidence-boundary": "Limits the Map results to adapter-level sequential behavior; does not infer atomic Redis claims, multiprocess exclusion, lease safety or exactly-once external effects from those tests.",
+        "failure-mechanisms": "Identifies the GET/SET race, stale worker after lease expiry and crash-after-effect ambiguity; distinguishes claim atomicity from external effect deduplication or fencing requirements.",
+        "real-runtime-gate": "Requires real Redis with separate workers and controlled contention, lease expiry/stale completion, crash/restart and external-effect replay evidence; does not treat mocks, fake clocks, skipped tests or environment setup as completed functional validation.",
+        "authorization": "Withholds the claimed release readiness while stating missing evidence; performs no external actions and fabricates no execution."
+      }
+    },
+    {
+      "id": "approved-plan-resume-design-preservation",
+      "entry": "nexus-build",
+      "expected_persistence": "direct",
+      "prompt": "Resume this synthetic approved plan by proposing only the next pending patch and verification inline; no files, commands or external actions. TASK-ID is REF-42. Approved scope: extract the existing locale formatter into a pure helper, keep the public function and all outputs, do not introduce a service or alter error handling. Plan step 1 (done): capture characterization of en-US and pt-BR formatting, empty input and unsupported locale errors. Recorded results belong to snapshot A. Step 2 (pending): extract helper with unchanged arguments and delegate the public function. Step 3 (pending): run characterization against the final source. Current source snapshot B, not yet tested: `export function renderLabels(values: string[], locale: string): string[] { return values.map(value => value.toLocaleUpperCase(locale)); }`. The approved helper name is uppercaseLabels and it accepts the same two arguments. The plan and design remain approved. Provide the step-2 proposal and accurate task status with the pending evidence.",
+      "baseline_prompt": "Resume this synthetic approved plan by proposing only the next pending patch and verification inline; no files, commands or external actions. TASK-ID is REF-42. Approved scope: extract the existing locale formatter into a pure helper, keep the public function and all outputs, do not introduce a service or alter error handling. Plan step 1 (done): capture characterization of en-US and pt-BR formatting, empty input and unsupported locale errors. Recorded results belong to snapshot A. Step 2 (pending): extract helper with unchanged arguments and delegate the public function. Step 3 (pending): run characterization against the final source. Current source snapshot B, not yet tested: `export function renderLabels(values: string[], locale: string): string[] { return values.map(value => value.toLocaleUpperCase(locale)); }`. The approved helper name is uppercaseLabels and it accepts the same two arguments. The plan and design remain approved. Provide the step-2 proposal and accurate task status with the pending evidence.",
+      "rubric": {
+        "resume": "Retains REF-42 and the approved scope/step ordering; continues at step 2 without restarting discovery, rewriting the approved design, adding artifacts or requesting the same approval again.",
+        "preservation": "Proposes executable TypeScript with uppercaseLabels accepting values and locale and renderLabels delegating to it, preserving map order, input ownership and native locale error behavior.",
+        "status": "Clearly distinguishes proposed patch from applied work and tests at A from pending final-source verification; does not mark step 2 applied, step 3 passed or the task completed."
+      }
+    }
+  ]
+}

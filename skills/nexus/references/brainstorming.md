@@ -56,6 +56,12 @@ fonte existente; sem registro suficiente, esclareça somente a lacuna. O chat n�
 
 ## Entrega e limite
 
+Quando a escolha envolver interfaces, dependências ou sistemas, use a seção
+pertinente de [design](architecture-design.md) para investigar o fluxo real e
+comparar abordagens. Para alternativas de refatoração, consulte os
+[padrões pelo problema](refactoring.md#padroes). Não carregue catálogo para uma
+pergunta conceitual simples nem reabra arquitetura aprovada sem evidência material.
+
 Quando houver [gatilho de segurança/ética](ai-safety-ethics.md#risk-triggers),
 identifique finalidade, pessoas afetadas e danos previsíveis; compare alternativas
 com menor exposição de dados ou autonomia, inclusive sem IA quando suficiente.

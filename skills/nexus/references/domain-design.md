@@ -1,7 +1,7 @@
 # Modelagem nos pontos de mudança
 
-Use quando a alteração afetar estados do domínio, entrada externa ou ownership de
-dados. Se o código já for claro e local, preserve-o. Este checklist complementa
+Use quando a alteração afetar estados do domínio, entrada externa, responsabilidade
+ou ownership de dados. Se o código já for claro e local, preserve-o. Este checklist complementa
 [Policies](policies.md); não cria fase, camada ou documento obrigatório.
 
 | Condição observável | Decisão e evidência suficiente |
@@ -32,6 +32,34 @@ compartilhado, isolamento por tenant e uma identidade de job se a entrega repeti
 Uma transação pode garantir incremento sem perda e ainda contar o mesmo job duas
 vezes; atomicidade e deduplicação têm aceites distintos. Não exigir fila ou lock
 global quando a operação atômica do storage já atende ao contrato.
+
+## Princípios nos contratos afetados
+
+- Coloque a regra junto da invariante e do estado que governa; mantenha projeções
+  de transporte/apresentação fora quando tiverem razões distintas para mudar.
+  SOLID e object calisthenics são heurísticas para investigar consequências, não
+  limites de linhas, níveis de indentação ou obrigação de criar classes.
+- Injete capacidades variáveis como relógio, transporte e storage quando necessário
+  para contrato, ciclo de vida ou verificação. Use funções/valores locais diretamente;
+  o desenho segue os idiomas de TypeScript, Swift, Go ou da linguagem do projeto.
+- Use tipos para estados válidos e parsing no limite de confiança. Um cast não
+  valida dados nem garante autorização, atualidade ou atomicidade. Reutilize o
+  validador existente; assertions necessárias em interoperabilidade ficam locais,
+  justificadas e verificadas. Ausência válida pode ser representada como opcional.
+- Preserve a diferença entre ausência, vazio, zero, false, inválido e indisponível.
+  Defaults previstos no contrato são válidos; fallback não pode fabricar identidade,
+  ocultar corrupção ou transformar falha em sucesso. Trate conflito/cancelamento
+  esperado pelo contrato, preservando causa, cleanup e diagnóstico pertinente.
+- Explicite ownership de dados mutáveis. Mutação local de estado próprio pode ser
+  mais clara e barata que cópias; não altere entradas compartilhadas por surpresa.
+- Nomeie intenção, domínio e unidades; preserve termos convencionais úteis. Comentários
+  explicam restrições, decisões e protocolos. Não imponha biblioteca, nomenclatura
+  exclusiva ou proibição de comentários como princípio universal.
+
+Fronteiras e dependências ainda em decisão usam [design](architecture-design.md);
+reestruturação com preservação de comportamento usa [refatoração](refactoring.md).
+Carregue essas referências somente quando seus gatilhos ocorrerem. A
+[proveniência](design-sources.md) registra as adaptações da software-design-principles.
 
 Saída: decisão curta no plano, diff ou review existente, com o cenário que a
 verifica. Sem mudança nessas dimensões, não percorra o checklist.

@@ -28,6 +28,12 @@ aplique o [checklist de modelagem](domain-design.md): estados válidos por const
 parsing na fronteira, decisão determinística separada do I/O e compartilhamento
 de estado justificado. Carregue somente nesse contexto; não imponha novas camadas.
 
+Para decisões de interfaces, dependências ou fronteiras entre sistemas, consulte
+[design arquitetural](architecture-design.md). Para reestruturação que afete
+contratos ou efeitos, consulte [refatoração](refactoring.md). Reutilize decisões
+aprovadas e leia somente a referência/seção pertinente; edição mecânica local
+mantém o caminho curto. Essas capacidades integram o pacote, sem skills externas.
+
 <a id="policy-execution"></a>
 
 ## Perfis de execução
