@@ -26,6 +26,13 @@ ownership. **Evidência:** fontes e validações propostas identificadas como ta
 
 ## Entrega e limite
 
+Decisão pendente sobre módulos, dependências ou integração usa
+[design](architecture-design.md); estados/invariantes afetados usam
+[modelagem](domain-design.md). Para refatoração que afete contratos ou efeitos,
+use [preservação e incrementos](refactoring.md#contrato) para definir caracterização,
+transformação e evidência. Reutilize decisões suficientes; isso não cria uma fase
+de arquitetura para todo plano nem amplia o escopo aprovado.
+
 Para [produtos com IA](ai-safety-ethics.md#ai-products), inclua no plano existente
 fronteiras de confiança, dados/destinos permitidos, controles e responsáveis,
 supervisão pertinente e cenários de falha. Vincule aceite à evidência necessária;

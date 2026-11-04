@@ -33,6 +33,12 @@ arquivo, use a [coleta opcional](review-package.md).
 
 ## Entrega e limite
 
+Em mudança estrutural, use [design](architecture-design.md#diagnostico) para conferir
+dependências e consequências demonstráveis. Em refatoração com efeitos/contratos,
+use [preservação](refactoring.md#contrato) e os [riscos operacionais](refactoring.md#efeitos)
+pertinentes: compare semântica, não só assinaturas. Fakes não demonstram garantias
+do storage real. Essas consultas não autorizam redesenhar ou corrigir o objeto.
+
 Pelos [gatilhos de segurança e ética](ai-safety-ethics.md#risk-triggers), confira
 fronteiras/dados, autonomia e impacto humano no alvo real. Em produto com impacto
 material, examine responsável capaz de intervir, revisão/contestação, transparência,
