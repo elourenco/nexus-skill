@@ -1,6 +1,6 @@
 interface:
-  display_name: "NEXUS Plan"
-  short_description: "Planeje etapas, contratos e dependências"
+  display_name: "NEXUS · Plan"
+  short_description: "Transformar uma direção em etapas verificáveis."
   icon_small: "./assets/nexus-icon.png"
   icon_large: "./assets/nexus-icon.png"
   default_prompt: "Use $nexus-plan para planejar esta mudança com etapas, contratos, riscos e validações."

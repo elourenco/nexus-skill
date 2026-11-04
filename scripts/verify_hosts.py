@@ -11,8 +11,14 @@ import subprocess
 import tempfile
 import time
 
+if __package__:
+    from .package_claude import build_claude_package
+else:
+    from package_claude import build_claude_package
+
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED = {'nexus', 'nexus-brainstorming', 'nexus-plan', 'nexus-build', 'nexus-debug', 'nexus-review'}
+EXPECTED = {'nexus', 'nexus-brainstorm', 'nexus-plan', 'nexus-build', 'nexus-debug', 'nexus-review'}
+EXPECTED_CLAUDE = {'start', 'brainstorm', 'plan', 'build', 'debug', 'review'}
 
 
 def discover_skills(executable, cwd, env, response_timeout=30, cleanup_timeout=2,
@@ -105,7 +111,8 @@ def prepare_local_package(destination):
     for directory in ('skills', '.claude-plugin', '.codex-plugin', '.agents/plugins'):
         shutil.copytree(ROOT / directory, destination / directory,
                         ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
-    for path, source in [('.claude-plugin/marketplace.json', './'),
+    build_claude_package(destination, destination / 'build/claude')
+    for path, source in [('.claude-plugin/marketplace.json', './build/claude'),
                          ('.agents/plugins/marketplace.json', {'source': 'local', 'path': './'})]:
         target = destination / path
         catalog = json.loads(target.read_text())
@@ -139,8 +146,8 @@ def verify(codex, claude):
                 raise RuntimeError(f'host command failed: {args}')
             return result.stdout
 
-        result = {'schema_version': 1, 'package_version': json.loads((ROOT / '.codex-plugin/plugin.json').read_text())['version'],
-                  'expected_entries': sorted(EXPECTED), 'inference_executed': False,
+        result = {'schema_version': 2, 'package_version': json.loads((ROOT / '.codex-plugin/plugin.json').read_text())['version'],
+                  'expected_entries': {'codex': sorted(EXPECTED), 'claude': sorted(EXPECTED_CLAUDE)}, 'inference_executed': False,
                   'profiles': 'isolated temporary directories; no credentials copied', 'commands': receipts}
         for name, executable in [('codex', codex), ('claude', claude)]:
             try:
@@ -151,10 +158,10 @@ def verify(codex, claude):
                     call(executable, ['plugin', 'list', '--json'])
                     skills = discover_skills(executable, consumer, env)
                     names = {skill['name'].split(':')[-1] for skill in skills}
-                    result[name] = {'status': 'pass' if names == EXPECTED and all(s['enabled'] for s in skills) else 'fail',
+                    result[name] = {'status': 'pass' if names == EXPECTED and len(skills) == len(EXPECTED) and all(s['enabled'] for s in skills) else 'fail',
                                     'entries': sorted(names), 'skills': skills}
                 else:
-                    call(executable, ['plugin', 'validate', str(package / '.claude-plugin/plugin.json'), '--strict', '--json'])
+                    call(executable, ['plugin', 'validate', str(package / 'build/claude/.claude-plugin/plugin.json'), '--strict', '--json'])
                     call(executable, ['plugin', 'marketplace', 'add', str(package), '--json'])
                     call(executable, ['plugin', 'install', 'nexus@nexus-local', '--json'])
                     installed = json.loads(call(executable, ['plugin', 'list', '--json']))
@@ -166,7 +173,7 @@ def verify(codex, claude):
                     # Parse an exact native inventory field, not response keywords or quality.
                     match = re.search(r'^\s*Skills \((\d+)\)\s+(.+)$', inventory, re.MULTILINE)
                     names = {n.strip() for n in match[2].split(',')} if match else set()
-                    result[name] = {'status': ('pass' if names == EXPECTED and int(match[1]) == 6 and enabled else
+                    result[name] = {'status': ('pass' if names == EXPECTED_CLAUDE and int(match[1]) == 6 and enabled else
                                                 'fail' if match else 'inconclusive'),
                                     'entries': sorted(names), 'enabled': enabled, 'native_inventory': inventory}
             except (OSError, RuntimeError, subprocess.TimeoutExpired, KeyError, ValueError, TypeError) as error:

@@ -125,7 +125,7 @@ def validate_plugins(root: Path) -> list[str]:
         catalog = read_object(relative)
         if catalog.get("name") != "nexus-local":
             errors.append(f"{relative}: marketplace name must be nexus-local")
-        expected = {"name": "nexus", "source": "./"}
+        expected = {"name": "nexus", "source": "./build/claude"}
         if host == "claude":
             owner = catalog.get("owner")
             if not isinstance(owner, dict) or not isinstance(owner.get("name"), str) or not owner["name"].strip():
@@ -136,6 +136,8 @@ def validate_plugins(root: Path) -> list[str]:
                             category="Developer Tools")
         remote = {**expected, "source": {"source": "url",
                   "url": "https://github.com/elourenco/nexus-skill.git", "ref": "plugins"}}
+        if host == "claude":
+            remote["source"].update(source="git-subdir", path="build/claude")
         if catalog.get("plugins") not in ([expected], [remote]):
             errors.append(f"{relative}: expected one nexus entry at ./ or the published plugins ref with no component overrides")
 
@@ -147,15 +149,15 @@ def validate_plugins(root: Path) -> list[str]:
     return errors
 
 
-def validate_skills(root: Path) -> list[str]:
+def validate_skills(root: Path, core_entry: str = "nexus", reference_only: set[str] | frozenset[str] = frozenset()) -> list[str]:
     """Validate standalone skills and references without requiring plugin manifests."""
     root = root.resolve()
     errors = []
     skills = root / "skills"
-    if not (skills / "nexus/SKILL.md").is_file():
-        return ["skills/nexus/SKILL.md: missing entrypoint"]
+    if not (skills / core_entry / "SKILL.md").is_file():
+        return [f"skills/{core_entry}/SKILL.md: missing entrypoint"]
     for directory in sorted(skills.iterdir()):
-        if not directory.is_dir() or directory.name.startswith("."):
+        if not directory.is_dir() or directory.name.startswith(".") or directory.name in reference_only:
             continue
         entry = directory / "SKILL.md"
         label = entry.relative_to(root)
@@ -211,7 +213,14 @@ def validate_skills(root: Path) -> list[str]:
 
 def validate(root: Path) -> list[str]:
     root = root.resolve()
-    return validate_plugins(root) + validate_skills(root)
+    errors = validate_plugins(root) + validate_skills(root)
+    claude = root / 'build/claude'
+    if claude.exists():
+        errors += validate_skills(claude, core_entry='start', reference_only={'nexus'})
+        entries = {p.parent.name for p in (claude / 'skills').glob('*/SKILL.md')}
+        if entries != {'start', 'brainstorm', 'plan', 'build', 'debug', 'review'}:
+            errors.append('build/claude: expected exactly six short Claude entrypoints')
+    return errors
 
 
 if __name__ == "__main__":

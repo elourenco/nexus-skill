@@ -77,7 +77,7 @@ class HostDiscoveryTests(unittest.TestCase):
     def test_checkout_package_installs_candidate_bytes_without_remote_catalog_redirects(self):
         destination = self.root / 'candidate'
         host_verifier.prepare_local_package(destination)
-        for path, expected in [('.claude-plugin/marketplace.json', './'),
+        for path, expected in [('.claude-plugin/marketplace.json', './build/claude'),
                                ('.agents/plugins/marketplace.json', {'source': 'local', 'path': './'})]:
             catalog = json.loads((destination / path).read_text())
             self.assertEqual(catalog['plugins'][0]['source'], expected)

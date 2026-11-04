@@ -1,6 +1,6 @@
 ---
 name: nexus-plan
-description: Use when NEXUS planning, implementation steps or architectural contracts are requested for a defined direction. Not for implementing the plan or open-ended brainstorming.
+description: Use when turning a defined direction into verifiable NEXUS implementation steps and architectural contracts. Not for implementing or open-ended brainstorming.
 ---
 
 # NEXUS Plan

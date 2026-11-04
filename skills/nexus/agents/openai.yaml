@@ -1,6 +1,6 @@
 interface:
   display_name: "NEXUS"
-  short_description: "Da ideia à entrega validada"
+  short_description: "Iniciar, consultar estado ou retomar trabalho."
   icon_small: "./assets/nexus-icon.png"
   icon_large: "./assets/nexus-icon.png"
   default_prompt: "Use $nexus para analisar este projeto e propor o próximo incremento com critérios de aceite."

@@ -8,8 +8,9 @@
     {
       "name": "nexus",
       "source": {
-        "source": "url",
+        "source": "git-subdir",
         "url": "https://github.com/elourenco/nexus-skill.git",
+        "path": "build/claude",
         "ref": "plugins"
       }
     }

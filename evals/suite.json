@@ -16,7 +16,7 @@
     },
     {
       "id": "brainstorm",
-      "entry": "nexus-brainstorming",
+      "entry": "nexus-brainstorm",
       "prompt": "Explore two approaches for a synthetic offline note queue. Do not implement. Assume retries can duplicate writes.",
       "rubric": {
         "scope": "Present alternatives and a recommendation without implementation.",
