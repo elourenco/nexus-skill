@@ -7,12 +7,7 @@
   "plugins": [
     {
       "name": "nexus",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/elourenco/nexus-skill.git",
-        "path": "build/claude",
-        "ref": "plugins"
-      }
+      "source": "./build/claude"
     }
   ]
 }
