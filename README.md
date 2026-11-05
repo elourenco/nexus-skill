@@ -253,6 +253,13 @@ a necessidade. O agente usa listas, perguntas estruturadas, diffs e detalhes
 expansíveis quando o host os disponibiliza e permite; texto portátil mantém
 o conteúdo essencial quando algum recurso falta. Perguntas simples continuam diretas.
 
+Specs e planos de revisão usam Markdown com seções e entregas numeradas. O agente
+prefere abrir o mesmo arquivo no painel nativo do Codex ou no recurso de revisão/
+preview disponível no Claude Code, deixando resumo e links no chat. Abertura
+automática depende de ferramenta permitida na sessão; sem ela, mantém o link e
+orienta a abertura manual. Não muda de modo nem instala componentes para exibir.
+Veja os [cenários e limites dos painéis nativos](docs/native-panels-validation.md).
+
 A seleção considera as capacidades da sessão, não apenas a marca do provedor.
 O contrato não instala uma UI nem promete painel persistente, botões ou atualização
 ao vivo em todos os hosts. A apresentação usa a fonte de estado existente e
