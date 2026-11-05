@@ -51,6 +51,9 @@ Entregue objetivo/escopo, decisões preservadas, etapas com dependências, aceit
 estratégia de validação, riscos/recuperação e pendências. Use o
 [template de plano](../assets/templates/plan.md) se houver necessidade de arquivo,
 vinculando fontes e revisões conhecidas; não invente hashes ou aceites.
+Para revisão da SPEC/PLAN, siga a [apresentação em painel nativo](chat.md#spec-e-plano-em-painel-nativo):
+documento organizado por seções e entregas numeradas, abertura no recurso permitido
+do host e resumo com links no chat. Preserve o arquivo de plano nativo já adotado.
 
 Se o pedido for somente planejar, entregue o plano e encerre sem exigir escolha
 de execução nem apresentar seu aceite como autorização para implementar.

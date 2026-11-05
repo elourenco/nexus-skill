@@ -2,14 +2,34 @@
 
 Use [contratos e perfis](contracts.md). O plano descreve como entregar a SPEC;
 referencie requisitos/aceites por ID em vez de reproduzi-los.
+Apresente o arquivo conforme [painel nativo](../../references/chat.md#spec-e-plano-em-painel-nativo).
 
 - ID e revisão:
 - spec_id:
 - Spec e revisão/commit (link):
+
+## Resultado e estratégia
+
 - Resultado esperado (aceites da SPEC):
 - Estratégia de implementação incremental:
 - Arquivos ou módulos previstos:
 - Dependências e sequência:
+
+## Etapas de entrega
+
+Repita o bloco por incremento verificável, com título concreto e numeração em
+ordem de dependência. Ele descreve o trabalho proposto; estado de execução vem
+da fonte adotada no Todo. Omita orientações do template no documento preenchido.
+
+### 1. Título da entrega
+
+- Mudança e arquivos/componentes:
+- Dependências e responsável, quando houver mais de um:
+- Validação proposta (cenário/comando e aceite referenciado):
+- Condição de conclusão:
+
+## Validação e recuperação
+
 - Estratégia de testes proporcional ao risco:
 - Recursos compartilhados e limites de concorrência:
 - Recuperação/rollback, quando aplicável (gatilho, ação e verificação):
