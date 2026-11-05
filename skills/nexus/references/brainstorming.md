@@ -78,6 +78,8 @@ abertas. Use [SPEC](../assets/templates/spec.md) ou [ADR](../assets/templates/ad
 somente se um registro persistente for necessário. No fluxo guiado, aguarde o
 aceite da solução para planejar e do plano para implementar, salvo autorização
 existente suficiente. Se o pedido for apenas explorar, encerre na recomendação.
+Ao entregar uma SPEC para revisão, use a [apresentação em painel nativo](chat.md#spec-e-plano-em-painel-nativo),
+com seções legíveis no documento e resumo/decisão no chat; preserve o fallback textual.
 
 Exemplo: “Brainstorming do NEXUS: dois dispositivos editam offline o mesmo registro;
 compare alternativas, sem implementar.” A entrega distingue política de conflito
