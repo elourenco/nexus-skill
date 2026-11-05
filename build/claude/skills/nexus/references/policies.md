@@ -10,6 +10,11 @@ Respeite a hierarquia de instruções do host, as permissões reais, as autoriza
 
 Reutilize autorização existente para a mesma ação, alvo e escopo. FAST, DEEP, Autonomous, um hook ou uma delegação não ampliam essa autorização. Commit, push, merge, deploy e ações externas continuam sujeitos ao escopo autorizado.
 
+Para execução em repositórios, a [política Git](git.md) detalha preparação,
+branches/worktrees, workspace sujo, commits incrementais, checkpoints e integração.
+São defaults documentais subordinados ao host; não acrescentam permissões ou
+operações ao executor opt-in.
+
 Se uma decisão depender de instruções incompatíveis que a hierarquia não resolva, registre as fontes e suspenda somente a ação afetada. Uma exceção deve registrar regra, motivo, escopo, risco residual, compensação, autoridade e condição de expiração/reavaliação. Uma escolha já permitida não exige nova aprovação. Reduzir escopo ou dispensar uma verificação exigida depende da autoridade que estabeleceu o requisito; prazo, custo e falha de ferramenta não constituem dispensa. Não reclassifique risco para contornar um limite.
 
 <a id="policy-engineering"></a>

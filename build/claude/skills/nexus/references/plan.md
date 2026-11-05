@@ -27,6 +27,10 @@ ownership. **Evidência:** fontes e validações propostas identificadas como ta
    dependências, ownership, validação e condição de conclusão. Trate latência,
    throughput, concorrência e falhas conforme o comportamento; reserve recursos
    compartilhados antes de propor execução paralela.
+   Em repositório Git, defina base/destino, branch/worktree do plan, incrementos
+   de commit, ownership e integração conforme a [política Git](git.md). Separe
+   autorização de implementar, comitar e integrar; não fixe nomes globais nem
+   crie branch por task sequencial. Registre decisões na fonte existente.
 4. Inclua migração, rollout compatível e recuperação quando pertinentes. Distinga
    rollback de código de reversão de dados/efeitos. Nomeie hipóteses, bloqueios e
    verificações ainda necessárias; não estime desempenho sem dados.

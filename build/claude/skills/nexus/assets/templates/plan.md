@@ -15,6 +15,17 @@ Apresente o arquivo conforme [painel nativo](../../references/chat.md#spec-e-pla
 - Arquivos ou módulos previstos:
 - Dependências e sequência:
 
+## Execução Git — quando aplicável
+
+Use a [política Git](../../references/git.md); referencie decisões já registradas.
+Esta seção é documental e não adiciona campos ao store da CLI.
+
+- Base/destino e revisão conhecida (ou proposta a confirmar antes de editar):
+- Branch/worktree do plan e isolamento de tasks paralelas, quando houver:
+- Autorizações existentes e pendentes (implementar, commits locais, integração e publicação):
+- Incrementos previstos de commit e checks pertinentes (sem contagem artificial):
+- Responsável, ordem e estratégia de integração; validação do resultado combinado:
+
 ## Etapas de entrega
 
 Repita o bloco por incremento verificável, com título concreto e numeração em
