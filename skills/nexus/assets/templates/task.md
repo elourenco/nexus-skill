@@ -32,11 +32,12 @@ Com executor opt-in, esta TASK é documentação; estado, reservas e transiçõe
 ## Execução persistente — adicionar quando houver execução ou retomada
 
 - Contratos preservados (referências):
+- Contexto Git, quando aplicável (link para decisões do plan ou base, branch/worktree e ownership; conforme [política Git](../../references/git.md)):
 - Provider/modelo/esforço efetivos (ou indisponível):
 - Budget autorizado e origem (opcional; ausente significa não informado):
 - Consumo medido (por tentativa: valor, unidade/moeda, fonte, intervalo; ou indisponível):
 - Tentativas e hipóteses descartadas (IDs locais, resultado, evidências):
-- Checkpoint (workspace/revisão de código, operações externas e resultado conhecido/incerto):
+- Checkpoint (workspace/revisão de código, SHA/commits e diff restante quando Git, checks cobertos, próxima ação, operações externas e resultado conhecido/incerto):
 - Review/decisões associados (IDs/links, quando exigidos):
 - Histórico de transições (data, de → para, responsável, motivo/evidência, revisão):
 

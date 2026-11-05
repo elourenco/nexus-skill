@@ -20,6 +20,9 @@ inicial identificada e comparação do antes/depois; comparar dois arquivos fina
 entre si não é diff da alteração. Não repita um comando sabidamente indisponível nem
 condicione leitura necessária ao sucesso de Git. Se a ausência for transitória,
 só retente com condição alterada e dentro dos limites. Preserve falhas relevantes.
+Em repositório Git, aplique [preparação e isolamento](git.md#preparação-e-isolamento)
+e [workspace sujo](git.md#workspace-sujo) antes de editar, inclusive em FAST;
+reutilize a execução existente e suas autorizações.
 Mantenha backups identificados no workspace autorizado, com extensão não executável
 e fora dos padrões de descoberta de testes. Não preserve `.test.*`/`.spec.*` na
 cópia; confira o conjunto descoberto sem excluir os testes originais ou regressões.
@@ -55,6 +58,9 @@ revisável e pendências; check obrigatório ausente mantém o aceite pendente.
    exit e resumo de cada check separadamente: `cat`, `tail`, `diff` ou probe posterior
    não altera seu resultado. Agrupe checks independentes necessários sem mascarar falhas.
    Texto ou mudança simples admite inspeção proporcional. Use ferramentas reais.
+   Com commits locais autorizados, conclua [commits por incremento](git.md#commits-por-incremento)
+   durante a execução, preservando index alheio e evitando um único commit final
+   para entregas separáveis. Sem essa autorização, preserve diff e evidências.
 4. Valide aceites e efeitos sobre contratos, latência, throughput, concorrência e
    recuperação conforme o comportamento alterado. Não paralelize escritas ou testes
    sobre recursos compartilhados. Se houver falha, preserve evidências e respeite
@@ -62,6 +68,8 @@ revisável e pendências; check obrigatório ausente mantém o aceite pendente.
 5. Revise o diff e os pilares pertinentes conforme os [critérios](review-criteria.md) quando o
    risco exigir. Reuse check/review válido para os mesmos inputs, revisão, configuração, run/geração aplicáveis e ambiente; repita a cobertura afetada por mudança relevante, novo risco ou integração não coberta. Gates de conclusão continuam vigentes. Independência e agentes adicionais dependem do host; uma entrada
    especializada não cria um worker automaticamente.
+   Aplique [integração e entrega Git](git.md#integração-e-entrega) quando pertinente:
+   um integrador, ordem de dependência e checks sobre o resultado combinado.
 
 ## Entrega e limite
 

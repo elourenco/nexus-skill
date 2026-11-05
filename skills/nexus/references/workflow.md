@@ -53,3 +53,7 @@ remota: reconcilie efeito incerto por identidade antes de qualquer retry ou ack 
 Revalide a cobertura afetada quando revisão, inputs, configuração, run/geração ou
 ambiente mudarem; evidência da configuração A não comprova a B em contexto novo.
 Consulte fonte existente, revisão, evidências e estado real; retome a próxima pendência autorizada. Após duas tentativas sem progresso, pare a repetição e reúna diagnóstico antes de escalar conforme o host. Cancelamento não reverte efeitos. Runs incertos mantêm reservas até reconciliação; [checkpoint e recuperação](workflow-state.md#checkpoint-cancelamento-e-retomada) detalham o executor. Memória permanece útil e autorizada, sem captura automática.
+
+Em Git, registre [checkpoint e retomada](git.md#checkpoint-e-retomada) na mesma
+fonte: branch/worktree, SHA, diff restante, checks e próxima ação. O checkpoint
+da CLI não cria commit ou snapshot Git nem executa integração de branches.

@@ -90,6 +90,9 @@ Não crie reviewer silenciosamente nem declare DEEP concluído por autorrevisão
    portas antes de despachar. Contextos separados compartilham recursos do host;
    execute em paralelo somente tarefas independentes e isoladas, dentro dos
    limites de concorrência/budget do host. Sem isolamento, serialize as tarefas.
+   Para execução em Git, use [branches/worktrees e integração](git.md): branch do
+   plan para sequência; branch/worktree por unidade paralela independente. O
+   orquestrador centraliza integração autorizada e valida o resultado combinado.
 2. Para cada tarefa pronta, envie objetivo, fontes atuais, contratos, arquivos e
    recursos permitidos, dependências, aceite, validação e limites. Avise que o
    worker não está sozinho no workspace e deve preservar alterações alheias.
