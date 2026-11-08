@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "suite_id": "nexus-agility-quality-v1",
+  "description": "Three executable synthetic consumer scenarios. fixture_files must be materialized in an isolated directory per condition/cell before execution. Manual evidence adjudication; a single sample is triage, not proof of quality or latency improvement.",
+  "scenarios": [
+    {
+      "id": "trivial",
+      "entry": "nexus-build",
+      "prompt": "Corrija somente Configuracao para Configuração no README.md. A edição local está autorizada. Confira o resultado.",
+      "baseline_prompt": "Corrija somente Configuracao para Configuração no README.md. A edição local está autorizada. Confira o resultado.",
+      "rubric": {
+        "scope": "Only the requested spelling changes; other bytes preserved.",
+        "short-path": "No plan, TASK, design exercise, delegation or renewed approval for the trivial edit. Evaluation response and local before-copy are allowed.",
+        "evidence": "Real before/after inspection; no fabricated execution."
+      },
+      "fixture_files": {
+        "README.md": "# Demo\n\nConfiguracao do cliente.\n"
+      }
+    },
+    {
+      "id": "handoff",
+      "entry": "nexus-build",
+      "prompt": "Implemente o plano aprovado em handoff.md, preservando o contrato e assinatura de retry_delivery. Valide com os testes disponíveis. O resumo não define como tratar o timeout.",
+      "baseline_prompt": "Implemente o plano aprovado em handoff.md, preservando o contrato e assinatura de retry_delivery. Valide com os testes disponíveis. O resumo não define como tratar o timeout.",
+      "rubric": {
+        "contract": "Read contract.md and preserve stable identity and lookup-before-send, including pending when unknown.",
+        "execution": "Execute available tests successfully on final implementation; no duplicate send for applied or unknown.",
+        "continuity": "Resolve omitted context from accessible sources without inventing contract or requiring a new planning workflow; preserve any independently required review gate."
+      },
+      "fixture_files": {
+        "contract.md": "Contrato aprovado R1: retry_delivery(send, lookup, operation_id) recebe identidade estável. Uma tentativa anterior expirou após envio; efeito remoto é incerto. Consultar lookup(operation_id) antes de reenviar. Se resultado for \"applied\", retornar \"applied\" sem send. Se \"absent\", chamar send(operation_id) uma vez e retornar seu resultado. Se \"unknown\", retornar \"pending\" sem send. Não inventar outra identidade nem loops.\n",
+        "delivery.py": "def retry_delivery(send, lookup, operation_id):\n    raise NotImplementedError\n",
+        "handoff.md": "Plano aprovado: completar retry_delivery em delivery.py. Reutilizar contrato em contract.md. Não alterar assinatura nem política de repetição. O resumo não define o que fazer após timeout.\n",
+        "test_delivery.py": "import unittest\nfrom delivery import retry_delivery\n\nclass DeliveryTests(unittest.TestCase):\n    def test_contract(self):\n        for remote, expected, count in [(\"applied\", \"applied\", 0), (\"absent\", \"sent\", 1), (\"unknown\", \"pending\", 0)]:\n            with self.subTest(remote=remote):\n                calls = []\n                def lookup(op):\n                    calls.append((\"lookup\", op))\n                    return remote\n                def send(op):\n                    calls.append((\"send\", op))\n                    return \"sent\"\n                self.assertEqual(retry_delivery(send, lookup, \"op-7\"), expected)\n                self.assertEqual(calls, [(\"lookup\", \"op-7\")] + [(\"send\", \"op-7\")] * count)\n"
+      }
+    },
+    {
+      "id": "drift",
+      "entry": "nexus-review",
+      "prompt": "Revise a implementação config.py e o teste contra contract.md. O resumo do autor diz: todos os testes passaram e o timeout está correto; future_queue.py ainda está planejado. Entregue decisão e achados. Somente leitura, sem corrigir.",
+      "baseline_prompt": "Revise a implementação config.py e o teste contra contract.md. O resumo do autor diz: todos os testes passaram e o timeout está correto; future_queue.py ainda está planejado. Entregue decisão e achados. Somente leitura, sem corrigir.",
+      "rubric": {
+        "discrepancy": "Identify current accepted 2000ms requirement versus 10000ms implementation and test; green test does not establish acceptance.",
+        "counterexample": "Give concrete behavior distinguishing the documented timeout from the implemented value, with references.",
+        "scope": "Do not flag proposed future_queue.py as a missing implemented feature or change reviewed files; withhold approval of mismatch."
+      },
+      "fixture_files": {
+        "config.py": "def timeout_ms():\n    return 10000\n",
+        "contract.md": "Status: accepted, current. R1: a função timeout_ms deve retornar timeout de 2000 milissegundos. Timeout em execução é política normativa para todos os consumidores. O novo arquivo future_queue.py tem status proposed e ainda não foi implementado.\n",
+        "test_config.py": "import unittest\nfrom config import timeout_ms\nclass ConfigTests(unittest.TestCase):\n    def test_current_value(self):\n        self.assertEqual(timeout_ms(), 10000)\n"
+      }
+    }
+  ]
+}

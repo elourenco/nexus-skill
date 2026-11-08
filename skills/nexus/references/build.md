@@ -38,12 +38,17 @@ revisável e pendências; check obrigatório ausente mantém o aceite pendente.
 1. Identifique objetivo, aceite e autorização existentes. Inspecione instruções do
    projeto, estado real dos arquivos e plano quando houver; preserve trabalho alheio.
    Plano aprovado conduz à próxima pendência; não refaça brainstorming/plano sem nova evidência ou mudança material. Execução direta não exige TASK/SPEC/PLAN nem store, independentemente do perfil de risco. Se faltar contrato
-   material, resolva-o em [Plan](plan.md) antes da alteração dependente.
+   material, busque-o nas fontes vinculadas antes de recorrer a [Plan](plan.md).
+   No handoff, confirme se consegue localizar o contrato e executar a próxima ação
+   autorizada; avance se suficiente. Lacuna material sem resposta nas fontes
+   bloqueia somente a ação dependente, sem reabrir o restante do plano aprovado.
    No fluxo guiado de brainstorming, preserve os aceites e o
    [método escolhido](agents.md#metodo-de-execucao); se somente essa escolha faltar,
    resolva-a sem reapresentar o plano aprovado. Execute no método efetivo, sem
    criar sessões ou workers no modo agente único.
-2. Consulte [Workflows](workflow.md) quando houver etapas, tarefas ou retomada.
+2. Consulte [Workflows](workflow.md) para resolver dependências, ownership, estado
+   ou recuperação ainda indefinidos. Uma sequência de passos já suficiente não
+   exige outro procedimento.
    Reuse sua fonte existente; crie persistência somente se útil ou solicitada, sem lista paralela. Antes de retomar run
    incerto, reconcilie com o host para evitar execução duplicada.
 3. Vincule critério/invariante a cenário e evidência observável no registro
@@ -67,7 +72,10 @@ revisável e pendências; check obrigatório ausente mantém o aceite pendente.
    limites de tentativas/recuperação; não transforme teste não executado em sucesso.
 5. Revise o diff e os pilares pertinentes conforme os [critérios](review-criteria.md) quando o
    risco exigir. Reuse check/review válido para os mesmos inputs, revisão, configuração, run/geração aplicáveis e ambiente; repita a cobertura afetada por mudança relevante, novo risco ou integração não coberta. Gates de conclusão continuam vigentes. Independência e agentes adicionais dependem do host; uma entrada
-   especializada não cria um worker automaticamente.
+   especializada não cria um worker automaticamente. Review de design não cobre
+   automaticamente a implementação final. Checks e review independentes podem
+   avançar sobre a mesma versão identificada, com recursos isolados e dentro dos
+   limites; alterações posteriores invalidam a cobertura afetada.
    Aplique [integração e entrega Git](git.md#integração-e-entrega) quando pertinente:
    um integrador, ordem de dependência e checks sobre o resultado combinado.
 
