@@ -1,0 +1,24 @@
+{
+  "name": "nexus",
+  "version": "0.3.17",
+  "author": {
+    "name": "NEXUS",
+    "url": "https://github.com/elourenco/nexus-skill"
+  },
+  "description": "Transforme problemas em especificações, decisões arquiteturais e entregas incrementais. Planeje, implemente, depure e revise com critérios de aceite e evidências.",
+  "skills": "./skills/",
+  "icon": "./skills/nexus/assets/nexus-icon.png",
+  "homepage": "https://github.com/elourenco/nexus-skill",
+  "repository": "https://github.com/elourenco/nexus-skill",
+  "keywords": [
+    "engineering",
+    "architecture",
+    "specification",
+    "planning",
+    "debugging",
+    "code-review"
+  ],
+  "displayName": "NEXUS",
+  "documentationUrl": "https://github.com/elourenco/nexus-skill#readme",
+  "supportUrl": "https://github.com/elourenco/nexus-skill/issues"
+}
