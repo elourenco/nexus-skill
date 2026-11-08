@@ -57,7 +57,9 @@ e nome divergirem, respeite o escopo do pedido; review não implica correção.
 Brainstorming usa o [fluxo guiado](brainstorming.md#fluxo-guiado-por-aceites), limitado
 à entrega autorizada. Preserve aceites e método definidos; não refaça plano aprovado.
 Atividade, perfil e persistência são eixos distintos. Execução direta dispensa
-TASK/SPEC/PLAN; [Workflow](workflow.md) só para etapas/estado/retomada e CLI se adotada.
+TASK/SPEC/PLAN; [Workflow](workflow.md) somente para dependências, ownership,
+estado ou recuperação ainda indefinidos, e CLI se adotada. A mera existência de
+passos não exige carregar outro procedimento.
 
 Agente atual é padrão. Consulte [Agents](agents.md) ao delegar e os [critérios](review-criteria.md)
 para realizar review independente; não abra workers por ritual. Uma fonte de estado, recursos isolados,

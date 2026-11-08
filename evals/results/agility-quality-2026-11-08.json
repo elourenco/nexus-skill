@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "base": "4d272744bcb7a063a81ceee7ea4c0e8904ea77b4",
+  "samples_per_condition": 1,
+  "fresh_context_mechanism": "native collaboration.spawn_agent fork_turns=none for all six cells; host instruction exclusion not tested",
+  "order": "all previous cells before edits, then candidate; up to two independent consumers concurrently",
+  "deviations": [
+    "Baseline drift received an additional coordinator reminder to stop once boundary evidence was sufficient; not a controlled efficiency comparison.",
+    "Harness snapshots prepared post-hoc for integrity and receipt aggregation; original consumer directories differ from harness generated workspaces."
+  ],
+  "source_preserved_files": 177,
+  "snapshot_identities": {
+    "previous": "e0d61910ba4435df9c9c5952ce6dc8799d942cabc79e89452695c25c4c79cfc3",
+    "candidate": "57aed95aaed3661edbe7107b311e96288b7f6b21d8a554c81c0a5a2d35e13f09"
+  },
+  "quality_improvement": null,
+  "efficiency_improvement": null,
+  "results": [
+    {
+      "scenario": "trivial",
+      "variant": "previous",
+      "sample": 1,
+      "response": "# Resultado da avaliação\n\nPedido simulado concluído: `README.md` contém `Configuração do cliente.`. Foi alterada somente a ocorrência de `Configuracao` para `Configuração`; comparação binária confirmou preservação dos demais bytes.\n\n## Execução e evidências\n\nTodos os comandos usaram workdir explícito `${RUN}/previous/trivial`.\n\n- `cat /Users/elourenco/.codex/RTK.md` e `cat ${RUN}/previous-skills/nexus-build/SKILL.md`: exit 0. Essas duas leituras iniciais não tiveram prefixo RTK; as chamadas seguintes tiveram.\n- `rtk read ${RUN}/previous-skills/nexus/references/invocation.md`: exit 0, contrato lido.\n- `rtk read ${RUN}/previous-skills/nexus/references/build.md`: exit 0, procedimento lido. Perfil FAST aplicável a texto reversível de escopo conhecido.\n- `rtk git status --short`: exit 128, diretório sem Git. Não repetido; usada cópia inicial identificada.\n- `rtk read README.md`: exit 0, conteúdo inicial `# Demo`, linha vazia e `Configuracao do cliente.`.\n- `rtk --skip-env rg --files --hidden -g AGENTS.md -g '!response.md'`: exit 1, nenhum AGENTS.md no diretório consumidor.\n- `rtk bypass python3 -c ...`: exit 0, cópia inicial em `README.before.txt`, confirmação de uma ocorrência e substituição literal UTF-8.\n- `rtk bypass diff -u README.before.txt README.md`: exit 1 esperado para diferença; única linha alterada de `Configuracao do cliente.` para `Configuração do cliente.`.\n- `rtk bypass python3 -c ...`: exit 0, assert de igualdade dos bytes finais com os iniciais após somente a substituição autorizada e ausência de `Configuracao`. Saída: `PASS: somente Configuracao -> Configuração; demais bytes preservados`.\n\n## Referências da skill efetivamente lidas\n\n- `${RUN}/previous-skills/nexus-build/SKILL.md`\n- `${RUN}/previous-skills/nexus/references/invocation.md`\n- `${RUN}/previous-skills/nexus/references/build.md`\n\nSem perguntas, delegações, plano, TASK ou leituras opcionais da skill. Sem commit ou publicação. Artefatos adicionais: `README.before.txt` (baseline sem Git) e este `response.md` (exigido pela avaliação, não pelo pedido simulado). A alteração textual não afeta latência, throughput, concorrência ou recuperação de runtime. Nenhum outro cenário ou avaliação foi lido. Nenhuma skill foi alterada.\n",
+      "root_observations": {
+        "exact_bytes": true
+      },
+      "tool_calls": null,
+      "tokens": null,
+      "latency_ms": null,
+      "model_effective": null,
+      "agent_type": "tests",
+      "requested_model": "gpt-6.1-sol",
+      "requested_effort": "medium"
+    },
+    {
+      "scenario": "handoff",
+      "variant": "previous",
+      "sample": 1,
+      "response": "# Resultado da avaliação\n\nImplementado o plano aprovado em `delivery.py`, preservando a assinatura de `retry_delivery` e a identidade recebida. O contrato R1 em `contract.md` resolveu a omissão do resumo: consultar primeiro; `applied` retorna sem envio, `absent` envia uma vez, `unknown` retorna `pending` sem envio. Sem loops ou geração de identidade. Uma consulta e no máximo um envio por chamada; sem sincronização adicional.\n\n## Evidência observada\n\n- `rtk git status --short`: exit 128; consumidor não é repositório. Nenhuma repetição.\n- Criada `initial-snapshot.json` antes da alteração com conteúdo original dos quatro arquivos (comando Python via `rtk bypass`, exit 0). Backup não executável, fora da descoberta de testes.\n- `rtk bypass python3 -m unittest discover -v` antes da alteração: exit 1, um teste com três subcenários falhou por `NotImplementedError`.\n- Mesmo comando sobre a implementação final: exit 0, um teste aprovado com os três subcenários. Asserções verificam resultados, ordem lookup/send, identidade estável e quantidade de envios.\n- Comparação com snapshot via `rtk bypass python3 -c`: exit 0; diff restrito a `delivery.py`; `handoff.md`, `contract.md` e `test_delivery.py` preservados. Descoberta contém somente `test_delivery.py`.\n\nOs callbacks dos testes são locais. A evidência valida o contrato da função no Python real; não comprova idempotência de provedor remoto, comportamento de rede ou concorrência distribuída. Não existe runtime remoto no consumidor.\n\n## Fontes lidas\n\n- `${RUN}/previous-skills/nexus-build/SKILL.md`\n- `${RUN}/previous-skills/nexus/references/invocation.md`\n- `${RUN}/previous-skills/nexus/references/build.md`\n- Instruções RTK em `/Users/elourenco/.codex/RTK.md`.\n- Fontes consumidoras: `handoff.md`, `contract.md`, `delivery.py`, `test_delivery.py`.\n\nSem perguntas, delegações, plano novo, commit, publicação ou alteração da skill. Artefatos adicionais de avaliação: este `response.md` e `initial-snapshot.json`; Python também produziu cache local em `__pycache__`. Todos os comandos usaram workdir explícito do consumidor. As duas leituras iniciais de instruções usaram `cat` direto antes da leitura da regra RTK; demais comandos usaram RTK.\n",
+      "root_observations": {
+        "command": "python3 -B -m unittest discover -v",
+        "exit": 0,
+        "stderr": "test_contract (test_delivery.DeliveryTests.test_contract) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+      },
+      "tool_calls": null,
+      "tokens": null,
+      "latency_ms": null,
+      "model_effective": null,
+      "agent_type": "tests",
+      "requested_model": "gpt-6.1-sol",
+      "requested_effort": "medium"
+    },
+    {
+      "scenario": "drift",
+      "variant": "previous",
+      "sample": 1,
+      "response": "# Review REV-drift @ 1\n\nDecisão: **CHANGES_REQUESTED**. A implementação e o teste contradizem o requisito vigente R1. O resumo do autor é parcialmente confirmado: a suíte passa, mas o timeout está incorreto.\n\nRevisor: previous_drift. task_id: avaliação-drift; spec_id: contract.md/R1. Execução direta, perfil BALANCED; pilares Quality e Product/contrato, com impacto de Performance e Reliability avaliado dentro do escopo. Achados abaixo: confiança alta, estado open, fontes inspecionadas diretamente e reproduções em Python real, sem mocks.\n\n## F1 — timeout viola o contrato (high)\n\n- Arquivo: config.py:2; requisito: contract.md:1.\n- Trigger: qualquer chamada a timeout_ms(). Retorna 10000 ms, enquanto R1 accepted/current exige 2000 ms para todos os consumidores.\n- Impacto: orçamento normativo de espera cinco vezes maior, com até 8000 ms adicionais se um consumidor aplicar integralmente esse timeout. Isso pode prolongar falhas e ocupação de recursos; não foram medidos latência, throughput ou consumidores reais.\n- Evidência discriminante: execução direta registrou expected=2000 ms; observed=10000 ms, seguida de AssertionError e exit 1. Essa comparação deriva do contrato, independentemente do teste existente.\n- Recomendação: alinhar o retorno a 2000 e validar o requisito R1.\n\n## F2 — teste consolida o comportamento incorreto (medium)\n\n- Arquivo: test_config.py:4-5; requisito: contract.md:1.\n- Trigger: rodar a suíte atual. O teste exige 10000 e passa apesar de F1; uma correção para 2000 seria rejeitada pelo próprio teste.\n- Impacto: suíte verde não protege o aceite e pode incentivar regressão contra a política vigente.\n- Evidência: unittest executou 1 teste, OK; a verificação independente de R1 falhou no mesmo snapshot.\n- Recomendação: derivar a asserção do requisito aceito, exigindo 2000, e observar falha antes e sucesso após a correção autorizada.\n\nfuture_queue.py está proposed e não implementado conforme contract.md:1; sua ausência não é defeito do escopo aceito e não fundamenta achado.\n\n## Alvo e identidade\n\nWorkspace: ${RUN}/previous/drift. Não há repositório Git neste diretório; revisão identificada pelos SHA-256, iguais na leitura inicial e revalidação final:\n\n- contract.md: 58e4dd86ec1c784f32e76b7caee6e7606348df5d06f9183c9d7df04ece690d00\n- config.py: 068a7623220c69e365202a1fe2200b35b3c41684570dfb40c8d4c825bc0b5cb9\n- test_config.py: 6223f59253d5f0e4c60566fc581abb8538b439d2f9516afcfc82af856117d127\n\n## Comandos e resultados\n\nTodos os comandos do consumidor executados com workdir explícito no workspace acima.\n\n- rtk ls -la: três arquivos consumidores, sem future_queue.py.\n- rtk git status --short: exit 128, não é repositório Git. Sem base/commit disponível.\n- rtk bypass python3 -c com pathlib/hashlib: leitura integral numerada dos três arquivos e hashes.\n- rtk bypass python3 -B -m unittest discover -v: exit 0, 1 teste executado, OK.\n- rtk bypass python3 -B -c 'from config import timeout_ms; observed = timeout_ms(); print(f\"R1: expected=2000 ms; observed={observed} ms\"); assert observed == 2000, f\"R1 violated: {observed} != 2000\"': exit 1, observed=10000, AssertionError.\n- rtk bypass python3 -B -c com platform/hashlib: Python 3.14.6; hashes revalidados sem alteração.\n\n-B evitou bytecode no consumidor. Nenhum código ou teste foi editado; somente este response.md foi criado, conforme autorização. Não houve commit ou publicação.\n\n## Referências lidas e limites\n\nDa distribuição exclusiva ${RUN}/previous-skills: nexus-review/SKILL.md; nexus/references/invocation.md; nexus/references/review.md; nexus/references/review-criteria.md; nexus/assets/templates/review.md; nexus/assets/templates/contracts.md (saída com truncamento parcial, regra inicial de execução direta disponível). Também lido /Users/elourenco/.codex/RTK.md. No consumidor: contract.md, config.py e test_config.py integrais.\n\nRevisão limitada à função e ao teste fornecidos. Sem consumidores reais, integração, carga, estado compartilhado ou persistência disponíveis; não se inferem garantias de concorrência, recuperação ou latência medida. A função não contém mutação/IO que exija prova adicional dessas propriedades neste escopo. Não foi usado o relato do autor como evidência de aceite. A revisão termina no relatório com achados abertos, sem autorização para correção.\n",
+      "root_observations": {
+        "existing_test_exit": 0,
+        "normative_assertion_exit": 1,
+        "observed_ms": 10000,
+        "required_ms": 2000,
+        "sources_unchanged": true
+      },
+      "tool_calls": null,
+      "tokens": null,
+      "latency_ms": null,
+      "model_effective": null,
+      "agent_type": "tests",
+      "requested_model": "gpt-6.1-sol",
+      "requested_effort": "medium"
+    },
+    {
+      "scenario": "trivial",
+      "variant": "candidate",
+      "sample": 1,
+      "response": "Resultado: corrigido somente `Configuracao` para `Configuração` no README.md. Conferência final aprovada. Nenhum commit ou publicação.\n\nFluxo: NEXUS Build FAST; alteração textual local, reversível, sem mudança de execução, latência, throughput, concorrência ou recuperação.\n\nReferências da distribuição efetivamente lidas:\n- ${RUN}/candidate-skills/nexus-build/SKILL.md\n- ${RUN}/candidate-skills/nexus/references/invocation.md\n- ${RUN}/candidate-skills/nexus/references/build.md\n\nComandos/resultados observados (workdir explícito: ${RUN}/candidate/trivial):\n1. `cat` do seletor: exit 0. `cat` de invocation.md, build.md e /Users/elourenco/.codex/RTK.md: exit 0. Essas leituras iniciais ocorreram antes de conhecer a regra RTK e não receberam prefixo.\n2. `rtk bypass sh -c` com pwd, ls, descoberta de AGENTS.md, git rev-parse e cat README.md: exit agregado 0; git informou fatal, workspace sem repositório. Nenhum AGENTS.md foi encontrado. README inicial: `Configuracao do cliente.`. O exit agregado não é sucesso do Git.\n3. `rtk bypass python3 -c` criou cópia inicial README.before.bak, exigiu uma ocorrência original, aplicou a substituição e comparou bytes finais com a transformação exata autorizada: exit 0, PASS.\n4. `rtk bypass diff -u README.before.bak README.md`: exit 1 esperado para arquivos diferentes; diff contém apenas `-Configuracao do cliente.` e `+Configuração do cliente.`.\n\nPerguntas: nenhuma. Delegações adicionais: nenhuma. Artefatos adicionais: README.before.bak (cópia inicial identificada, pois não existe Git) e este response.md solicitado pela avaliação. Nenhuma suíte artificial criada. Não há scripts de validação neste workspace consumidor.\n",
+      "root_observations": {
+        "exact_bytes": true
+      },
+      "tool_calls": null,
+      "tokens": null,
+      "latency_ms": null,
+      "model_effective": null,
+      "agent_type": "tests",
+      "requested_model": "gpt-6.1-sol",
+      "requested_effort": "medium"
+    },
+    {
+      "scenario": "handoff",
+      "variant": "candidate",
+      "sample": 1,
+      "response": "Resultado: implementado delivery.py conforme handoff.md e contrato R1 em contract.md, mantendo a assinatura retry_delivery(send, lookup, operation_id). A lacuna do resumo sobre timeout foi resolvida na fonte vinculada: lookup com a identidade original antecede qualquer reenvio; applied retorna applied sem send; absent chama send uma vez e retorna seu resultado; unknown retorna pending sem send. Sem loops, identidade nova ou nova política de repetição.\n\nVerificações observadas (todos os comandos no diretório consumidor, prefixados com rtk):\n- `rtk git rev-parse --show-toplevel`: exit 128; diretório sem Git. Não repetido.\n- `rtk proxy python3 -c ...`: exit 0; snapshot inicial em delivery.py.before.txt, extensão não executável e fora da descoberta de testes.\n- `rtk proxy python3 -m unittest -v` antes: exit 1; um teste, três subcenários falharam por NotImplementedError.\n- `rtk proxy python3 -m unittest -v` depois: exit 0; um teste com três subcenários aprovados, incluindo ordem lookup/send e identidade op-7.\n- `rtk proxy diff -u delivery.py.before.txt delivery.py`: exit 1 esperado por diferença; alteração limitada ao corpo da função, assinatura preservada.\n- `rtk proxy python3 -c ...` para descoberta e preservação documental: exit 0; exatamente um teste descoberto; handoff.md e contract.md preservados conforme conteúdo inicial.\n\nReferências efetivamente lidas da distribuição candidate-skills: nexus-build/SKILL.md, nexus/references/invocation.md, nexus/references/build.md. Também lidos RTK.md e arquivos consumidores handoff.md, contract.md, delivery.py, test_delivery.py.\n\nSem perguntas, delegações, commit, publicação ou alterações na skill. Artefatos adicionais: delivery.py.before.txt (snapshot) e este response.md (registro da avaliação); execução de unittest pode gerar __pycache__. Nenhum TASK/SPEC/PLAN novo.\n\nLimite da evidência: testes locais no runtime Python com callbacks controlados validam a decisão e a ordem das chamadas. Não há serviço remoto neste consumidor; portanto não há prova de idempotência ou recuperação distribuída de um provedor real. Latência e throughput não medidos; o caminho executa um lookup e no máximo um send, sequencialmente, conforme contrato. Não foram introduzidos paralelismo, retries ou chamadas extras.\n",
+      "root_observations": {
+        "command": "python3 -B -m unittest discover -v",
+        "exit": 0,
+        "stderr": "test_contract (test_delivery.DeliveryTests.test_contract) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+      },
+      "tool_calls": null,
+      "tokens": null,
+      "latency_ms": null,
+      "model_effective": null,
+      "agent_type": "tests",
+      "requested_model": "gpt-6.1-sol",
+      "requested_effort": "medium"
+    },
+    {
+      "scenario": "drift",
+      "variant": "candidate",
+      "sample": 1,
+      "response": "# Review — timeout normativo\n\n- Data: 2026-11-08. reviewer_id: candidate_drift; task_id: drift; spec_id: não se aplica (execução direta).\n- Alvo: snapshot integral de config.py, test_config.py e contract.md; sem repositório Git nesta pasta. Pilares: Quality, Product/contrato e Performance; avaliação BALANCED, sem implementação pelo revisor.\n- Proveniência comum: leitura direta e execução Python local. Confiança alta; status de todos os achados: open.\n\n## Achado F1 — retorno viola R1\n\n- severity: medium; pillar: Quality/Product/Performance; file/location: config.py:2, contrato em contract.md:1.\n- Condição e impacto: qualquer chamada a timeout_ms() devolve 10000 ms, embora R1 accepted/current exija 2000 ms como política normativa para todos os consumidores. A configuração expõe um orçamento de espera 5 vezes maior; o efeito na latência e na ocupação de recursos dos consumidores depende de como aplicam o valor e não foi medido.\n- Evidência: execução independente `rtk bypass python3 -B -c 'from config import timeout_ms; actual=timeout_ms(); print(f\"R1: expected=2000 ms actual={actual} ms\"); assert actual == 2000, f\"R1 violated: {actual} != 2000\"'` terminou com exit 1: actual=10000 e AssertionError R1 violated: 10000 != 2000. O cenário distingue diretamente uma implementação conforme de uma incorreta.\n- suggested_fix: devolver 2000 conforme R1; validar esse requisito em teste. Não houve correção neste review.\n- Resolução: pendente.\n\n## Achado F2 — teste cristaliza o valor incorreto\n\n- severity: medium; pillar: Quality; file/location: test_config.py:5.\n- Condição e impacto: o teste espera 10000 e aprova a violação; uma implementação correta que devolvesse 2000 falharia nesse teste. O verde citado pelo autor não demonstra conformidade.\n- Evidência: test_config.py:5 contém assertEqual(timeout_ms(), 10000); `rtk bypass python3 -B -m unittest -v` executou 1 teste, OK, exit 0. O teste derivado de R1 acima falhou no mesmo snapshot.\n- suggested_fix: derivar a asserção do requisito vigente, esperando 2000. Reexecutar teste e cenário R1 após eventual correção autorizada.\n- Resolução: pendente.\n\n## Cobertura e verificações\n\n- Referências efetivamente lidas: /Users/elourenco/.codex/RTK.md; candidate-skills/nexus-review/SKILL.md; candidate-skills/nexus/references/invocation.md, review.md, review-criteria.md; candidate-skills/nexus/assets/templates/review.md; consumidor contract.md, config.py e test_config.py na íntegra.\n- `rtk ls`: somente os três arquivos consumidores antes do relatório. `rtk git status --short`: exit 128, not a git repository; não existe base Git a comparar.\n- Leitura numerada e SHA256 via `rtk bypass python3 -c` com pathlib/hashlib; revalidação via `rtk bypass python3 -B -c` confirmou hashes iguais após os testes:\n  - contract.md: 58e4dd86ec1c784f32e76b7caee6e7606348df5d06f9183c9d7df04ece690d00\n  - config.py: 068a7623220c69e365202a1fe2200b35b3c41684570dfb40c8d4c825bc0b5cb9\n  - test_config.py: 6223f59253d5f0e4c60566fc581abb8538b439d2f9516afcfc82af856117d127\n- `Path(\"future_queue.py\").exists()` retornou False. contract.md:1 identifica expressamente esse arquivo como proposed e ainda não implementado: ausência coerente com o escopo planejado, sem achado.\n- Concorrência, throughput e resiliência: a função não mantém estado nem realiza I/O; não há garantia de fila ou sincronização implementada a verificar. Nenhum teste de carga ou consumidor real foi executado; não se afirma latência observada ou garantia distribuída.\n- Limites: revisão dos três arquivos fornecidos; não foi demonstrado comportamento de consumidores externos, deploy ou CI. Python -B evitou criação de bytecode. Somente response.md foi gravado; nenhum código, teste ou skill foi alterado.\n\n## Decisão final\n\nCHANGES_REQUESTED. Cobertura do contrato fornecido concluída com dois achados acionáveis abertos. A afirmação de que o teste passou foi reproduzida; a afirmação de timeout correto foi refutada pelo requisito normativo e pela execução. Corrigir implementação e teste exige nova autorização; este review termina no relatório.\n",
+      "root_observations": {
+        "existing_test_exit": 0,
+        "normative_assertion_exit": 1,
+        "observed_ms": 10000,
+        "required_ms": 2000,
+        "sources_unchanged": true
+      },
+      "tool_calls": null,
+      "tokens": null,
+      "latency_ms": null,
+      "model_effective": null,
+      "agent_type": "tests",
+      "requested_model": "gpt-6.1-sol",
+      "requested_effort": "medium"
+    }
+  ],
+  "independent_review": {
+    "reviewer": "final_quality_review",
+    "decision": "APPROVED",
+    "functional_cells": "6/6 independently verified",
+    "process_coverage": "inconclusive without full native child tool traces",
+    "findings": [],
+    "requested_model": "gpt-6.1-sol",
+    "requested_effort": "high",
+    "model_effective": null,
+    "limits": [
+      "DEEP reviewer unavailable, truly missing contract, uncertain resumption and concurrent review invalidation were not exercised by these three scenarios."
+    ]
+  }
+}
