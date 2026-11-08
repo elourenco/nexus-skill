@@ -38,6 +38,10 @@ No recurso existente de tarefa, mensagem ou arquivo autorizado, componha o brief
 objetivo/aceite → fontes e revisão → contratos → ownership/recursos → verificação
 → limites. Referencie trechos já acessíveis em vez de copiar histórico ou spec.
 Arquivo é útil para conteúdo extenso/reutilizado; não é obrigatório para delegar.
+O destinatário localiza o contrato nas fontes vinculadas e verifica se consegue
+executar a próxima ação autorizada. Contexto suficiente permite avançar; lacuna
+material bloqueia só a ação dependente e retorna com fonte/impacto. Isso integra
+o handoff, sem fase, formulário ou novo agente de readiness.
 Retorno começa por resultado, arquivos/diff e verificações com evidência, seguido
 de bloqueios. Detalhes extensos permanecem no artefato autorizado; o controlador
 consulta só o necessário para integrar e conferir. Um resumo não substitui prova.
@@ -74,6 +78,12 @@ informe e obtenha a escolha de fallback para agente único ou espera; não simul
 workers nem troque silenciosamente de método. Se o usuário já autorizou um fallback
 nessa condição, aplique-o e informe. Ferramentas existentes não demonstram que um
 worker foi iniciado: verifique a chamada e seu retorno.
+
+Qualifique o mecanismo de contexto independente quando mudar ou houver dúvida
+concreta; reutilize a evidência enquanto válida para o host/configuração. Cada
+review ainda exige lançamento, leituras necessárias e conclusão observáveis,
+ou lacunas explícitas. Preserve instruções do host/projeto. Ausência de histórico
+herdado não prova isolamento de memória, arquivos, bancos ou outros recursos.
 
 Agente único mantém os gates de risco. Se review independente for obrigatório,
 apresente antes da execução a necessidade de revisor externo ou exceção explícita

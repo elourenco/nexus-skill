@@ -18,10 +18,23 @@ arquivo, use a [coleta opcional](review-package.md).
    fontes pertinentes diretamente, sem depender da narrativa do implementador.
    Se faltar o objeto revisável, obtenha-o nas fontes disponíveis ou peça o insumo;
    não invente achados a partir de uma descrição genérica.
+   Se houver contrato material ambíguo ou omitido no handoff, reconstrua das fontes
+   normativas o comportamento exigido, a invariante e um cenário que distinguiria
+   a implementação correta da incorreta; confronte então código e testes. Faça
+   isso dentro deste review, sem paráfrase integral, novo agente ou fase obrigatória.
+   Interpretação divergente pode ser erro do leitor: confira a autoridade e a
+   evidência antes de atribuir defeito à SPEC; não use a intenção do autor como
+   único critério de correção.
 2. Selecione os pilares de [critérios de review](review-criteria.md#review-council-adaptativo) pelo comportamento alterado.
    Avalie contratos, falhas parciais, latência, throughput e concorrência quando
    pertinentes. Preserve achados existentes e diferencie defeito demonstrável,
    hipótese e preferência de estilo.
+   Confira divergências de documentação na fronteira afetada: requisito vigente,
+   produtor, consumidor e teste pertinentes. Diferencie documento desatualizado,
+   implementação incompleta, mudança aprovada e proposta ainda não implementada;
+   ausência de item planejado não é defeito por si. Teste verde que repete o código
+   não resolve conflito com o requisito. Amplie a busca só por dependência ou
+   lacuna concreta, preservando a cobertura exigida e os limites do escopo.
 3. Execute verificações proporcionais nas ferramentas e recursos autorizados,
    isolando artefatos temporários. Não edite o objeto para facilitar o review;
    registre testes não executados e lacunas de cobertura. Se o alvo mudar durante

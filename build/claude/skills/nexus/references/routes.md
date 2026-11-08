@@ -31,7 +31,7 @@ na seção carregada não torna todas as suas dependências obrigatórias.
 | Budget, retry ou efeito externo incerto exigem detalhe | [Limites](policies.md#limites-suaves-e-rígidos), [recuperação](policies.md#tentativas-e-recuperação) |
 | Hipótese fraca ou decisão material em aberto | [Seleção cognitiva](cognitive.md#seleção-adaptativa) e somente a técnica selecionada |
 | Delegação efetiva ou definição de método | [Agents](agents.md) |
-| Etapas/estado a reconciliar | [Workflow](workflow.md); [executor](workflow-state.md) somente se adotado |
+| Dependências, ownership, estado ou recuperação ainda indefinidos | [Workflow](workflow.md); [executor](workflow-state.md) somente se adotado |
 | Execução em Git, branches/worktrees, commits ou integração | [Política Git](git.md); ferramentas e autorização do host |
 | Estados, ownership ou invariantes alterados | [Modelagem](domain-design.md) |
 | Decisão estrutural aberta / refatoração com efeitos | [Diagnóstico de design](architecture-design.md#diagnostico) / [contrato de refatoração](refactoring.md#contrato) |
